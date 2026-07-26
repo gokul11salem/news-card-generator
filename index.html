@@ -2,7 +2,7 @@
 <html lang="en" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Dispatch — News Card Generator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Serif+Tamil:wght@600;700&display=swap" rel="stylesheet">
@@ -18,6 +18,10 @@
     --field-line:#3a4050;
   }
   *{box-sizing:border-box;}
+  html,body{
+    max-width:100%;
+    overflow-x:hidden;
+  }
   body{
     margin:0;
     font-family:'Helvetica Neue', Arial, sans-serif;
@@ -25,43 +29,41 @@
     color:var(--paper);
     min-height:100vh;
   }
-  body.lang-ta{ font-family:'Noto Sans Tamil','Helvetica Neue', Arial, sans-serif; }
+
+  /* ---------- Topbar (mobile-first) ---------- */
   .topbar{
-    padding:22px 32px;
+    padding:16px 18px;
     border-bottom:1px solid var(--panel-line);
     display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:14px;
-    flex-wrap:wrap;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
   }
-  .topbar-brand{display:flex; align-items:baseline; gap:14px;}
+  .topbar-brand{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;}
   .topbar h1{
     font-family:Georgia, 'Times New Roman', serif;
-    font-size:26px;
+    font-size:22px;
     letter-spacing:0.5px;
     margin:0;
   }
-  .topbar h1 span{
-    color:var(--press);
-    font-family:Georgia, serif;
-    font-style:italic;
-  }
+  .topbar h1 span{ color:var(--press); font-family:Georgia, serif; font-style:italic; }
   .topbar small{
     color:var(--muted);
-    font-size:12px;
+    font-size:11px;
     text-transform:uppercase;
-    letter-spacing:1.5px;
+    letter-spacing:1px;
   }
   .lang-switch{
     display:flex;
     align-items:center;
     gap:8px;
+    width:100%;
+    flex-wrap:wrap;
   }
   .lang-switch label{
     font-size:11px;
     text-transform:uppercase;
-    letter-spacing:1.2px;
+    letter-spacing:1px;
     color:var(--muted);
     margin:0;
   }
@@ -69,35 +71,45 @@
     background:var(--field);
     border:1px solid var(--field-line);
     color:var(--paper);
-    padding:8px 10px;
+    padding:9px 10px;
     border-radius:4px;
-    font-size:13px;
+    font-size:14px;
+    flex:1;
+    min-width:140px;
   }
+  .lang-hint{ font-size:10px; color:var(--muted); width:100%; line-height:1.4; }
+
+  /* ---------- Layout (mobile-first: stacked column) ---------- */
   .layout{
-    display:grid;
-    grid-template-columns:380px 1fr;
-    gap:0;
-    min-height:calc(100vh - 76px);
-  }
-  @media (max-width:900px){
-    .layout{grid-template-columns:1fr;}
+    display:flex;
+    flex-direction:column;
   }
   .controls{
+    order:2;
     background:var(--panel);
-    padding:28px;
-    border-right:1px solid var(--panel-line);
-    overflow-y:auto;
-  }
-  .group{
-    margin-bottom:26px;
-    padding-bottom:26px;
+    padding:20px 18px 32px;
     border-bottom:1px solid var(--panel-line);
   }
-  .group:last-child{border-bottom:none;}
+  .stage-wrap{
+    order:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:22px 14px;
+    background:
+      repeating-conic-gradient(#20242c 0% 25%, #1a1e25 0% 50%) 50% / 24px 24px;
+  }
+
+  .group{
+    margin-bottom:22px;
+    padding-bottom:22px;
+    border-bottom:1px solid var(--panel-line);
+  }
+  .group:last-child{border-bottom:none; margin-bottom:0;}
   .group h2{
-    font-size:11px;
-    text-transform:uppercase;
-    letter-spacing:1.4px;
+    font-size:12px;
+    line-height:1.4;
+    letter-spacing:0.3px;
     color:var(--press);
     margin:0 0 14px 0;
     font-weight:700;
@@ -105,22 +117,23 @@
   label{
     display:block;
     font-size:12px;
+    line-height:1.4;
     color:var(--muted);
     margin-bottom:6px;
     margin-top:14px;
   }
   label:first-of-type{margin-top:0;}
-  input[type="text"], input[type="date"], textarea{
+  input[type="text"], input[type="date"], textarea, select{
     width:100%;
     background:var(--field);
     border:1px solid var(--field-line);
     color:var(--paper);
-    padding:9px 10px;
+    padding:11px 10px;
     border-radius:4px;
-    font-size:14px;
+    font-size:16px; /* prevents iOS auto-zoom on focus */
     font-family:inherit;
   }
-  textarea{resize:vertical; min-height:50px;}
+  textarea{resize:vertical; min-height:52px;}
   input[type="text"]:focus, input[type="date"]:focus, textarea:focus{
     outline:none;
     border-color:var(--press);
@@ -130,52 +143,58 @@
     display:flex;
     align-items:center;
     gap:8px;
+    flex-wrap:wrap;
   }
   .file-btn{
     display:inline-block;
     background:var(--field);
     border:1px solid var(--field-line);
     color:var(--paper);
-    padding:8px 12px;
+    padding:11px 12px;
     border-radius:4px;
-    font-size:13px;
+    font-size:13.5px;
+    line-height:1.3;
     cursor:pointer;
-    flex:1;
+    flex:1 1 160px;
     text-align:center;
   }
   .file-btn:hover{border-color:var(--press);}
   input[type="file"]{display:none;}
   .thumb{
-    width:34px;height:34px;
+    width:38px;height:38px;
     border-radius:4px;
     object-fit:cover;
     border:1px solid var(--field-line);
     display:none;
     background:#000;
+    flex-shrink:0;
   }
   .clear-x{
     background:none;
     border:none;
     color:var(--muted);
     cursor:pointer;
-    font-size:16px;
-    padding:2px 6px;
+    font-size:18px;
+    padding:6px 8px;
     display:none;
+    flex-shrink:0;
   }
   .clear-x:hover{color:var(--press);}
   .toggle-row{
     display:flex;
     gap:8px;
+    flex-wrap:wrap;
   }
   .toggle-row button{
-    flex:1;
-    padding:10px 8px;
+    flex:1 1 120px;
+    padding:12px 8px;
     background:var(--field);
     border:1px solid var(--field-line);
     color:var(--muted);
     border-radius:4px;
     cursor:pointer;
-    font-size:13px;
+    font-size:13.5px;
+    line-height:1.3;
     font-weight:600;
   }
   .toggle-row button.active{
@@ -191,10 +210,10 @@
   }
   .action-btn{
     width:100%;
-    padding:12px;
+    padding:14px;
     border-radius:4px;
     border:none;
-    font-size:14px;
+    font-size:14.5px;
     font-weight:700;
     cursor:pointer;
     margin-top:10px;
@@ -209,27 +228,20 @@
   .btn-danger:hover{color:var(--press); border-color:var(--press);}
   .status-msg{
     font-size:12px;
+    line-height:1.5;
     color:#7fbf7f;
     margin-top:10px;
     min-height:14px;
   }
   .status-msg.warn{ color:var(--press); }
 
-  /* Preview stage */
-  .stage-wrap{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:40px;
-    background:
-      repeating-conic-gradient(#20242c 0% 25%, #1a1e25 0% 50%) 50% / 24px 24px;
-  }
+  /* ---------- Preview card (mobile-first, fluid width) ---------- */
   #card{
     position:relative;
-    width:560px;
+    width:min(440px, 92vw);
     background:#000;
     overflow:hidden;
-    box-shadow:0 30px 60px rgba(0,0,0,0.55);
+    box-shadow:0 20px 44px rgba(0,0,0,0.5);
     font-family:Georgia, 'Times New Roman', serif;
   }
   #card.lang-ta{ font-family:'Noto Serif Tamil', Georgia, serif; }
@@ -250,11 +262,11 @@
     justify-content:center;
     color:#555;
     font-family:'Helvetica Neue', Arial, sans-serif;
-    font-size:13px;
-    letter-spacing:1px;
+    font-size:clamp(10px,3vw,13px);
+    letter-spacing:0.5px;
     text-transform:uppercase;
     text-align:center;
-    padding:20px;
+    padding:16px;
   }
 
   .content-zone{
@@ -262,7 +274,7 @@
     left:0; right:0;
     bottom:0;
     z-index:2;
-    padding:24px 26px 26px;
+    padding:5.5% 6% 6%;
     background:linear-gradient(to top, rgba(0,0,0,0.82) 10%, rgba(0,0,0,0.0) 100%);
     color:#fff;
   }
@@ -271,37 +283,37 @@
   }
   .card-meta{
     font-family:'Helvetica Neue', Arial, sans-serif;
-    font-size:11px;
-    letter-spacing:2px;
+    font-size:clamp(9px,2.6vw,11px);
+    letter-spacing:1.5px;
     text-transform:uppercase;
     color:var(--press);
     font-weight:700;
-    margin-bottom:8px;
+    margin-bottom:6px;
   }
   .card-title{
-    font-size:28px;
-    line-height:1.18;
+    font-size:clamp(16px,5vw,26px);
+    line-height:1.2;
     font-weight:700;
     margin:0;
     text-shadow:0 2px 10px rgba(0,0,0,0.4);
   }
   .card-subtitle{
     font-family:'Helvetica Neue', Arial, sans-serif;
-    font-size:14px;
+    font-size:clamp(11px,3vw,14px);
     line-height:1.5;
     font-weight:400;
     color:#e6e3da;
-    margin:10px 0 0 0;
+    margin:8px 0 0 0;
     display:none;
   }
   #card.lang-ta .card-subtitle{ font-family:'Noto Sans Tamil', 'Helvetica Neue', Arial, sans-serif; }
-  #card.lang-ta .card-meta{ font-family:'Noto Sans Tamil', 'Helvetica Neue', Arial, sans-serif; letter-spacing:0.5px; }
+  #card.lang-ta .card-meta{ font-family:'Noto Sans Tamil', 'Helvetica Neue', Arial, sans-serif; letter-spacing:0.4px; }
   .card-logo{
     position:absolute;
-    top:20px; left:20px;
+    top:4%; left:4%;
     z-index:4;
-    max-width:110px;
-    max-height:48px;
+    max-width:22%;
+    max-height:9%;
     object-fit:contain;
     display:none;
     filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5));
@@ -323,11 +335,11 @@
   }
   #card.ratio-portrait .card-footer{display:flex;}
   .footer-text-display{
-    font-size:11px;
-    letter-spacing:1px;
+    font-size:clamp(9px,2.4vw,11px);
+    letter-spacing:0.5px;
     text-transform:uppercase;
     text-align:center;
-    padding:0 20px;
+    padding:0 4%;
     width:100%;
   }
   .footer-image-display{
@@ -349,13 +361,49 @@
     align-items:center;
     justify-content:center;
     text-align:center;
-    font-size:11px;
-    letter-spacing:0.5px;
+    font-size:clamp(8px,2.2vw,11px);
+    letter-spacing:0.3px;
     color:#9a9284;
+    padding:0 6%;
     background:
       repeating-linear-gradient(45deg, #eae6db, #eae6db 8px, #f4f2ec 8px, #f4f2ec 16px);
     border:1.5px dashed #c9c2b2;
     box-sizing:border-box;
+  }
+
+  /* ---------- Tablet and up ---------- */
+  @media (min-width:641px){
+    .topbar{ flex-direction:row; align-items:center; justify-content:space-between; padding:20px 28px; }
+    .topbar-brand{flex-wrap:nowrap;}
+    .topbar h1{font-size:25px;}
+    .lang-switch{width:auto;}
+    .lang-hint{width:auto; max-width:220px;}
+    .controls{padding:26px;}
+    #card{width:min(480px, 78vw);}
+  }
+
+  /* ---------- Desktop: side-by-side layout ---------- */
+  @media (min-width:901px){
+    .layout{
+      flex-direction:row;
+      min-height:calc(100vh - 77px);
+    }
+    .controls{
+      order:1;
+      flex:0 0 380px;
+      max-width:380px;
+      overflow-y:auto;
+      height:calc(100vh - 77px);
+      border-bottom:none;
+      border-right:1px solid var(--panel-line);
+      padding:28px;
+    }
+    .stage-wrap{
+      order:2;
+      flex:1;
+      padding:40px;
+    }
+    #card{width:560px;}
   }
 
   @media print{
@@ -375,15 +423,16 @@
 
   <div class="topbar">
     <div class="topbar-brand">
-      <h1 id="brandTitle">Dispatch<span>.</span></h1>
-      <small id="brandSub">News Card Generator</small>
+      <h1>Dispatch<span>.</span></h1>
+      <small>News Card Generator / செய்தி அட்டை உருவாக்கி</small>
     </div>
     <div class="lang-switch">
-      <label for="langSelect" id="langLabel">Language</label>
+      <label for="langSelect">Language / மொழி</label>
       <select id="langSelect">
         <option value="en">English</option>
         <option value="ta">தமிழ் (Tamil)</option>
       </select>
+      <div class="lang-hint">Sets card date format &amp; example text / அட்டையின் தேதி வடிவமைப்பு மற்றும் மாதிரி உரையை அமைக்கிறது</div>
     </div>
   </div>
 
@@ -392,22 +441,22 @@
     <div class="controls">
 
       <div class="group">
-        <h2 id="overlayGroup">Overlay Frame</h2>
-        <label id="overlayLabel">PNG overlay (transparent center)</label>
+        <h2>Overlay Frame / ஓவர்லே சட்டகம்</h2>
+        <label>Upload PNG Overlay (transparent center) / PNG ஓவர்லே பதிவேற்று (வெளிப்படையான மையப்பகுதி)</label>
         <div class="file-row">
-          <label class="file-btn" for="overlayInput" id="chooseOverlayBtn">Choose PNG…</label>
+          <label class="file-btn" for="overlayInput">Choose PNG… / PNG தேர்ந்தெடு…</label>
           <input type="file" id="overlayInput" accept="image/png">
           <img id="overlayThumb" class="thumb">
           <button class="clear-x" id="clearOverlay" title="Remove overlay">✕</button>
         </div>
-        <div class="hint" id="overlayHint">Upload a PNG with a transparent window where the news photo should show through.</div>
+        <div class="hint">Upload a PNG with a transparent window where the news photo should show through. / செய்தி புகைப்படம் தெரியும்படி வெளிப்படையான பகுதியுடன் கூடிய PNG படத்தைப் பதிவேற்றவும்.</div>
       </div>
 
       <div class="group">
-        <h2 id="imageGroup">News Image</h2>
-        <label id="imageLabel">Background photo</label>
+        <h2>News Image / செய்தி படம்</h2>
+        <label>Background Photo / பின்னணி புகைப்படம்</label>
         <div class="file-row">
-          <label class="file-btn" for="imageInput" id="chooseImageBtn">Choose image…</label>
+          <label class="file-btn" for="imageInput">Choose Image… / படத்தைத் தேர்ந்தெடு…</label>
           <input type="file" id="imageInput" accept="image/*">
           <img id="imageThumb" class="thumb">
           <button class="clear-x" id="clearImage" title="Remove image">✕</button>
@@ -415,25 +464,25 @@
       </div>
 
       <div class="group">
-        <h2 id="contentGroup">Headline &amp; Details</h2>
-        <label id="titleLabel">Title *</label>
-        <textarea id="titleInput" placeholder="Enter the headline…"></textarea>
+        <h2>Headline &amp; Details / தலைப்பு &amp; விவரங்கள்</h2>
+        <label>Title * / தலைப்பு *</label>
+        <textarea id="titleInput" placeholder="Enter the headline… / தலைப்பை உள்ளிடவும்…"></textarea>
 
-        <label id="subtitleLabel">Subtitle / Short content (optional)</label>
-        <textarea id="subtitleInput" placeholder="Add a short summary…"></textarea>
+        <label>Subtitle / Short Content (optional) / துணைத்தலைப்பு / சுருக்கம் (விருப்பத்தேர்வு)</label>
+        <textarea id="subtitleInput" placeholder="Add a short summary… / சுருக்கத்தைச் சேர்க்கவும்…"></textarea>
 
-        <label id="locationLabel">Location (City / Region)</label>
-        <input type="text" id="locationInput" placeholder="e.g. Chennai">
+        <label>Location (City / Region) / இடம் (நகரம் / பகுதி)</label>
+        <input type="text" id="locationInput" placeholder="e.g. Chennai / எ.கா. சென்னை">
 
-        <label id="dateLabel">Date</label>
+        <label>Date / தேதி</label>
         <input type="date" id="dateInput">
       </div>
 
       <div class="group">
-        <h2 id="logoGroup">Logo</h2>
-        <label id="logoLabel">Publication logo</label>
+        <h2>Logo / லோகோ</h2>
+        <label>Upload Logo / லோகோ அப்லோட்</label>
         <div class="file-row">
-          <label class="file-btn" for="logoInput" id="chooseLogoBtn">Choose logo…</label>
+          <label class="file-btn" for="logoInput">Choose Logo… / லோகோவைத் தேர்ந்தெடு…</label>
           <input type="file" id="logoInput" accept="image/*">
           <img id="logoThumb" class="thumb">
           <button class="clear-x" id="clearLogo" title="Remove logo">✕</button>
@@ -441,51 +490,51 @@
       </div>
 
       <div class="group">
-        <h2 id="layoutGroup">Layout</h2>
-        <label id="ratioLabel">Aspect ratio</label>
+        <h2>Layout / தளவமைப்பு</h2>
+        <label>Aspect Ratio / விகிதம்</label>
         <div class="toggle-row">
-          <button id="ratioSquareBtn" class="active" data-ratio="square">1:1 Square</button>
-          <button id="ratioPortraitBtn" data-ratio="portrait">4:5 Portrait</button>
+          <button id="ratioSquareBtn" class="active" data-ratio="square">1:1 Square / சதுரம்</button>
+          <button id="ratioPortraitBtn" data-ratio="portrait">4:5 Portrait / நிலைக்காட்சி</button>
         </div>
-        <div class="hint" id="ratioHint">4:5 reserves a footer band at the bottom for ads or sponsor content.</div>
+        <div class="hint">4:5 reserves a footer band at the bottom for ads or sponsor content. / 4:5 விகிதத்தில் விளம்பரம் அல்லது ஸ்பான்சர் தகவலுக்கான அடிக்குறிப்புப் பகுதி இடம்பெறும்.</div>
       </div>
 
       <div class="group">
-        <h2 id="sponsorGroup">Sponsor / Advertisement (4:5 only)</h2>
-        <label id="adTypeLabel">Ad type</label>
+        <h2>Sponsor / Advertisement (4:5 only) / ஸ்பான்சர் / விளம்பரம் (4:5 மட்டும்)</h2>
+        <label>Ad Type / விளம்பர வகை</label>
         <div class="toggle-row">
-          <button id="adTypeTextBtn" class="active" data-adtype="text">Text Ad</button>
-          <button id="adTypeImageBtn" data-adtype="image">Image Ad</button>
+          <button id="adTypeTextBtn" class="active" data-adtype="text">Text Ad / உரை விளம்பரம்</button>
+          <button id="adTypeImageBtn" data-adtype="image">Image Ad / பட விளம்பரம்</button>
         </div>
 
         <div id="footerTextWrap">
-          <label id="footerTextLabel">Footer text (ad / sponsor)</label>
-          <input type="text" id="footerInput" placeholder="Sponsored by…">
+          <label>Footer Text (ad / sponsor) / அடிக்குறிப்பு உரை (விளம்பரம் / ஸ்பான்சர்)</label>
+          <input type="text" id="footerInput" placeholder="Sponsored by… / வழங்குபவர்…">
         </div>
 
         <div id="footerImageWrap" style="display:none;">
-          <label id="adImageLabel">Ad creative image</label>
+          <label>Ad Creative Image / விளம்பரப் படம்</label>
           <div class="file-row">
-            <label class="file-btn" for="adImageInput" id="chooseAdImageBtn">Choose image…</label>
+            <label class="file-btn" for="adImageInput">Choose Image… / படத்தைத் தேர்ந்தெடு…</label>
             <input type="file" id="adImageInput" accept="image/*">
             <img id="adImageThumb" class="thumb">
             <button class="clear-x" id="clearAdImage" title="Remove ad image">✕</button>
           </div>
-          <div class="hint" id="adSizeHint">Recommended Ad Size: 1080 × 216 px</div>
+          <div class="hint">Recommended Ad Size: 1080 × 216 px / பரிந்துரைக்கப்பட்ட அளவு: 1080 × 216 px</div>
         </div>
       </div>
 
       <div class="group">
-        <h2 id="storageGroup">Storage</h2>
-        <button class="action-btn btn-save" id="saveBtn">Save to browser storage</button>
-        <button class="action-btn btn-danger" id="clearStorageBtn">Clear saved data</button>
+        <h2>Storage / சேமிப்பு</h2>
+        <button class="action-btn btn-save" id="saveBtn">Save to Browser Storage / உலாவி சேமிப்பில் சேமி</button>
+        <button class="action-btn btn-danger" id="clearStorageBtn">Clear Saved Data / சேமித்த தரவை அழி</button>
         <div class="status-msg" id="statusMsg"></div>
       </div>
 
       <div class="group">
-        <h2 id="exportGroup">Export</h2>
-        <button class="action-btn btn-print" id="printBtn">Print / Save as PDF</button>
-        <button class="action-btn btn-image" id="imageBtn">Save as Image (PNG)</button>
+        <h2>Export / ஏற்றுமதி</h2>
+        <button class="action-btn btn-print" id="printBtn">Print / Save as PDF / அச்சிடு / PDF ஆக சேமி</button>
+        <button class="action-btn btn-image" id="imageBtn">Save as Image (PNG) / படமாக சேமி</button>
       </div>
 
     </div>
@@ -493,7 +542,7 @@
     <!-- PREVIEW -->
     <div class="stage-wrap">
       <div id="card" class="ratio-square">
-        <div id="layer-image-placeholder" class="layer">No image uploaded</div>
+        <div id="layer-image-placeholder" class="layer">No image uploaded / படம் பதிவேற்றப்படவில்லை</div>
         <img id="layer-image" class="layer" style="display:none;">
         <img id="layer-overlay" class="layer" style="display:none;">
         <img id="cardLogo" class="card-logo">
@@ -506,7 +555,7 @@
           <div class="footer-text-display" id="footerTextDisplay">Sponsored content</div>
           <div class="footer-image-display" id="footerImageDisplay">
             <img id="footerAdImage">
-            <div class="footer-ad-placeholder" id="footerAdPlaceholder">Recommended Ad Size: 1080 × 216 px</div>
+            <div class="footer-ad-placeholder" id="footerAdPlaceholder">Recommended Ad Size: 1080 × 216 px / பரிந்துரைக்கப்பட்ட அளவு: 1080 × 216 px</div>
           </div>
         </div>
       </div>
@@ -518,62 +567,33 @@
 (function(){
   const $ = (id) => document.getElementById(id);
 
-  // ---------- Translations ----------
-  const T = {
+  // Only content that genuinely differs by language: card defaults & date formatting.
+  // All interface chrome is permanently bilingual (English / Tamil) in the markup itself.
+  const CONTENT_LANG = {
     en: {
-      brandSub:"News Card Generator", langLabel:"Language",
-      overlayGroup:"Overlay Frame", overlayLabel:"PNG overlay (transparent center)", chooseOverlayBtn:"Choose PNG…",
-      overlayHint:"Upload a PNG with a transparent window where the news photo should show through.",
-      imageGroup:"News Image", imageLabel:"Background photo", chooseImageBtn:"Choose image…",
-      contentGroup:"Headline & Details",
-      titleLabel:"Title *", titlePlaceholder:"Enter the headline…", titleDefault:"Local Council Approves New Waterfront Plan",
-      subtitleLabel:"Subtitle / Short content (optional)", subtitlePlaceholder:"Add a short summary…",
-      locationLabel:"Location (City / Region)", locationPlaceholder:"e.g. Chennai",
-      dateLabel:"Date",
-      logoGroup:"Logo", logoLabel:"Publication logo", chooseLogoBtn:"Choose logo…",
-      layoutGroup:"Layout", ratioLabel:"Aspect ratio", ratioSquare:"1:1 Square", ratioPortrait:"4:5 Portrait",
-      ratioHint:"4:5 reserves a footer band at the bottom for ads or sponsor content.",
-      sponsorGroup:"Sponsor / Advertisement (4:5 only)", adTypeLabel:"Ad type", adTypeText:"Text Ad", adTypeImage:"Image Ad",
-      footerTextLabel:"Footer text (ad / sponsor)", footerPlaceholder:"Sponsored by…", footerDefault:"Sponsored content",
-      adImageLabel:"Ad creative image", chooseAdImageBtn:"Choose image…", adSizeHint:"Recommended Ad Size: 1080 × 216 px",
-      footerAdPlaceholder:"Recommended Ad Size: 1080 × 216 px",
-      storageGroup:"Storage", saveBtn:"Save to browser storage", clearStorageBtn:"Clear saved data",
-      savedMsg:"Saved to browser storage.", clearedMsg:"Saved data cleared.", loadedMsg:"Loaded saved card.",
-      saveErrMsg:"Could not save — storage may be full.",
-      exportGroup:"Export", printBtn:"Print / Save as PDF", imageBtn:"Save as Image (PNG)",
-      renderingMsg:"Rendering image…", downloadedMsg:"Image downloaded.", renderErrMsg:"Could not render image.",
-      noImagePlaceholder:"No image uploaded", requiredWarn:"Please add a title before exporting.",
+      titleDefault:"Local Council Approves New Waterfront Plan",
+      footerDefault:"Sponsored content",
       dateLocale:"en-US"
     },
     ta: {
-      brandSub:"செய்தி அட்டை உருவாக்கி", langLabel:"மொழி",
-      overlayGroup:"ஓவர்லே சட்டகம்", overlayLabel:"PNG ஓவர்லே (வெளிப்படையான மையப்பகுதி)", chooseOverlayBtn:"PNG தேர்ந்தெடு…",
-      overlayHint:"செய்தி புகைப்படம் தெரியும்படி, வெளிப்படையான பகுதியுடன் கூடிய PNG படத்தைப் பதிவேற்றவும்.",
-      imageGroup:"செய்தி படம்", imageLabel:"பின்னணி புகைப்படம்", chooseImageBtn:"படத்தைத் தேர்ந்தெடு…",
-      contentGroup:"தலைப்பு & விவரங்கள்",
-      titleLabel:"தலைப்பு *", titlePlaceholder:"தலைப்பை உள்ளிடவும்…", titleDefault:"புதிய கரையோரத் திட்டத்திற்கு உள்ளூர் கவுன்சில் ஒப்புதல்",
-      subtitleLabel:"துணைத்தலைப்பு / சுருக்கம் (விருப்பத்தேர்வு)", subtitlePlaceholder:"ஒரு சிறு சுருக்கத்தைச் சேர்க்கவும்…",
-      locationLabel:"இடம் (நகரம் / பகுதி)", locationPlaceholder:"எ.கா. சென்னை",
-      dateLabel:"தேதி",
-      logoGroup:"லோகோ", logoLabel:"பதிப்பக லோகோ", chooseLogoBtn:"லோகோவைத் தேர்ந்தெடு…",
-      layoutGroup:"தளவமைப்பு", ratioLabel:"விகிதம்", ratioSquare:"1:1 சதுரம்", ratioPortrait:"4:5 நிலைக்காட்சி",
-      ratioHint:"4:5 விகிதத்தில், விளம்பரம் அல்லது ஸ்பான்சர் தகவலுக்கான அடிக்குறிப்புப் பகுதி இடம்பெறும்.",
-      sponsorGroup:"ஸ்பான்சர் / விளம்பரம் (4:5 மட்டும்)", adTypeLabel:"விளம்பர வகை", adTypeText:"உரை விளம்பரம்", adTypeImage:"பட விளம்பரம்",
-      footerTextLabel:"அடிக்குறிப்பு உரை (விளம்பரம் / ஸ்பான்சர்)", footerPlaceholder:"வழங்குபவர்…", footerDefault:"ஸ்பான்சர் செய்யப்பட்ட உள்ளடக்கம்",
-      adImageLabel:"விளம்பரப் படம்", chooseAdImageBtn:"படத்தைத் தேர்ந்தெடு…", adSizeHint:"பரிந்துரைக்கப்பட்ட அளவு: 1080 × 216 px",
-      footerAdPlaceholder:"பரிந்துரைக்கப்பட்ட அளவு: 1080 × 216 px",
-      storageGroup:"சேமிப்பு", saveBtn:"உலாவி சேமிப்பில் சேமிக்கவும்", clearStorageBtn:"சேமித்த தரவை அழிக்கவும்",
-      savedMsg:"உலாவி சேமிப்பில் சேமிக்கப்பட்டது.", clearedMsg:"சேமித்த தரவு அழிக்கப்பட்டது.", loadedMsg:"சேமித்த அட்டை ஏற்றப்பட்டது.",
-      saveErrMsg:"சேமிக்க முடியவில்லை — சேமிப்பகம் நிறைந்திருக்கலாம்.",
-      exportGroup:"ஏற்றுமதி", printBtn:"அச்சிடு / PDF ஆக சேமி", imageBtn:"படமாக சேமி (PNG)",
-      renderingMsg:"படம் உருவாக்கப்படுகிறது…", downloadedMsg:"படம் பதிவிறக்கப்பட்டது.", renderErrMsg:"படத்தை உருவாக்க முடியவில்லை.",
-      noImagePlaceholder:"படம் பதிவேற்றப்படவில்லை", requiredWarn:"ஏற்றுமதி செய்வதற்கு முன் தலைப்பைச் சேர்க்கவும்.",
+      titleDefault:"புதிய கரையோரத் திட்டத்திற்கு உள்ளூர் கவுன்சில் ஒப்புதல்",
+      footerDefault:"ஸ்பான்சர் செய்யப்பட்ட உள்ளடக்கம்",
       dateLocale:"ta-IN"
     }
   };
 
+  const MSG = {
+    saved:"Saved to browser storage. / உலாவி சேமிப்பில் சேமிக்கப்பட்டது.",
+    cleared:"Saved data cleared. / சேமித்த தரவு அழிக்கப்பட்டது.",
+    saveErr:"Could not save — storage may be full. / சேமிக்க முடியவில்லை — சேமிப்பகம் நிறைந்திருக்கலாம்.",
+    rendering:"Rendering image… / படம் உருவாக்கப்படுகிறது…",
+    downloaded:"Image downloaded. / படம் பதிவிறக்கப்பட்டது.",
+    renderErr:"Could not render image. / படத்தை உருவாக்க முடியவில்லை.",
+    requiredWarn:"Please add a title before exporting. / ஏற்றுமதி செய்வதற்கு முன் தலைப்பைச் சேர்க்கவும்."
+  };
+
   // ---------- Element refs ----------
-  const htmlRoot = $('htmlRoot');
+  const card = $('card');
   const langSelect = $('langSelect');
   const overlayInput = $('overlayInput'), overlayThumb = $('overlayThumb'), clearOverlay = $('clearOverlay');
   const imageInput = $('imageInput'), imageThumb = $('imageThumb'), clearImage = $('clearImage');
@@ -582,18 +602,17 @@
   const footerInput = $('footerInput');
   const footerTextWrap = $('footerTextWrap'), footerImageWrap = $('footerImageWrap');
   const adImageInput = $('adImageInput'), adImageThumb = $('adImageThumb'), clearAdImage = $('clearAdImage');
-  const card = $('card');
   const layerImage = $('layer-image'), layerImagePlaceholder = $('layer-image-placeholder');
   const layerOverlay = $('layer-overlay'), cardLogo = $('cardLogo');
   const cardTitle = $('cardTitle'), cardSubtitle = $('cardSubtitle'), cardMeta = $('cardMeta');
-  const cardFooter = $('cardFooter'), footerTextDisplay = $('footerTextDisplay'), footerImageDisplay = $('footerImageDisplay');
+  const footerTextDisplay = $('footerTextDisplay'), footerImageDisplay = $('footerImageDisplay');
   const footerAdImage = $('footerAdImage'), footerAdPlaceholder = $('footerAdPlaceholder');
   const ratioSquareBtn = $('ratioSquareBtn'), ratioPortraitBtn = $('ratioPortraitBtn');
   const adTypeTextBtn = $('adTypeTextBtn'), adTypeImageBtn = $('adTypeImageBtn');
   const saveBtn = $('saveBtn'), clearStorageBtn = $('clearStorageBtn'), statusMsg = $('statusMsg');
   const printBtn = $('printBtn'), imageBtn = $('imageBtn');
 
-  const STORAGE_KEY = 'dispatch-news-card-v2';
+  const STORAGE_KEY = 'dispatch-news-card-v3';
   const EXPORT_WIDTH = 1080; // reference export resolution in px
 
   let state = {
@@ -613,71 +632,23 @@
   function setStatus(msg, isWarn){
     statusMsg.textContent = msg;
     statusMsg.classList.toggle('warn', !!isWarn);
-    if(msg) setTimeout(() => { if(statusMsg.textContent === msg) statusMsg.textContent=''; }, 2800);
+    if(msg) setTimeout(() => { if(statusMsg.textContent === msg) statusMsg.textContent=''; }, 3200);
   }
 
-  function t(){ return T[state.lang]; }
-
-  // ---------- language ----------
+  // ---------- language (content-only) ----------
   function applyLanguage(){
-    const dict = t();
-    document.body.classList.toggle('lang-ta', state.lang === 'ta');
+    const dict = CONTENT_LANG[state.lang];
+    const other = state.lang === 'en' ? 'ta' : 'en';
     card.classList.toggle('lang-ta', state.lang === 'ta');
-    htmlRoot.lang = state.lang;
 
-    $('brandSub').textContent = dict.brandSub;
-    $('langLabel').textContent = dict.langLabel;
-    $('overlayGroup').textContent = dict.overlayGroup;
-    $('overlayLabel').textContent = dict.overlayLabel;
-    $('chooseOverlayBtn').textContent = dict.chooseOverlayBtn;
-    $('overlayHint').textContent = dict.overlayHint;
-    $('imageGroup').textContent = dict.imageGroup;
-    $('imageLabel').textContent = dict.imageLabel;
-    $('chooseImageBtn').textContent = dict.chooseImageBtn;
-    $('contentGroup').textContent = dict.contentGroup;
-    $('titleLabel').textContent = dict.titleLabel;
-    titleInput.placeholder = dict.titlePlaceholder;
-    $('subtitleLabel').textContent = dict.subtitleLabel;
-    subtitleInput.placeholder = dict.subtitlePlaceholder;
-    $('locationLabel').textContent = dict.locationLabel;
-    locationInput.placeholder = dict.locationPlaceholder;
-    $('dateLabel').textContent = dict.dateLabel;
-    $('logoGroup').textContent = dict.logoGroup;
-    $('logoLabel').textContent = dict.logoLabel;
-    $('chooseLogoBtn').textContent = dict.chooseLogoBtn;
-    $('layoutGroup').textContent = dict.layoutGroup;
-    $('ratioLabel').textContent = dict.ratioLabel;
-    ratioSquareBtn.textContent = dict.ratioSquare;
-    ratioPortraitBtn.textContent = dict.ratioPortrait;
-    $('ratioHint').textContent = dict.ratioHint;
-    $('sponsorGroup').textContent = dict.sponsorGroup;
-    $('adTypeLabel').textContent = dict.adTypeLabel;
-    adTypeTextBtn.textContent = dict.adTypeText;
-    adTypeImageBtn.textContent = dict.adTypeImage;
-    $('footerTextLabel').textContent = dict.footerTextLabel;
-    footerInput.placeholder = dict.footerPlaceholder;
-    $('adImageLabel').textContent = dict.adImageLabel;
-    $('chooseAdImageBtn').textContent = dict.chooseAdImageBtn;
-    $('adSizeHint').textContent = dict.adSizeHint;
-    footerAdPlaceholder.textContent = dict.footerAdPlaceholder;
-    $('storageGroup').textContent = dict.storageGroup;
-    saveBtn.textContent = dict.saveBtn;
-    clearStorageBtn.textContent = dict.clearStorageBtn;
-    $('exportGroup').textContent = dict.exportGroup;
-    printBtn.textContent = dict.printBtn;
-    imageBtn.textContent = dict.imageBtn;
-
-    // swap default/placeholder-ish content only if it hasn't been customized
-    const otherLang = state.lang === 'en' ? 'ta' : 'en';
-    if(!titleInput.value.trim() || titleInput.value.trim() === T[otherLang].titleDefault){
+    if(!titleInput.value.trim() || titleInput.value.trim() === CONTENT_LANG[other].titleDefault){
       titleInput.value = dict.titleDefault;
       state.title = dict.titleDefault;
     }
-    if(!footerInput.value.trim() || footerInput.value.trim() === T[otherLang].footerDefault){
+    if(!footerInput.value.trim() || footerInput.value.trim() === CONTENT_LANG[other].footerDefault){
       footerInput.value = dict.footerDefault;
       state.footer = dict.footerDefault;
     }
-
     renderContent();
   }
 
@@ -707,7 +678,6 @@
     } else {
       layerImage.style.display = 'none';
       layerImagePlaceholder.style.display = 'flex';
-      layerImagePlaceholder.textContent = t().noImagePlaceholder;
       imageThumb.style.display = 'none';
       clearImage.style.display = 'none';
     }
@@ -732,7 +702,7 @@
     const d = new Date(iso + 'T00:00:00');
     if(isNaN(d)) return '';
     try{
-      return d.toLocaleDateString(t().dateLocale, { year:'numeric', month:'long', day:'numeric' });
+      return d.toLocaleDateString(CONTENT_LANG[state.lang].dateLocale, { year:'numeric', month:'long', day:'numeric' });
     }catch(e){
       return d.toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric' });
     }
@@ -752,7 +722,7 @@
     const metaParts = [state.location && state.location.trim(), formatDate(state.date)].filter(Boolean);
     cardMeta.textContent = metaParts.join('  ·  ');
 
-    footerTextDisplay.textContent = state.footer || t().footerDefault;
+    footerTextDisplay.textContent = state.footer || CONTENT_LANG[state.lang].footerDefault;
   }
 
   function renderRatio(){
@@ -857,15 +827,15 @@
   saveBtn.addEventListener('click', () => {
     try{
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      setStatus(t().savedMsg);
+      setStatus(MSG.saved);
     }catch(err){
-      setStatus(t().saveErrMsg, true);
+      setStatus(MSG.saveErr, true);
     }
   });
 
   clearStorageBtn.addEventListener('click', () => {
     localStorage.removeItem(STORAGE_KEY);
-    setStatus(t().clearedMsg);
+    setStatus(MSG.cleared);
   });
 
   function loadFromStorage(){
@@ -889,7 +859,7 @@
     if(!state.title || !state.title.trim()){
       titleInput.classList.add('field-error');
       titleInput.focus();
-      setStatus(t().requiredWarn, true);
+      setStatus(MSG.requiredWarn, true);
       return false;
     }
     return true;
@@ -902,15 +872,15 @@
 
   imageBtn.addEventListener('click', () => {
     if(!validateTitle()) return;
-    setStatus(t().renderingMsg);
+    setStatus(MSG.rendering);
     const scale = EXPORT_WIDTH / card.offsetWidth;
     html2canvas(card, { useCORS:true, scale:scale, backgroundColor:null }).then((canvas) => {
       const link = document.createElement('a');
       link.download = 'news-card.png';
       link.href = canvas.toDataURL('image/png');
       link.click();
-      setStatus(t().downloadedMsg);
-    }).catch(() => setStatus(t().renderErrMsg, true));
+      setStatus(MSG.downloaded);
+    }).catch(() => setStatus(MSG.renderErr, true));
   });
 
   // ---------- init ----------
@@ -920,8 +890,8 @@
     state.date = dateInput.value;
   }
   if(!hadSaved){
-    state.title = T[state.lang].titleDefault;
-    state.footer = T[state.lang].footerDefault;
+    state.title = CONTENT_LANG[state.lang].titleDefault;
+    state.footer = CONTENT_LANG[state.lang].footerDefault;
     titleInput.value = state.title;
     footerInput.value = state.footer;
   }
