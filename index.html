@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dispatch — News Card Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Serif+Tamil:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14171c;
+    --paper:#f4f2ec;
+    --panel:#1c2027;
+    --panel-line:#2c313b;
+    --press:#b3311c;
+    --muted:#8b93a1;
+    --field:#242833;
+    --field-line:#3a4050;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    background:var(--ink);
+    color:var(--paper);
+    min-height:100vh;
+  }
+  body.lang-ta{ font-family:'Noto Sans Tamil','Helvetica Neue', Arial, sans-serif; }
+  .topbar{
+    padding:22px 32px;
+    border-bottom:1px solid var(--panel-line);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .topbar-brand{display:flex; align-items:baseline; gap:14px;}
+  .topbar h1{
+    font-family:Georgia, 'Times New Roman', serif;
+    font-size:26px;
+    letter-spacing:0.5px;
+    margin:0;
+  }
+  .topbar h1 span{
+    color:var(--press);
+    font-family:Georgia, serif;
+    font-style:italic;
+  }
+  .topbar small{
+    color:var(--muted);
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+  }
+  .lang-switch{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .lang-switch label{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1.2px;
+    color:var(--muted);
+    margin:0;
+  }
+  .lang-switch select{
+    background:var(--field);
+    border:1px solid var(--field-line);
+    color:var(--paper);
+    padding:8px 10px;
+    border-radius:4px;
+    font-size:13px;
+  }
+  .layout{
+    display:grid;
+    grid-template-columns:380px 1fr;
+    gap:0;
+    min-height:calc(100vh - 76px);
+  }
+  @media (max-width:900px){
+    .layout{grid-template-columns:1fr;}
+  }
+  .controls{
+    background:var(--panel);
+    padding:28px;
+    border-right:1px solid var(--panel-line);
+    overflow-y:auto;
+  }
+  .group{
+    margin-bottom:26px;
+    padding-bottom:26px;
+    border-bottom:1px solid var(--panel-line);
+  }
+  .group:last-child{border-bottom:none;}
+  .group h2{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1.4px;
+    color:var(--press);
+    margin:0 0 14px 0;
+    font-weight:700;
+  }
+  label{
+    display:block;
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:6px;
+    margin-top:14px;
+  }
+  label:first-of-type{margin-top:0;}
+  input[type="text"], input[type="date"], textarea{
+    width:100%;
+    background:var(--field);
+    border:1px solid var(--field-line);
+    color:var(--paper);
+    padding:9px 10px;
+    border-radius:4px;
+    font-size:14px;
+    font-family:inherit;
+  }
+  textarea{resize:vertical; min-height:50px;}
+  input[type="text"]:focus, input[type="date"]:focus, textarea:focus{
+    outline:none;
+    border-color:var(--press);
+  }
+  input.field-error{ border-color:var(--press); box-shadow:0 0 0 1px var(--press); }
+  .file-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .file-btn{
+    display:inline-block;
+    background:var(--field);
+    border:1px solid var(--field-line);
+    color:var(--paper);
+    padding:8px 12px;
+    border-radius:4px;
+    font-size:13px;
+    cursor:pointer;
+    flex:1;
+    text-align:center;
+  }
+  .file-btn:hover{border-color:var(--press);}
+  input[type="file"]{display:none;}
+  .thumb{
+    width:34px;height:34px;
+    border-radius:4px;
+    object-fit:cover;
+    border:1px solid var(--field-line);
+    display:none;
+    background:#000;
+  }
+  .clear-x{
+    background:none;
+    border:none;
+    color:var(--muted);
+    cursor:pointer;
+    font-size:16px;
+    padding:2px 6px;
+    display:none;
+  }
+  .clear-x:hover{color:var(--press);}
+  .toggle-row{
+    display:flex;
+    gap:8px;
+  }
+  .toggle-row button{
+    flex:1;
+    padding:10px 8px;
+    background:var(--field);
+    border:1px solid var(--field-line);
+    color:var(--muted);
+    border-radius:4px;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:600;
+  }
+  .toggle-row button.active{
+    background:var(--press);
+    border-color:var(--press);
+    color:#fff;
+  }
+  .hint{
+    font-size:11px;
+    color:var(--muted);
+    margin-top:6px;
+    line-height:1.5;
+  }
+  .action-btn{
+    width:100%;
+    padding:12px;
+    border-radius:4px;
+    border:none;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    margin-top:10px;
+  }
+  .btn-save{background:#2c313b; color:var(--paper); border:1px solid var(--field-line);}
+  .btn-save:hover{border-color:var(--muted);}
+  .btn-print{background:var(--press); color:#fff;}
+  .btn-print:hover{background:#921f10;}
+  .btn-image{background:var(--paper); color:var(--ink);}
+  .btn-image:hover{background:#e2ded3;}
+  .btn-danger{background:transparent; color:var(--muted); border:1px solid var(--field-line); font-weight:400;}
+  .btn-danger:hover{color:var(--press); border-color:var(--press);}
+  .status-msg{
+    font-size:12px;
+    color:#7fbf7f;
+    margin-top:10px;
+    min-height:14px;
+  }
+  .status-msg.warn{ color:var(--press); }
+
+  /* Preview stage */
+  .stage-wrap{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px;
+    background:
+      repeating-conic-gradient(#20242c 0% 25%, #1a1e25 0% 50%) 50% / 24px 24px;
+  }
+  #card{
+    position:relative;
+    width:560px;
+    background:#000;
+    overflow:hidden;
+    box-shadow:0 30px 60px rgba(0,0,0,0.55);
+    font-family:Georgia, 'Times New Roman', serif;
+  }
+  #card.lang-ta{ font-family:'Noto Serif Tamil', Georgia, serif; }
+  #card.ratio-square{ aspect-ratio: 1 / 1; }
+  #card.ratio-portrait{ aspect-ratio: 4 / 5; }
+
+  .layer{
+    position:absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+  }
+  #layer-image{ object-fit:cover; z-index:1; background:#333; }
+  #layer-overlay{ z-index:3; pointer-events:none; object-fit:fill; }
+  #layer-image-placeholder{
+    z-index:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#555;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:13px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    text-align:center;
+    padding:20px;
+  }
+
+  .content-zone{
+    position:absolute;
+    left:0; right:0;
+    bottom:0;
+    z-index:2;
+    padding:24px 26px 26px;
+    background:linear-gradient(to top, rgba(0,0,0,0.82) 10%, rgba(0,0,0,0.0) 100%);
+    color:#fff;
+  }
+  #card.ratio-portrait .content-zone{
+    bottom:16%; /* leave room for footer band */
+  }
+  .card-meta{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:11px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--press);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .card-title{
+    font-size:28px;
+    line-height:1.18;
+    font-weight:700;
+    margin:0;
+    text-shadow:0 2px 10px rgba(0,0,0,0.4);
+  }
+  .card-subtitle{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:14px;
+    line-height:1.5;
+    font-weight:400;
+    color:#e6e3da;
+    margin:10px 0 0 0;
+    display:none;
+  }
+  #card.lang-ta .card-subtitle{ font-family:'Noto Sans Tamil', 'Helvetica Neue', Arial, sans-serif; }
+  #card.lang-ta .card-meta{ font-family:'Noto Sans Tamil', 'Helvetica Neue', Arial, sans-serif; letter-spacing:0.5px; }
+  .card-logo{
+    position:absolute;
+    top:20px; left:20px;
+    z-index:4;
+    max-width:110px;
+    max-height:48px;
+    object-fit:contain;
+    display:none;
+    filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+  }
+  .card-footer{
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:16%;
+    z-index:2;
+    background:var(--paper);
+    color:var(--ink);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    border-top:3px solid var(--press);
+    overflow:hidden;
+  }
+  #card.ratio-portrait .card-footer{display:flex;}
+  .footer-text-display{
+    font-size:11px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    text-align:center;
+    padding:0 20px;
+    width:100%;
+  }
+  .footer-image-display{
+    position:relative;
+    width:100%;
+    height:100%;
+    display:none;
+  }
+  .footer-image-display img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:none;
+  }
+  .footer-ad-placeholder{
+    position:absolute;
+    top:0; left:0; right:0; bottom:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-size:11px;
+    letter-spacing:0.5px;
+    color:#9a9284;
+    background:
+      repeating-linear-gradient(45deg, #eae6db, #eae6db 8px, #f4f2ec 8px, #f4f2ec 16px);
+    border:1.5px dashed #c9c2b2;
+    box-sizing:border-box;
+  }
+
+  @media print{
+    body *{visibility:hidden;}
+    #card, #card *{visibility:visible;}
+    #card{
+      position:fixed;
+      top:50%; left:50%;
+      transform:translate(-50%,-50%);
+      box-shadow:none;
+      width:80vmin;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-brand">
+      <h1 id="brandTitle">Dispatch<span>.</span></h1>
+      <small id="brandSub">News Card Generator</small>
+    </div>
+    <div class="lang-switch">
+      <label for="langSelect" id="langLabel">Language</label>
+      <select id="langSelect">
+        <option value="en">English</option>
+        <option value="ta">தமிழ் (Tamil)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- CONTROLS -->
+    <div class="controls">
+
+      <div class="group">
+        <h2 id="overlayGroup">Overlay Frame</h2>
+        <label id="overlayLabel">PNG overlay (transparent center)</label>
+        <div class="file-row">
+          <label class="file-btn" for="overlayInput" id="chooseOverlayBtn">Choose PNG…</label>
+          <input type="file" id="overlayInput" accept="image/png">
+          <img id="overlayThumb" class="thumb">
+          <button class="clear-x" id="clearOverlay" title="Remove overlay">✕</button>
+        </div>
+        <div class="hint" id="overlayHint">Upload a PNG with a transparent window where the news photo should show through.</div>
+      </div>
+
+      <div class="group">
+        <h2 id="imageGroup">News Image</h2>
+        <label id="imageLabel">Background photo</label>
+        <div class="file-row">
+          <label class="file-btn" for="imageInput" id="chooseImageBtn">Choose image…</label>
+          <input type="file" id="imageInput" accept="image/*">
+          <img id="imageThumb" class="thumb">
+          <button class="clear-x" id="clearImage" title="Remove image">✕</button>
+        </div>
+      </div>
+
+      <div class="group">
+        <h2 id="contentGroup">Headline &amp; Details</h2>
+        <label id="titleLabel">Title *</label>
+        <textarea id="titleInput" placeholder="Enter the headline…"></textarea>
+
+        <label id="subtitleLabel">Subtitle / Short content (optional)</label>
+        <textarea id="subtitleInput" placeholder="Add a short summary…"></textarea>
+
+        <label id="locationLabel">Location (City / Region)</label>
+        <input type="text" id="locationInput" placeholder="e.g. Chennai">
+
+        <label id="dateLabel">Date</label>
+        <input type="date" id="dateInput">
+      </div>
+
+      <div class="group">
+        <h2 id="logoGroup">Logo</h2>
+        <label id="logoLabel">Publication logo</label>
+        <div class="file-row">
+          <label class="file-btn" for="logoInput" id="chooseLogoBtn">Choose logo…</label>
+          <input type="file" id="logoInput" accept="image/*">
+          <img id="logoThumb" class="thumb">
+          <button class="clear-x" id="clearLogo" title="Remove logo">✕</button>
+        </div>
+      </div>
+
+      <div class="group">
+        <h2 id="layoutGroup">Layout</h2>
+        <label id="ratioLabel">Aspect ratio</label>
+        <div class="toggle-row">
+          <button id="ratioSquareBtn" class="active" data-ratio="square">1:1 Square</button>
+          <button id="ratioPortraitBtn" data-ratio="portrait">4:5 Portrait</button>
+        </div>
+        <div class="hint" id="ratioHint">4:5 reserves a footer band at the bottom for ads or sponsor content.</div>
+      </div>
+
+      <div class="group">
+        <h2 id="sponsorGroup">Sponsor / Advertisement (4:5 only)</h2>
+        <label id="adTypeLabel">Ad type</label>
+        <div class="toggle-row">
+          <button id="adTypeTextBtn" class="active" data-adtype="text">Text Ad</button>
+          <button id="adTypeImageBtn" data-adtype="image">Image Ad</button>
+        </div>
+
+        <div id="footerTextWrap">
+          <label id="footerTextLabel">Footer text (ad / sponsor)</label>
+          <input type="text" id="footerInput" placeholder="Sponsored by…">
+        </div>
+
+        <div id="footerImageWrap" style="display:none;">
+          <label id="adImageLabel">Ad creative image</label>
+          <div class="file-row">
+            <label class="file-btn" for="adImageInput" id="chooseAdImageBtn">Choose image…</label>
+            <input type="file" id="adImageInput" accept="image/*">
+            <img id="adImageThumb" class="thumb">
+            <button class="clear-x" id="clearAdImage" title="Remove ad image">✕</button>
+          </div>
+          <div class="hint" id="adSizeHint">Recommended Ad Size: 1080 × 216 px</div>
+        </div>
+      </div>
+
+      <div class="group">
+        <h2 id="storageGroup">Storage</h2>
+        <button class="action-btn btn-save" id="saveBtn">Save to browser storage</button>
+        <button class="action-btn btn-danger" id="clearStorageBtn">Clear saved data</button>
+        <div class="status-msg" id="statusMsg"></div>
+      </div>
+
+      <div class="group">
+        <h2 id="exportGroup">Export</h2>
+        <button class="action-btn btn-print" id="printBtn">Print / Save as PDF</button>
+        <button class="action-btn btn-image" id="imageBtn">Save as Image (PNG)</button>
+      </div>
+
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="stage-wrap">
+      <div id="card" class="ratio-square">
+        <div id="layer-image-placeholder" class="layer">No image uploaded</div>
+        <img id="layer-image" class="layer" style="display:none;">
+        <img id="layer-overlay" class="layer" style="display:none;">
+        <img id="cardLogo" class="card-logo">
+        <div class="content-zone">
+          <div class="card-meta" id="cardMeta"></div>
+          <h2 class="card-title" id="cardTitle"></h2>
+          <p class="card-subtitle" id="cardSubtitle"></p>
+        </div>
+        <div class="card-footer" id="cardFooter">
+          <div class="footer-text-display" id="footerTextDisplay">Sponsored content</div>
+          <div class="footer-image-display" id="footerImageDisplay">
+            <img id="footerAdImage">
+            <div class="footer-ad-placeholder" id="footerAdPlaceholder">Recommended Ad Size: 1080 × 216 px</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+(function(){
+  const $ = (id) => document.getElementById(id);
+
+  // ---------- Translations ----------
+  const T = {
+    en: {
+      brandSub:"News Card Generator", langLabel:"Language",
+      overlayGroup:"Overlay Frame", overlayLabel:"PNG overlay (transparent center)", chooseOverlayBtn:"Choose PNG…",
+      overlayHint:"Upload a PNG with a transparent window where the news photo should show through.",
+      imageGroup:"News Image", imageLabel:"Background photo", chooseImageBtn:"Choose image…",
+      contentGroup:"Headline & Details",
+      titleLabel:"Title *", titlePlaceholder:"Enter the headline…", titleDefault:"Local Council Approves New Waterfront Plan",
+      subtitleLabel:"Subtitle / Short content (optional)", subtitlePlaceholder:"Add a short summary…",
+      locationLabel:"Location (City / Region)", locationPlaceholder:"e.g. Chennai",
+      dateLabel:"Date",
+      logoGroup:"Logo", logoLabel:"Publication logo", chooseLogoBtn:"Choose logo…",
+      layoutGroup:"Layout", ratioLabel:"Aspect ratio", ratioSquare:"1:1 Square", ratioPortrait:"4:5 Portrait",
+      ratioHint:"4:5 reserves a footer band at the bottom for ads or sponsor content.",
+      sponsorGroup:"Sponsor / Advertisement (4:5 only)", adTypeLabel:"Ad type", adTypeText:"Text Ad", adTypeImage:"Image Ad",
+      footerTextLabel:"Footer text (ad / sponsor)", footerPlaceholder:"Sponsored by…", footerDefault:"Sponsored content",
+      adImageLabel:"Ad creative image", chooseAdImageBtn:"Choose image…", adSizeHint:"Recommended Ad Size: 1080 × 216 px",
+      footerAdPlaceholder:"Recommended Ad Size: 1080 × 216 px",
+      storageGroup:"Storage", saveBtn:"Save to browser storage", clearStorageBtn:"Clear saved data",
+      savedMsg:"Saved to browser storage.", clearedMsg:"Saved data cleared.", loadedMsg:"Loaded saved card.",
+      saveErrMsg:"Could not save — storage may be full.",
+      exportGroup:"Export", printBtn:"Print / Save as PDF", imageBtn:"Save as Image (PNG)",
+      renderingMsg:"Rendering image…", downloadedMsg:"Image downloaded.", renderErrMsg:"Could not render image.",
+      noImagePlaceholder:"No image uploaded", requiredWarn:"Please add a title before exporting.",
+      dateLocale:"en-US"
+    },
+    ta: {
+      brandSub:"செய்தி அட்டை உருவாக்கி", langLabel:"மொழி",
+      overlayGroup:"ஓவர்லே சட்டகம்", overlayLabel:"PNG ஓவர்லே (வெளிப்படையான மையப்பகுதி)", chooseOverlayBtn:"PNG தேர்ந்தெடு…",
+      overlayHint:"செய்தி புகைப்படம் தெரியும்படி, வெளிப்படையான பகுதியுடன் கூடிய PNG படத்தைப் பதிவேற்றவும்.",
+      imageGroup:"செய்தி படம்", imageLabel:"பின்னணி புகைப்படம்", chooseImageBtn:"படத்தைத் தேர்ந்தெடு…",
+      contentGroup:"தலைப்பு & விவரங்கள்",
+      titleLabel:"தலைப்பு *", titlePlaceholder:"தலைப்பை உள்ளிடவும்…", titleDefault:"புதிய கரையோரத் திட்டத்திற்கு உள்ளூர் கவுன்சில் ஒப்புதல்",
+      subtitleLabel:"துணைத்தலைப்பு / சுருக்கம் (விருப்பத்தேர்வு)", subtitlePlaceholder:"ஒரு சிறு சுருக்கத்தைச் சேர்க்கவும்…",
+      locationLabel:"இடம் (நகரம் / பகுதி)", locationPlaceholder:"எ.கா. சென்னை",
+      dateLabel:"தேதி",
+      logoGroup:"லோகோ", logoLabel:"பதிப்பக லோகோ", chooseLogoBtn:"லோகோவைத் தேர்ந்தெடு…",
+      layoutGroup:"தளவமைப்பு", ratioLabel:"விகிதம்", ratioSquare:"1:1 சதுரம்", ratioPortrait:"4:5 நிலைக்காட்சி",
+      ratioHint:"4:5 விகிதத்தில், விளம்பரம் அல்லது ஸ்பான்சர் தகவலுக்கான அடிக்குறிப்புப் பகுதி இடம்பெறும்.",
+      sponsorGroup:"ஸ்பான்சர் / விளம்பரம் (4:5 மட்டும்)", adTypeLabel:"விளம்பர வகை", adTypeText:"உரை விளம்பரம்", adTypeImage:"பட விளம்பரம்",
+      footerTextLabel:"அடிக்குறிப்பு உரை (விளம்பரம் / ஸ்பான்சர்)", footerPlaceholder:"வழங்குபவர்…", footerDefault:"ஸ்பான்சர் செய்யப்பட்ட உள்ளடக்கம்",
+      adImageLabel:"விளம்பரப் படம்", chooseAdImageBtn:"படத்தைத் தேர்ந்தெடு…", adSizeHint:"பரிந்துரைக்கப்பட்ட அளவு: 1080 × 216 px",
+      footerAdPlaceholder:"பரிந்துரைக்கப்பட்ட அளவு: 1080 × 216 px",
+      storageGroup:"சேமிப்பு", saveBtn:"உலாவி சேமிப்பில் சேமிக்கவும்", clearStorageBtn:"சேமித்த தரவை அழிக்கவும்",
+      savedMsg:"உலாவி சேமிப்பில் சேமிக்கப்பட்டது.", clearedMsg:"சேமித்த தரவு அழிக்கப்பட்டது.", loadedMsg:"சேமித்த அட்டை ஏற்றப்பட்டது.",
+      saveErrMsg:"சேமிக்க முடியவில்லை — சேமிப்பகம் நிறைந்திருக்கலாம்.",
+      exportGroup:"ஏற்றுமதி", printBtn:"அச்சிடு / PDF ஆக சேமி", imageBtn:"படமாக சேமி (PNG)",
+      renderingMsg:"படம் உருவாக்கப்படுகிறது…", downloadedMsg:"படம் பதிவிறக்கப்பட்டது.", renderErrMsg:"படத்தை உருவாக்க முடியவில்லை.",
+      noImagePlaceholder:"படம் பதிவேற்றப்படவில்லை", requiredWarn:"ஏற்றுமதி செய்வதற்கு முன் தலைப்பைச் சேர்க்கவும்.",
+      dateLocale:"ta-IN"
+    }
+  };
+
+  // ---------- Element refs ----------
+  const htmlRoot = $('htmlRoot');
+  const langSelect = $('langSelect');
+  const overlayInput = $('overlayInput'), overlayThumb = $('overlayThumb'), clearOverlay = $('clearOverlay');
+  const imageInput = $('imageInput'), imageThumb = $('imageThumb'), clearImage = $('clearImage');
+  const logoInput = $('logoInput'), logoThumb = $('logoThumb'), clearLogo = $('clearLogo');
+  const titleInput = $('titleInput'), subtitleInput = $('subtitleInput'), locationInput = $('locationInput'), dateInput = $('dateInput');
+  const footerInput = $('footerInput');
+  const footerTextWrap = $('footerTextWrap'), footerImageWrap = $('footerImageWrap');
+  const adImageInput = $('adImageInput'), adImageThumb = $('adImageThumb'), clearAdImage = $('clearAdImage');
+  const card = $('card');
+  const layerImage = $('layer-image'), layerImagePlaceholder = $('layer-image-placeholder');
+  const layerOverlay = $('layer-overlay'), cardLogo = $('cardLogo');
+  const cardTitle = $('cardTitle'), cardSubtitle = $('cardSubtitle'), cardMeta = $('cardMeta');
+  const cardFooter = $('cardFooter'), footerTextDisplay = $('footerTextDisplay'), footerImageDisplay = $('footerImageDisplay');
+  const footerAdImage = $('footerAdImage'), footerAdPlaceholder = $('footerAdPlaceholder');
+  const ratioSquareBtn = $('ratioSquareBtn'), ratioPortraitBtn = $('ratioPortraitBtn');
+  const adTypeTextBtn = $('adTypeTextBtn'), adTypeImageBtn = $('adTypeImageBtn');
+  const saveBtn = $('saveBtn'), clearStorageBtn = $('clearStorageBtn'), statusMsg = $('statusMsg');
+  const printBtn = $('printBtn'), imageBtn = $('imageBtn');
+
+  const STORAGE_KEY = 'dispatch-news-card-v2';
+  const EXPORT_WIDTH = 1080; // reference export resolution in px
+
+  let state = {
+    lang:'en',
+    overlay:null, image:null, logo:null, adImage:null,
+    title:'', subtitle:'', location:'', date:'', footer:'',
+    ratio:'square', adType:'text'
+  };
+
+  // ---------- helpers ----------
+  function fileToDataUrl(file, cb){
+    const reader = new FileReader();
+    reader.onload = () => cb(reader.result);
+    reader.readAsDataURL(file);
+  }
+
+  function setStatus(msg, isWarn){
+    statusMsg.textContent = msg;
+    statusMsg.classList.toggle('warn', !!isWarn);
+    if(msg) setTimeout(() => { if(statusMsg.textContent === msg) statusMsg.textContent=''; }, 2800);
+  }
+
+  function t(){ return T[state.lang]; }
+
+  // ---------- language ----------
+  function applyLanguage(){
+    const dict = t();
+    document.body.classList.toggle('lang-ta', state.lang === 'ta');
+    card.classList.toggle('lang-ta', state.lang === 'ta');
+    htmlRoot.lang = state.lang;
+
+    $('brandSub').textContent = dict.brandSub;
+    $('langLabel').textContent = dict.langLabel;
+    $('overlayGroup').textContent = dict.overlayGroup;
+    $('overlayLabel').textContent = dict.overlayLabel;
+    $('chooseOverlayBtn').textContent = dict.chooseOverlayBtn;
+    $('overlayHint').textContent = dict.overlayHint;
+    $('imageGroup').textContent = dict.imageGroup;
+    $('imageLabel').textContent = dict.imageLabel;
+    $('chooseImageBtn').textContent = dict.chooseImageBtn;
+    $('contentGroup').textContent = dict.contentGroup;
+    $('titleLabel').textContent = dict.titleLabel;
+    titleInput.placeholder = dict.titlePlaceholder;
+    $('subtitleLabel').textContent = dict.subtitleLabel;
+    subtitleInput.placeholder = dict.subtitlePlaceholder;
+    $('locationLabel').textContent = dict.locationLabel;
+    locationInput.placeholder = dict.locationPlaceholder;
+    $('dateLabel').textContent = dict.dateLabel;
+    $('logoGroup').textContent = dict.logoGroup;
+    $('logoLabel').textContent = dict.logoLabel;
+    $('chooseLogoBtn').textContent = dict.chooseLogoBtn;
+    $('layoutGroup').textContent = dict.layoutGroup;
+    $('ratioLabel').textContent = dict.ratioLabel;
+    ratioSquareBtn.textContent = dict.ratioSquare;
+    ratioPortraitBtn.textContent = dict.ratioPortrait;
+    $('ratioHint').textContent = dict.ratioHint;
+    $('sponsorGroup').textContent = dict.sponsorGroup;
+    $('adTypeLabel').textContent = dict.adTypeLabel;
+    adTypeTextBtn.textContent = dict.adTypeText;
+    adTypeImageBtn.textContent = dict.adTypeImage;
+    $('footerTextLabel').textContent = dict.footerTextLabel;
+    footerInput.placeholder = dict.footerPlaceholder;
+    $('adImageLabel').textContent = dict.adImageLabel;
+    $('chooseAdImageBtn').textContent = dict.chooseAdImageBtn;
+    $('adSizeHint').textContent = dict.adSizeHint;
+    footerAdPlaceholder.textContent = dict.footerAdPlaceholder;
+    $('storageGroup').textContent = dict.storageGroup;
+    saveBtn.textContent = dict.saveBtn;
+    clearStorageBtn.textContent = dict.clearStorageBtn;
+    $('exportGroup').textContent = dict.exportGroup;
+    printBtn.textContent = dict.printBtn;
+    imageBtn.textContent = dict.imageBtn;
+
+    // swap default/placeholder-ish content only if it hasn't been customized
+    const otherLang = state.lang === 'en' ? 'ta' : 'en';
+    if(!titleInput.value.trim() || titleInput.value.trim() === T[otherLang].titleDefault){
+      titleInput.value = dict.titleDefault;
+      state.title = dict.titleDefault;
+    }
+    if(!footerInput.value.trim() || footerInput.value.trim() === T[otherLang].footerDefault){
+      footerInput.value = dict.footerDefault;
+      state.footer = dict.footerDefault;
+    }
+
+    renderContent();
+  }
+
+  // ---------- render functions ----------
+  function renderOverlay(){
+    if(state.overlay){
+      layerOverlay.src = state.overlay;
+      layerOverlay.style.display = 'block';
+      overlayThumb.src = state.overlay;
+      overlayThumb.style.display = 'inline-block';
+      clearOverlay.style.display = 'inline-block';
+    } else {
+      layerOverlay.style.display = 'none';
+      overlayThumb.style.display = 'none';
+      clearOverlay.style.display = 'none';
+    }
+  }
+
+  function renderImage(){
+    if(state.image){
+      layerImage.src = state.image;
+      layerImage.style.display = 'block';
+      layerImagePlaceholder.style.display = 'none';
+      imageThumb.src = state.image;
+      imageThumb.style.display = 'inline-block';
+      clearImage.style.display = 'inline-block';
+    } else {
+      layerImage.style.display = 'none';
+      layerImagePlaceholder.style.display = 'flex';
+      layerImagePlaceholder.textContent = t().noImagePlaceholder;
+      imageThumb.style.display = 'none';
+      clearImage.style.display = 'none';
+    }
+  }
+
+  function renderLogo(){
+    if(state.logo){
+      cardLogo.src = state.logo;
+      cardLogo.style.display = 'block';
+      logoThumb.src = state.logo;
+      logoThumb.style.display = 'inline-block';
+      clearLogo.style.display = 'inline-block';
+    } else {
+      cardLogo.style.display = 'none';
+      logoThumb.style.display = 'none';
+      clearLogo.style.display = 'none';
+    }
+  }
+
+  function formatDate(iso){
+    if(!iso) return '';
+    const d = new Date(iso + 'T00:00:00');
+    if(isNaN(d)) return '';
+    try{
+      return d.toLocaleDateString(t().dateLocale, { year:'numeric', month:'long', day:'numeric' });
+    }catch(e){
+      return d.toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric' });
+    }
+  }
+
+  function renderContent(){
+    cardTitle.textContent = state.title;
+
+    if(state.subtitle && state.subtitle.trim()){
+      cardSubtitle.textContent = state.subtitle;
+      cardSubtitle.style.display = 'block';
+    } else {
+      cardSubtitle.textContent = '';
+      cardSubtitle.style.display = 'none';
+    }
+
+    const metaParts = [state.location && state.location.trim(), formatDate(state.date)].filter(Boolean);
+    cardMeta.textContent = metaParts.join('  ·  ');
+
+    footerTextDisplay.textContent = state.footer || t().footerDefault;
+  }
+
+  function renderRatio(){
+    if(state.ratio === 'portrait'){
+      card.classList.remove('ratio-square');
+      card.classList.add('ratio-portrait');
+      ratioPortraitBtn.classList.add('active');
+      ratioSquareBtn.classList.remove('active');
+    } else {
+      card.classList.remove('ratio-portrait');
+      card.classList.add('ratio-square');
+      ratioSquareBtn.classList.add('active');
+      ratioPortraitBtn.classList.remove('active');
+    }
+  }
+
+  function renderAdType(){
+    if(state.adType === 'image'){
+      adTypeImageBtn.classList.add('active');
+      adTypeTextBtn.classList.remove('active');
+      footerTextWrap.style.display = 'none';
+      footerImageWrap.style.display = 'block';
+      footerTextDisplay.style.display = 'none';
+      footerImageDisplay.style.display = 'block';
+      if(state.adImage){
+        footerAdImage.src = state.adImage;
+        footerAdImage.style.display = 'block';
+        footerAdPlaceholder.style.display = 'none';
+        adImageThumb.src = state.adImage;
+        adImageThumb.style.display = 'inline-block';
+        clearAdImage.style.display = 'inline-block';
+      } else {
+        footerAdImage.style.display = 'none';
+        footerAdPlaceholder.style.display = 'flex';
+        adImageThumb.style.display = 'none';
+        clearAdImage.style.display = 'none';
+      }
+    } else {
+      adTypeTextBtn.classList.add('active');
+      adTypeImageBtn.classList.remove('active');
+      footerTextWrap.style.display = 'block';
+      footerImageWrap.style.display = 'none';
+      footerTextDisplay.style.display = 'flex';
+      footerImageDisplay.style.display = 'none';
+    }
+  }
+
+  function renderAll(){
+    renderOverlay(); renderImage(); renderLogo(); renderContent(); renderRatio(); renderAdType();
+  }
+
+  // ---------- events: files ----------
+  overlayInput.addEventListener('change', (e) => {
+    const f = e.target.files[0];
+    if(!f) return;
+    fileToDataUrl(f, (url) => { state.overlay = url; renderOverlay(); });
+  });
+  imageInput.addEventListener('change', (e) => {
+    const f = e.target.files[0];
+    if(!f) return;
+    fileToDataUrl(f, (url) => { state.image = url; renderImage(); });
+  });
+  logoInput.addEventListener('change', (e) => {
+    const f = e.target.files[0];
+    if(!f) return;
+    fileToDataUrl(f, (url) => { state.logo = url; renderLogo(); });
+  });
+  adImageInput.addEventListener('change', (e) => {
+    const f = e.target.files[0];
+    if(!f) return;
+    fileToDataUrl(f, (url) => { state.adImage = url; renderAdType(); });
+  });
+
+  clearOverlay.addEventListener('click', () => { state.overlay=null; overlayInput.value=''; renderOverlay(); });
+  clearImage.addEventListener('click', () => { state.image=null; imageInput.value=''; renderImage(); });
+  clearLogo.addEventListener('click', () => { state.logo=null; logoInput.value=''; renderLogo(); });
+  clearAdImage.addEventListener('click', () => { state.adImage=null; adImageInput.value=''; renderAdType(); });
+
+  // ---------- events: text fields ----------
+  titleInput.addEventListener('input', () => {
+    state.title = titleInput.value;
+    titleInput.classList.remove('field-error');
+    renderContent();
+  });
+  subtitleInput.addEventListener('input', () => { state.subtitle = subtitleInput.value; renderContent(); });
+  locationInput.addEventListener('input', () => { state.location = locationInput.value; renderContent(); });
+  dateInput.addEventListener('input', () => { state.date = dateInput.value; renderContent(); });
+  footerInput.addEventListener('input', () => { state.footer = footerInput.value; renderContent(); });
+
+  // ---------- events: toggles ----------
+  ratioSquareBtn.addEventListener('click', () => { state.ratio='square'; renderRatio(); });
+  ratioPortraitBtn.addEventListener('click', () => { state.ratio='portrait'; renderRatio(); });
+  adTypeTextBtn.addEventListener('click', () => { state.adType='text'; renderAdType(); });
+  adTypeImageBtn.addEventListener('click', () => { state.adType='image'; renderAdType(); });
+
+  langSelect.addEventListener('change', () => {
+    state.lang = langSelect.value;
+    applyLanguage();
+  });
+
+  // ---------- storage ----------
+  saveBtn.addEventListener('click', () => {
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      setStatus(t().savedMsg);
+    }catch(err){
+      setStatus(t().saveErrMsg, true);
+    }
+  });
+
+  clearStorageBtn.addEventListener('click', () => {
+    localStorage.removeItem(STORAGE_KEY);
+    setStatus(t().clearedMsg);
+  });
+
+  function loadFromStorage(){
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return false;
+    try{
+      const saved = JSON.parse(raw);
+      state = Object.assign(state, saved);
+      langSelect.value = state.lang || 'en';
+      titleInput.value = state.title || '';
+      subtitleInput.value = state.subtitle || '';
+      locationInput.value = state.location || '';
+      dateInput.value = state.date || '';
+      footerInput.value = state.footer || '';
+      return true;
+    }catch(err){ return false; }
+  }
+
+  // ---------- export ----------
+  function validateTitle(){
+    if(!state.title || !state.title.trim()){
+      titleInput.classList.add('field-error');
+      titleInput.focus();
+      setStatus(t().requiredWarn, true);
+      return false;
+    }
+    return true;
+  }
+
+  printBtn.addEventListener('click', () => {
+    if(!validateTitle()) return;
+    window.print();
+  });
+
+  imageBtn.addEventListener('click', () => {
+    if(!validateTitle()) return;
+    setStatus(t().renderingMsg);
+    const scale = EXPORT_WIDTH / card.offsetWidth;
+    html2canvas(card, { useCORS:true, scale:scale, backgroundColor:null }).then((canvas) => {
+      const link = document.createElement('a');
+      link.download = 'news-card.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      setStatus(t().downloadedMsg);
+    }).catch(() => setStatus(t().renderErrMsg, true));
+  });
+
+  // ---------- init ----------
+  const hadSaved = loadFromStorage();
+  if(!dateInput.value){
+    dateInput.value = new Date().toISOString().slice(0,10);
+    state.date = dateInput.value;
+  }
+  if(!hadSaved){
+    state.title = T[state.lang].titleDefault;
+    state.footer = T[state.lang].footerDefault;
+    titleInput.value = state.title;
+    footerInput.value = state.footer;
+  }
+  langSelect.value = state.lang;
+  applyLanguage();
+  renderAll();
+})();
+</script>
+</body>
+</html>
