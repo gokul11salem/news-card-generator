@@ -235,6 +235,27 @@
   }
   .status-msg.warn{ color:var(--press); }
 
+  /* ---------- Color controls ---------- */
+  .color-row{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .color-field{
+    flex:1 1 140px;
+  }
+  input[type="color"]{
+    width:100%;
+    height:42px;
+    padding:4px;
+    border-radius:4px;
+    border:1px solid var(--field-line);
+    background:var(--field);
+    cursor:pointer;
+  }
+  input[type="color"]::-webkit-color-swatch-wrapper{ padding:0; }
+  input[type="color"]::-webkit-color-swatch{ border-radius:3px; border:none; }
+
   /* ---------- Preview card (mobile-first, fluid width) ---------- */
   #card{
     position:relative;
@@ -281,14 +302,31 @@
   #card.ratio-portrait .content-zone{
     bottom:16%; /* leave room for footer band */
   }
-  .card-meta{
+  .card-meta-row{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:8px;
+  }
+  .location-badge{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:clamp(9px,2.4vw,11px);
+    letter-spacing:0.8px;
+    text-transform:uppercase;
+    font-weight:700;
+    padding:4px 11px;
+    border-radius:999px;
+    display:none;
+    line-height:1.6;
+  }
+  .card-date{
     font-family:'Helvetica Neue', Arial, sans-serif;
     font-size:clamp(9px,2.6vw,11px);
     letter-spacing:1.5px;
     text-transform:uppercase;
-    color:var(--press);
     font-weight:700;
-    margin-bottom:6px;
+    display:none;
   }
   .card-title{
     font-size:clamp(16px,5vw,26px);
@@ -302,12 +340,12 @@
     font-size:clamp(11px,3vw,14px);
     line-height:1.5;
     font-weight:400;
-    color:#e6e3da;
     margin:8px 0 0 0;
     display:none;
   }
-  #card.lang-ta .card-subtitle{ font-family:'Noto Sans Tamil', 'Helvetica Neue', Arial, sans-serif; }
-  #card.lang-ta .card-meta{ font-family:'Noto Sans Tamil', 'Helvetica Neue', Arial, sans-serif; letter-spacing:0.4px; }
+  #card.lang-ta .card-subtitle,
+  #card.lang-ta .card-date,
+  #card.lang-ta .location-badge{ font-family:'Noto Sans Tamil', 'Helvetica Neue', Arial, sans-serif; letter-spacing:0.4px; }
   .card-logo{
     position:absolute;
     top:4%; left:4%;
@@ -479,6 +517,37 @@
       </div>
 
       <div class="group">
+        <h2>Text &amp; Badge Styling / உரை &amp; பேட்ஜ் அலங்காரம்</h2>
+        <div class="color-row">
+          <div class="color-field">
+            <label>Title Color / தலைப்பு நிறம்</label>
+            <input type="color" id="titleColorInput" value="#ffffff">
+          </div>
+          <div class="color-field">
+            <label>Subtitle Color / துணைத்தலைப்பு நிறம்</label>
+            <input type="color" id="subtitleColorInput" value="#e6e3da">
+          </div>
+        </div>
+        <div class="color-row" style="margin-top:14px;">
+          <div class="color-field">
+            <label>Date Color / தேதி நிறம்</label>
+            <input type="color" id="dateColorInput" value="#e2543f">
+          </div>
+        </div>
+        <div class="color-row" style="margin-top:14px;">
+          <div class="color-field">
+            <label>Location Background / இட பேட்ஜ் பின்னணி நிறம்</label>
+            <input type="color" id="locBgColorInput" value="#b3311c">
+          </div>
+          <div class="color-field">
+            <label>Location Text Color / இட பேட்ஜ் உரை நிறம்</label>
+            <input type="color" id="locTextColorInput" value="#ffffff">
+          </div>
+        </div>
+        <div class="hint">Colors apply live to the preview and are saved with your card. / நிறங்கள் நேரடியாக முன்னோட்டத்தில் பயன்படுத்தப்பட்டு, உங்கள் அட்டையுடன் சேமிக்கப்படும்.</div>
+      </div>
+
+      <div class="group">
         <h2>Logo / லோகோ</h2>
         <label>Upload Logo / லோகோ அப்லோட்</label>
         <div class="file-row">
@@ -547,7 +616,10 @@
         <img id="layer-overlay" class="layer" style="display:none;">
         <img id="cardLogo" class="card-logo">
         <div class="content-zone">
-          <div class="card-meta" id="cardMeta"></div>
+          <div class="card-meta-row" id="cardMetaRow">
+            <span class="location-badge" id="locationBadge"></span>
+            <span class="card-date" id="cardDateText"></span>
+          </div>
           <h2 class="card-title" id="cardTitle"></h2>
           <p class="card-subtitle" id="cardSubtitle"></p>
         </div>
@@ -604,22 +676,38 @@
   const adImageInput = $('adImageInput'), adImageThumb = $('adImageThumb'), clearAdImage = $('clearAdImage');
   const layerImage = $('layer-image'), layerImagePlaceholder = $('layer-image-placeholder');
   const layerOverlay = $('layer-overlay'), cardLogo = $('cardLogo');
-  const cardTitle = $('cardTitle'), cardSubtitle = $('cardSubtitle'), cardMeta = $('cardMeta');
+  const cardTitle = $('cardTitle'), cardSubtitle = $('cardSubtitle');
+  const cardMetaRow = $('cardMetaRow'), locationBadge = $('locationBadge'), cardDateText = $('cardDateText');
   const footerTextDisplay = $('footerTextDisplay'), footerImageDisplay = $('footerImageDisplay');
   const footerAdImage = $('footerAdImage'), footerAdPlaceholder = $('footerAdPlaceholder');
   const ratioSquareBtn = $('ratioSquareBtn'), ratioPortraitBtn = $('ratioPortraitBtn');
   const adTypeTextBtn = $('adTypeTextBtn'), adTypeImageBtn = $('adTypeImageBtn');
   const saveBtn = $('saveBtn'), clearStorageBtn = $('clearStorageBtn'), statusMsg = $('statusMsg');
   const printBtn = $('printBtn'), imageBtn = $('imageBtn');
+  const titleColorInput = $('titleColorInput'), subtitleColorInput = $('subtitleColorInput'), dateColorInput = $('dateColorInput');
+  const locBgColorInput = $('locBgColorInput'), locTextColorInput = $('locTextColorInput');
 
-  const STORAGE_KEY = 'dispatch-news-card-v3';
+  const STORAGE_KEY = 'dispatch-news-card-v4';
   const EXPORT_WIDTH = 1080; // reference export resolution in px
+
+  const DEFAULT_COLORS = {
+    titleColor:'#ffffff',
+    subtitleColor:'#e6e3da',
+    dateColor:'#e2543f',
+    locBgColor:'#b3311c',
+    locTextColor:'#ffffff'
+  };
 
   let state = {
     lang:'en',
     overlay:null, image:null, logo:null, adImage:null,
     title:'', subtitle:'', location:'', date:'', footer:'',
-    ratio:'square', adType:'text'
+    ratio:'square', adType:'text',
+    titleColor:DEFAULT_COLORS.titleColor,
+    subtitleColor:DEFAULT_COLORS.subtitleColor,
+    dateColor:DEFAULT_COLORS.dateColor,
+    locBgColor:DEFAULT_COLORS.locBgColor,
+    locTextColor:DEFAULT_COLORS.locTextColor
   };
 
   // ---------- helpers ----------
@@ -710,6 +798,7 @@
 
   function renderContent(){
     cardTitle.textContent = state.title;
+    cardTitle.style.color = state.titleColor;
 
     if(state.subtitle && state.subtitle.trim()){
       cardSubtitle.textContent = state.subtitle;
@@ -718,9 +807,30 @@
       cardSubtitle.textContent = '';
       cardSubtitle.style.display = 'none';
     }
+    cardSubtitle.style.color = state.subtitleColor;
 
-    const metaParts = [state.location && state.location.trim(), formatDate(state.date)].filter(Boolean);
-    cardMeta.textContent = metaParts.join('  ·  ');
+    const locationText = state.location && state.location.trim();
+    if(locationText){
+      locationBadge.textContent = locationText;
+      locationBadge.style.display = 'inline-block';
+    } else {
+      locationBadge.textContent = '';
+      locationBadge.style.display = 'none';
+    }
+    locationBadge.style.background = state.locBgColor;
+    locationBadge.style.color = state.locTextColor;
+
+    const dateText = formatDate(state.date);
+    if(dateText){
+      cardDateText.textContent = dateText;
+      cardDateText.style.display = 'inline-block';
+    } else {
+      cardDateText.textContent = '';
+      cardDateText.style.display = 'none';
+    }
+    cardDateText.style.color = state.dateColor;
+
+    cardMetaRow.style.display = (locationText || dateText) ? 'flex' : 'none';
 
     footerTextDisplay.textContent = state.footer || CONTENT_LANG[state.lang].footerDefault;
   }
@@ -812,6 +922,13 @@
   dateInput.addEventListener('input', () => { state.date = dateInput.value; renderContent(); });
   footerInput.addEventListener('input', () => { state.footer = footerInput.value; renderContent(); });
 
+  // ---------- events: color pickers ----------
+  titleColorInput.addEventListener('input', () => { state.titleColor = titleColorInput.value; renderContent(); });
+  subtitleColorInput.addEventListener('input', () => { state.subtitleColor = subtitleColorInput.value; renderContent(); });
+  dateColorInput.addEventListener('input', () => { state.dateColor = dateColorInput.value; renderContent(); });
+  locBgColorInput.addEventListener('input', () => { state.locBgColor = locBgColorInput.value; renderContent(); });
+  locTextColorInput.addEventListener('input', () => { state.locTextColor = locTextColorInput.value; renderContent(); });
+
   // ---------- events: toggles ----------
   ratioSquareBtn.addEventListener('click', () => { state.ratio='square'; renderRatio(); });
   ratioPortraitBtn.addEventListener('click', () => { state.ratio='portrait'; renderRatio(); });
@@ -850,6 +967,11 @@
       locationInput.value = state.location || '';
       dateInput.value = state.date || '';
       footerInput.value = state.footer || '';
+      titleColorInput.value = state.titleColor || DEFAULT_COLORS.titleColor;
+      subtitleColorInput.value = state.subtitleColor || DEFAULT_COLORS.subtitleColor;
+      dateColorInput.value = state.dateColor || DEFAULT_COLORS.dateColor;
+      locBgColorInput.value = state.locBgColor || DEFAULT_COLORS.locBgColor;
+      locTextColorInput.value = state.locTextColor || DEFAULT_COLORS.locTextColor;
       return true;
     }catch(err){ return false; }
   }
