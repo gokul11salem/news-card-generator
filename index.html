@@ -345,10 +345,11 @@
   }
   #card.lang-ta .card-subtitle,
   #card.lang-ta .card-date,
-  #card.lang-ta .location-badge{ font-family:'Noto Sans Tamil', 'Helvetica Neue', Arial, sans-serif; letter-spacing:0.4px; }
+  #card.lang-ta .location-badge,
+  #card.lang-ta .brand-badge{ font-family:'Noto Sans Tamil', 'Helvetica Neue', Arial, sans-serif; letter-spacing:0.4px; }
   .card-logo{
     position:absolute;
-    top:4%; left:4%;
+    top:4%;
     z-index:4;
     max-width:22%;
     max-height:9%;
@@ -356,6 +357,36 @@
     display:none;
     filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5));
   }
+
+  /* brand / website divider badge */
+  .brand-divider-wrap{
+    position:relative;
+    width:100%;
+    height:16px;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    margin-top:12px;
+  }
+  .brand-divider-line{
+    position:absolute;
+    left:0; right:0; top:50%;
+    height:1px;
+    transform:translateY(-50%);
+  }
+  .brand-badge{
+    position:relative;
+    z-index:1;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:clamp(7px,2vw,9px);
+    font-weight:600;
+    letter-spacing:0.4px;
+    padding:3px 11px;
+    border-radius:999px;
+    white-space:nowrap;
+    line-height:1.5;
+  }
+
   .card-footer{
     position:absolute;
     left:0; right:0; bottom:0;
@@ -517,6 +548,29 @@
       </div>
 
       <div class="group">
+        <h2>Website / Brand Divider Badge / வலைத்தளம் / பிராண்ட் பேட்ஜ்</h2>
+        <label>Website / Brand Text (optional) / வலைத்தளம் / பிராண்ட் உரை (விருப்பத்தேர்வு)</label>
+        <input type="text" id="brandInput" placeholder="e.g. www.ipdtamil.com / எ.கா. www.ipdtamil.com">
+        <div class="color-row" style="margin-top:14px;">
+          <div class="color-field">
+            <label>Badge Background Color / பேட்ஜ் பின்னணி நிறம்</label>
+            <input type="color" id="brandBadgeBgInput" value="#b3311c">
+          </div>
+          <div class="color-field">
+            <label>Badge Text Color / பேட்ஜ் உரை நிறம்</label>
+            <input type="color" id="brandBadgeTextInput" value="#ffffff">
+          </div>
+        </div>
+        <div class="color-row" style="margin-top:14px;">
+          <div class="color-field">
+            <label>Divider Line Color / பிரிப்பான் கோடு நிறம்</label>
+            <input type="color" id="dividerColorInput" value="#9aa0ab">
+          </div>
+        </div>
+        <div class="hint">Shows a thin divider line with a centered badge under the headline text; leave the field empty to hide it completely. / தலைப்பு உரைக்குக் கீழே ஒரு மெல்லிய பிரிப்பான் கோட்டையும் நடுவில் பேட்ஜையும் காட்டும்; காலியாக விட்டால் முழுவதுமாக மறைந்துவிடும்.</div>
+      </div>
+
+      <div class="group">
         <h2>Text &amp; Badge Styling / உரை &amp; பேட்ஜ் அலங்காரம்</h2>
         <div class="color-row">
           <div class="color-field">
@@ -555,6 +609,12 @@
           <input type="file" id="logoInput" accept="image/*">
           <img id="logoThumb" class="thumb">
           <button class="clear-x" id="clearLogo" title="Remove logo">✕</button>
+        </div>
+        <label>Logo Alignment / லோகோ சீரமைப்பு</label>
+        <div class="toggle-row">
+          <button id="logoAlignLeftBtn" class="active" data-align="left">Left / இடது</button>
+          <button id="logoAlignMiddleBtn" data-align="middle">Middle / நடு</button>
+          <button id="logoAlignRightBtn" data-align="right">Right / வலது</button>
         </div>
       </div>
 
@@ -622,6 +682,10 @@
           </div>
           <h2 class="card-title" id="cardTitle"></h2>
           <p class="card-subtitle" id="cardSubtitle"></p>
+          <div class="brand-divider-wrap" id="brandDividerWrap">
+            <div class="brand-divider-line" id="brandDividerLine"></div>
+            <span class="brand-badge" id="brandBadge"></span>
+          </div>
         </div>
         <div class="card-footer" id="cardFooter">
           <div class="footer-text-display" id="footerTextDisplay">Sponsored content</div>
@@ -671,6 +735,7 @@
   const imageInput = $('imageInput'), imageThumb = $('imageThumb'), clearImage = $('clearImage');
   const logoInput = $('logoInput'), logoThumb = $('logoThumb'), clearLogo = $('clearLogo');
   const titleInput = $('titleInput'), subtitleInput = $('subtitleInput'), locationInput = $('locationInput'), dateInput = $('dateInput');
+  const brandInput = $('brandInput');
   const footerInput = $('footerInput');
   const footerTextWrap = $('footerTextWrap'), footerImageWrap = $('footerImageWrap');
   const adImageInput = $('adImageInput'), adImageThumb = $('adImageThumb'), clearAdImage = $('clearAdImage');
@@ -678,16 +743,19 @@
   const layerOverlay = $('layer-overlay'), cardLogo = $('cardLogo');
   const cardTitle = $('cardTitle'), cardSubtitle = $('cardSubtitle');
   const cardMetaRow = $('cardMetaRow'), locationBadge = $('locationBadge'), cardDateText = $('cardDateText');
+  const brandDividerWrap = $('brandDividerWrap'), brandDividerLine = $('brandDividerLine'), brandBadge = $('brandBadge');
   const footerTextDisplay = $('footerTextDisplay'), footerImageDisplay = $('footerImageDisplay');
   const footerAdImage = $('footerAdImage'), footerAdPlaceholder = $('footerAdPlaceholder');
   const ratioSquareBtn = $('ratioSquareBtn'), ratioPortraitBtn = $('ratioPortraitBtn');
   const adTypeTextBtn = $('adTypeTextBtn'), adTypeImageBtn = $('adTypeImageBtn');
+  const logoAlignLeftBtn = $('logoAlignLeftBtn'), logoAlignMiddleBtn = $('logoAlignMiddleBtn'), logoAlignRightBtn = $('logoAlignRightBtn');
   const saveBtn = $('saveBtn'), clearStorageBtn = $('clearStorageBtn'), statusMsg = $('statusMsg');
   const printBtn = $('printBtn'), imageBtn = $('imageBtn');
   const titleColorInput = $('titleColorInput'), subtitleColorInput = $('subtitleColorInput'), dateColorInput = $('dateColorInput');
   const locBgColorInput = $('locBgColorInput'), locTextColorInput = $('locTextColorInput');
+  const brandBadgeBgInput = $('brandBadgeBgInput'), brandBadgeTextInput = $('brandBadgeTextInput'), dividerColorInput = $('dividerColorInput');
 
-  const STORAGE_KEY = 'dispatch-news-card-v4';
+  const STORAGE_KEY = 'dispatch-news-card-v5';
   const EXPORT_WIDTH = 1080; // reference export resolution in px
 
   const DEFAULT_COLORS = {
@@ -695,19 +763,25 @@
     subtitleColor:'#e6e3da',
     dateColor:'#e2543f',
     locBgColor:'#b3311c',
-    locTextColor:'#ffffff'
+    locTextColor:'#ffffff',
+    brandBadgeBg:'#b3311c',
+    brandBadgeText:'#ffffff',
+    dividerColor:'#9aa0ab'
   };
 
   let state = {
     lang:'en',
     overlay:null, image:null, logo:null, adImage:null,
-    title:'', subtitle:'', location:'', date:'', footer:'',
-    ratio:'square', adType:'text',
+    title:'', subtitle:'', location:'', date:'', footer:'', brandText:'',
+    ratio:'square', adType:'text', logoAlign:'left',
     titleColor:DEFAULT_COLORS.titleColor,
     subtitleColor:DEFAULT_COLORS.subtitleColor,
     dateColor:DEFAULT_COLORS.dateColor,
     locBgColor:DEFAULT_COLORS.locBgColor,
-    locTextColor:DEFAULT_COLORS.locTextColor
+    locTextColor:DEFAULT_COLORS.locTextColor,
+    brandBadgeBg:DEFAULT_COLORS.brandBadgeBg,
+    brandBadgeText:DEFAULT_COLORS.brandBadgeText,
+    dividerColor:DEFAULT_COLORS.dividerColor
   };
 
   // ---------- helpers ----------
@@ -785,6 +859,26 @@
     }
   }
 
+  function renderLogoAlign(){
+    [logoAlignLeftBtn, logoAlignMiddleBtn, logoAlignRightBtn].forEach(b => b.classList.remove('active'));
+    if(state.logoAlign === 'middle'){
+      logoAlignMiddleBtn.classList.add('active');
+      cardLogo.style.left = '50%';
+      cardLogo.style.right = 'auto';
+      cardLogo.style.transform = 'translateX(-50%)';
+    } else if(state.logoAlign === 'right'){
+      logoAlignRightBtn.classList.add('active');
+      cardLogo.style.left = 'auto';
+      cardLogo.style.right = '4%';
+      cardLogo.style.transform = 'none';
+    } else {
+      logoAlignLeftBtn.classList.add('active');
+      cardLogo.style.left = '4%';
+      cardLogo.style.right = 'auto';
+      cardLogo.style.transform = 'none';
+    }
+  }
+
   function formatDate(iso){
     if(!iso) return '';
     const d = new Date(iso + 'T00:00:00');
@@ -833,6 +927,22 @@
     cardMetaRow.style.display = (locationText || dateText) ? 'flex' : 'none';
 
     footerTextDisplay.textContent = state.footer || CONTENT_LANG[state.lang].footerDefault;
+
+    renderBrandDivider();
+  }
+
+  function renderBrandDivider(){
+    const brandText = state.brandText && state.brandText.trim();
+    if(brandText){
+      brandDividerWrap.style.display = 'flex';
+      brandBadge.textContent = brandText;
+      brandBadge.style.background = state.brandBadgeBg;
+      brandBadge.style.color = state.brandBadgeText;
+      brandDividerLine.style.background = state.dividerColor;
+    } else {
+      brandDividerWrap.style.display = 'none';
+      brandBadge.textContent = '';
+    }
   }
 
   function renderRatio(){
@@ -881,7 +991,7 @@
   }
 
   function renderAll(){
-    renderOverlay(); renderImage(); renderLogo(); renderContent(); renderRatio(); renderAdType();
+    renderOverlay(); renderImage(); renderLogo(); renderLogoAlign(); renderContent(); renderRatio(); renderAdType();
   }
 
   // ---------- events: files ----------
@@ -921,6 +1031,7 @@
   locationInput.addEventListener('input', () => { state.location = locationInput.value; renderContent(); });
   dateInput.addEventListener('input', () => { state.date = dateInput.value; renderContent(); });
   footerInput.addEventListener('input', () => { state.footer = footerInput.value; renderContent(); });
+  brandInput.addEventListener('input', () => { state.brandText = brandInput.value; renderBrandDivider(); });
 
   // ---------- events: color pickers ----------
   titleColorInput.addEventListener('input', () => { state.titleColor = titleColorInput.value; renderContent(); });
@@ -928,12 +1039,18 @@
   dateColorInput.addEventListener('input', () => { state.dateColor = dateColorInput.value; renderContent(); });
   locBgColorInput.addEventListener('input', () => { state.locBgColor = locBgColorInput.value; renderContent(); });
   locTextColorInput.addEventListener('input', () => { state.locTextColor = locTextColorInput.value; renderContent(); });
+  brandBadgeBgInput.addEventListener('input', () => { state.brandBadgeBg = brandBadgeBgInput.value; renderBrandDivider(); });
+  brandBadgeTextInput.addEventListener('input', () => { state.brandBadgeText = brandBadgeTextInput.value; renderBrandDivider(); });
+  dividerColorInput.addEventListener('input', () => { state.dividerColor = dividerColorInput.value; renderBrandDivider(); });
 
   // ---------- events: toggles ----------
   ratioSquareBtn.addEventListener('click', () => { state.ratio='square'; renderRatio(); });
   ratioPortraitBtn.addEventListener('click', () => { state.ratio='portrait'; renderRatio(); });
   adTypeTextBtn.addEventListener('click', () => { state.adType='text'; renderAdType(); });
   adTypeImageBtn.addEventListener('click', () => { state.adType='image'; renderAdType(); });
+  logoAlignLeftBtn.addEventListener('click', () => { state.logoAlign='left'; renderLogoAlign(); });
+  logoAlignMiddleBtn.addEventListener('click', () => { state.logoAlign='middle'; renderLogoAlign(); });
+  logoAlignRightBtn.addEventListener('click', () => { state.logoAlign='right'; renderLogoAlign(); });
 
   langSelect.addEventListener('change', () => {
     state.lang = langSelect.value;
@@ -967,11 +1084,15 @@
       locationInput.value = state.location || '';
       dateInput.value = state.date || '';
       footerInput.value = state.footer || '';
+      brandInput.value = state.brandText || '';
       titleColorInput.value = state.titleColor || DEFAULT_COLORS.titleColor;
       subtitleColorInput.value = state.subtitleColor || DEFAULT_COLORS.subtitleColor;
       dateColorInput.value = state.dateColor || DEFAULT_COLORS.dateColor;
       locBgColorInput.value = state.locBgColor || DEFAULT_COLORS.locBgColor;
       locTextColorInput.value = state.locTextColor || DEFAULT_COLORS.locTextColor;
+      brandBadgeBgInput.value = state.brandBadgeBg || DEFAULT_COLORS.brandBadgeBg;
+      brandBadgeTextInput.value = state.brandBadgeText || DEFAULT_COLORS.brandBadgeText;
+      dividerColorInput.value = state.dividerColor || DEFAULT_COLORS.dividerColor;
       return true;
     }catch(err){ return false; }
   }
