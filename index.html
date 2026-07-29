@@ -18,10 +18,7 @@
     --field-line:#3a4050;
   }
   *{box-sizing:border-box;}
-  html,body{
-    max-width:100%;
-    overflow-x:hidden;
-  }
+  html,body{ max-width:100%; overflow-x:hidden; }
   body{
     margin:0;
     font-family:'Helvetica Neue', Arial, sans-serif;
@@ -40,218 +37,79 @@
     gap:10px;
   }
   .topbar-brand{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;}
-  .topbar h1{
-    font-family:Georgia, 'Times New Roman', serif;
-    font-size:22px;
-    letter-spacing:0.5px;
-    margin:0;
-  }
+  .topbar h1{ font-family:Georgia, 'Times New Roman', serif; font-size:22px; letter-spacing:0.5px; margin:0; }
   .topbar h1 span{ color:var(--press); font-family:Georgia, serif; font-style:italic; }
-  .topbar small{
-    color:var(--muted);
-    font-size:11px;
-    text-transform:uppercase;
-    letter-spacing:1px;
-  }
-  .lang-switch{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    width:100%;
-    flex-wrap:wrap;
-  }
-  .lang-switch label{
-    font-size:11px;
-    text-transform:uppercase;
-    letter-spacing:1px;
-    color:var(--muted);
-    margin:0;
-  }
+  .topbar small{ color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:1px; }
+  .lang-switch{ display:flex; align-items:center; gap:8px; width:100%; flex-wrap:wrap; }
+  .lang-switch label{ font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:0; }
   .lang-switch select{
-    background:var(--field);
-    border:1px solid var(--field-line);
-    color:var(--paper);
-    padding:9px 10px;
-    border-radius:4px;
-    font-size:14px;
-    flex:1;
-    min-width:140px;
+    background:var(--field); border:1px solid var(--field-line); color:var(--paper);
+    padding:9px 10px; border-radius:4px; font-size:14px; flex:1; min-width:140px;
   }
   .lang-hint{ font-size:10px; color:var(--muted); width:100%; line-height:1.4; }
 
   /* ---------- Layout (mobile-first: stacked column) ---------- */
-  .layout{
-    display:flex;
-    flex-direction:column;
-  }
-  .controls{
-    order:2;
-    background:var(--panel);
-    padding:20px 18px 32px;
-    border-bottom:1px solid var(--panel-line);
-  }
+  .layout{ display:flex; flex-direction:column; }
+  .controls{ order:2; background:var(--panel); padding:20px 18px 32px; border-bottom:1px solid var(--panel-line); }
   .stage-wrap{
-    order:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:22px 14px;
-    background:
-      repeating-conic-gradient(#20242c 0% 25%, #1a1e25 0% 50%) 50% / 24px 24px;
+    order:1; display:flex; align-items:center; justify-content:center; padding:22px 14px;
+    background: repeating-conic-gradient(#20242c 0% 25%, #1a1e25 0% 50%) 50% / 24px 24px;
   }
 
-  .group{
-    margin-bottom:22px;
-    padding-bottom:22px;
-    border-bottom:1px solid var(--panel-line);
+  .group{ margin-bottom:22px; padding-bottom:22px; border-bottom:1px solid var(--panel-line); }
+  .group:last-child{ border-bottom:none; margin-bottom:0; }
+  .group h2{ font-size:12px; line-height:1.4; letter-spacing:0.3px; color:var(--press); margin:0 0 14px 0; font-weight:700; }
+  .subhead{
+    font-size:11px; text-transform:uppercase; letter-spacing:0.8px; color:var(--muted);
+    margin:18px 0 10px; padding-top:14px; border-top:1px dashed var(--field-line);
   }
-  .group:last-child{border-bottom:none; margin-bottom:0;}
-  .group h2{
-    font-size:12px;
-    line-height:1.4;
-    letter-spacing:0.3px;
-    color:var(--press);
-    margin:0 0 14px 0;
-    font-weight:700;
-  }
-  label{
-    display:block;
-    font-size:12px;
-    line-height:1.4;
-    color:var(--muted);
-    margin-bottom:6px;
-    margin-top:14px;
-  }
-  label:first-of-type{margin-top:0;}
+  .subhead:first-of-type{ margin-top:0; padding-top:0; border-top:none; }
+  label{ display:block; font-size:12px; line-height:1.4; color:var(--muted); margin-bottom:6px; margin-top:14px; }
+  label:first-of-type{ margin-top:0; }
   input[type="text"], input[type="date"], textarea, select{
-    width:100%;
-    background:var(--field);
-    border:1px solid var(--field-line);
-    color:var(--paper);
-    padding:11px 10px;
-    border-radius:4px;
-    font-size:16px; /* prevents iOS auto-zoom on focus */
-    font-family:inherit;
+    width:100%; background:var(--field); border:1px solid var(--field-line); color:var(--paper);
+    padding:11px 10px; border-radius:4px; font-size:16px; font-family:inherit;
   }
-  textarea{resize:vertical; min-height:52px;}
-  input[type="text"]:focus, input[type="date"]:focus, textarea:focus{
-    outline:none;
-    border-color:var(--press);
-  }
+  textarea{ resize:vertical; min-height:52px; }
+  input[type="text"]:focus, input[type="date"]:focus, textarea:focus{ outline:none; border-color:var(--press); }
   input.field-error{ border-color:var(--press); box-shadow:0 0 0 1px var(--press); }
-  .file-row{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    flex-wrap:wrap;
-  }
+  .file-row{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
   .file-btn{
-    display:inline-block;
-    background:var(--field);
-    border:1px solid var(--field-line);
-    color:var(--paper);
-    padding:11px 12px;
-    border-radius:4px;
-    font-size:13.5px;
-    line-height:1.3;
-    cursor:pointer;
-    flex:1 1 160px;
-    text-align:center;
+    display:inline-block; background:var(--field); border:1px solid var(--field-line); color:var(--paper);
+    padding:11px 12px; border-radius:4px; font-size:13.5px; line-height:1.3; cursor:pointer; flex:1 1 160px; text-align:center;
   }
-  .file-btn:hover{border-color:var(--press);}
-  input[type="file"]{display:none;}
+  .file-btn:hover{ border-color:var(--press); }
+  input[type="file"]{ display:none; }
   .thumb{
-    width:38px;height:38px;
-    border-radius:4px;
-    object-fit:cover;
-    border:1px solid var(--field-line);
-    display:none;
-    background:#000;
-    flex-shrink:0;
+    width:38px; height:38px; border-radius:4px; object-fit:cover; border:1px solid var(--field-line);
+    display:none; background:#000; flex-shrink:0;
   }
-  .clear-x{
-    background:none;
-    border:none;
-    color:var(--muted);
-    cursor:pointer;
-    font-size:18px;
-    padding:6px 8px;
-    display:none;
-    flex-shrink:0;
-  }
-  .clear-x:hover{color:var(--press);}
-  .toggle-row{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-  }
+  .clear-x{ background:none; border:none; color:var(--muted); cursor:pointer; font-size:18px; padding:6px 8px; display:none; flex-shrink:0; }
+  .clear-x:hover{ color:var(--press); }
+  .toggle-row{ display:flex; gap:8px; flex-wrap:wrap; }
   .toggle-row button{
-    flex:1 1 120px;
-    padding:12px 8px;
-    background:var(--field);
-    border:1px solid var(--field-line);
-    color:var(--muted);
-    border-radius:4px;
-    cursor:pointer;
-    font-size:13.5px;
-    line-height:1.3;
-    font-weight:600;
+    flex:1 1 120px; padding:12px 8px; background:var(--field); border:1px solid var(--field-line); color:var(--muted);
+    border-radius:4px; cursor:pointer; font-size:13.5px; line-height:1.3; font-weight:600;
   }
-  .toggle-row button.active{
-    background:var(--press);
-    border-color:var(--press);
-    color:#fff;
-  }
-  .hint{
-    font-size:11px;
-    color:var(--muted);
-    margin-top:6px;
-    line-height:1.5;
-  }
-  .action-btn{
-    width:100%;
-    padding:14px;
-    border-radius:4px;
-    border:none;
-    font-size:14.5px;
-    font-weight:700;
-    cursor:pointer;
-    margin-top:10px;
-  }
-  .btn-save{background:#2c313b; color:var(--paper); border:1px solid var(--field-line);}
-  .btn-save:hover{border-color:var(--muted);}
-  .btn-print{background:var(--press); color:#fff;}
-  .btn-print:hover{background:#921f10;}
-  .btn-image{background:var(--paper); color:var(--ink);}
-  .btn-image:hover{background:#e2ded3;}
-  .btn-danger{background:transparent; color:var(--muted); border:1px solid var(--field-line); font-weight:400;}
-  .btn-danger:hover{color:var(--press); border-color:var(--press);}
-  .status-msg{
-    font-size:12px;
-    line-height:1.5;
-    color:#7fbf7f;
-    margin-top:10px;
-    min-height:14px;
-  }
+  .toggle-row button.active{ background:var(--press); border-color:var(--press); color:#fff; }
+  .hint{ font-size:11px; color:var(--muted); margin-top:6px; line-height:1.5; }
+  .action-btn{ width:100%; padding:14px; border-radius:4px; border:none; font-size:14.5px; font-weight:700; cursor:pointer; margin-top:10px; }
+  .btn-save{ background:#2c313b; color:var(--paper); border:1px solid var(--field-line); }
+  .btn-save:hover{ border-color:var(--muted); }
+  .btn-print{ background:var(--press); color:#fff; }
+  .btn-print:hover{ background:#921f10; }
+  .btn-image{ background:var(--paper); color:var(--ink); }
+  .btn-image:hover{ background:#e2ded3; }
+  .btn-danger{ background:transparent; color:var(--muted); border:1px solid var(--field-line); font-weight:400; }
+  .btn-danger:hover{ color:var(--press); border-color:var(--press); }
+  .status-msg{ font-size:12px; line-height:1.5; color:#7fbf7f; margin-top:10px; min-height:14px; }
   .status-msg.warn{ color:var(--press); }
 
   /* ---------- Color controls ---------- */
-  .color-row{
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-  }
-  .color-field{
-    flex:1 1 140px;
-  }
+  .color-row{ display:flex; gap:12px; flex-wrap:wrap; }
+  .color-field{ flex:1 1 140px; }
   input[type="color"]{
-    width:100%;
-    height:42px;
-    padding:4px;
-    border-radius:4px;
-    border:1px solid var(--field-line);
-    background:var(--field);
-    cursor:pointer;
+    width:100%; height:42px; padding:4px; border-radius:4px; border:1px solid var(--field-line); background:var(--field); cursor:pointer;
   }
   input[type="color"]::-webkit-color-swatch-wrapper{ padding:0; }
   input[type="color"]::-webkit-color-swatch{ border-radius:3px; border:none; }
@@ -268,292 +126,131 @@
   #card.lang-ta{ font-family:'Noto Serif Tamil', Georgia, serif; }
   #card.ratio-square{ aspect-ratio: 1 / 1; }
   #card.ratio-portrait{ aspect-ratio: 4 / 5; }
-  #card.ratio-boxed{
-    aspect-ratio: 4 / 5;
-    display:flex;
-    flex-direction:column;
-    border-radius:20px;
-  }
+  #card.ratio-boxed{ aspect-ratio: 4 / 5; border-radius:18px; }
 
-  /* header tag — boxed layout only */
+  /* header tag — visible in boxed layout only, pinned to the very top */
   .header-tag{
     display:none;
-    width:100%;
-    padding:9px 14px;
-    text-align:center;
+    position:absolute; top:0; left:0; right:0; z-index:5;
+    width:100%; padding:9px 14px; text-align:center;
     font-family:'Helvetica Neue', Arial, sans-serif;
-    font-size:clamp(9px,2.6vw,12px);
-    font-weight:700;
-    letter-spacing:1.2px;
-    text-transform:uppercase;
-    flex:0 0 auto;
+    font-size:clamp(9px,2.6vw,12px); font-weight:700; letter-spacing:1.2px; text-transform:uppercase;
   }
   #card.lang-ta .header-tag{ font-family:'Noto Sans Tamil','Helvetica Neue',Arial,sans-serif; letter-spacing:0.5px; }
 
-  /* photo area (shared container for image + overlay + logo) */
-  .photo-area{
-    position:absolute;
-    top:0; left:0;
-    width:100%; height:100%;
-  }
-  #card.ratio-boxed .photo-area{
-    position:relative;
-    top:auto; left:auto;
-    flex:0 0 auto;
-    height:42%;
-  }
+  /* photo area (shared: image + overlay + logo), fills the whole card in every layout */
+  .photo-area{ position:absolute; top:0; left:0; width:100%; height:100%; }
 
-  .layer{
-    position:absolute;
-    top:0; left:0;
-    width:100%; height:100%;
-  }
+  .layer{ position:absolute; top:0; left:0; width:100%; height:100%; }
   #layer-image{ object-fit:cover; z-index:1; background:#333; }
   #layer-overlay{ z-index:3; pointer-events:none; object-fit:fill; }
   #layer-image-placeholder{
-    z-index:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#555;
-    font-family:'Helvetica Neue', Arial, sans-serif;
-    font-size:clamp(10px,3vw,13px);
-    letter-spacing:0.5px;
-    text-transform:uppercase;
-    text-align:center;
-    padding:16px;
+    z-index:1; display:flex; align-items:center; justify-content:center; color:#555;
+    font-family:'Helvetica Neue', Arial, sans-serif; font-size:clamp(10px,3vw,13px);
+    letter-spacing:0.5px; text-transform:uppercase; text-align:center; padding:16px;
   }
 
+  /* content zone — used by Square & Standard 4:5 */
   .content-zone{
-    position:absolute;
-    left:0; right:0;
-    bottom:0;
-    z-index:2;
+    position:absolute; left:0; right:0; bottom:0; z-index:2;
     padding:5.5% 6% 6%;
     background:linear-gradient(to top, rgba(0,0,0,0.82) 10%, rgba(0,0,0,0.0) 100%);
     color:#fff;
   }
-  #card.ratio-portrait .content-zone{
-    bottom:16%; /* leave room for footer band */
-  }
   #card.ratio-boxed .content-zone{ display:none; }
 
-  .card-meta-row{
-    display:flex;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:8px;
-    margin-bottom:8px;
-  }
+  .card-meta-row{ display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px; }
   .location-badge{
     font-family:'Helvetica Neue', Arial, sans-serif;
-    font-size:clamp(9px,2.4vw,11px);
-    letter-spacing:0.8px;
-    text-transform:uppercase;
-    font-weight:700;
-    padding:4px 11px;
-    border-radius:999px;
-    display:none;
-    line-height:1.6;
+    font-size:clamp(9px,2.4vw,11px); letter-spacing:0.8px; text-transform:uppercase; font-weight:700;
+    padding:4px 11px; border-radius:999px; display:none; line-height:1.6;
   }
   .card-date{
     font-family:'Helvetica Neue', Arial, sans-serif;
-    font-size:clamp(9px,2.6vw,11px);
-    letter-spacing:1.5px;
-    text-transform:uppercase;
-    font-weight:700;
-    display:none;
+    font-size:clamp(9px,2.6vw,11px); letter-spacing:1.5px; text-transform:uppercase; font-weight:700; display:none;
   }
-  .card-title{
-    font-size:clamp(16px,5vw,26px);
-    line-height:1.2;
-    font-weight:700;
-    margin:0;
-    text-shadow:0 2px 10px rgba(0,0,0,0.4);
-  }
-  .card-title.in-box{ text-shadow:none; }
+  .card-title{ font-size:clamp(16px,5vw,26px); line-height:1.2; font-weight:700; margin:0; text-shadow:0 2px 10px rgba(0,0,0,0.4); }
+  .card-title.in-bar{ text-shadow:none; }
   .card-subtitle{
-    font-family:'Helvetica Neue', Arial, sans-serif;
-    font-size:clamp(11px,3vw,14px);
-    line-height:1.5;
-    font-weight:400;
-    margin:8px 0 0 0;
-    display:none;
+    font-family:'Helvetica Neue', Arial, sans-serif; font-size:clamp(11px,3vw,14px); line-height:1.5; font-weight:400;
+    margin:8px 0 0 0; display:none;
   }
-  #card.lang-ta .card-subtitle,
-  #card.lang-ta .card-date,
-  #card.lang-ta .location-badge,
-  #card.lang-ta .brand-badge{ font-family:'Noto Sans Tamil', 'Helvetica Neue', Arial, sans-serif; letter-spacing:0.4px; }
+  .card-subtitle.in-box{ margin-top:0; }
+  #card.lang-ta .card-subtitle, #card.lang-ta .card-date,
+  #card.lang-ta .location-badge, #card.lang-ta .brand-badge{
+    font-family:'Noto Sans Tamil', 'Helvetica Neue', Arial, sans-serif; letter-spacing:0.4px;
+  }
   .card-logo{
-    position:absolute;
-    top:4%;
-    z-index:4;
-    max-width:22%;
-    max-height:9%;
-    object-fit:contain;
-    display:none;
+    position:absolute; top:4%; z-index:4; max-width:22%; max-height:9%; object-fit:contain; display:none;
     filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5));
   }
 
   /* brand / website divider badge */
   .brand-divider-wrap{
-    position:relative;
-    width:100%;
-    height:16px;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    margin-top:12px;
+    position:relative; width:100%; height:16px; display:none; align-items:center; justify-content:center; margin-top:12px;
   }
-  .brand-divider-line{
-    position:absolute;
-    left:0; right:0; top:50%;
-    height:1px;
-    transform:translateY(-50%);
-  }
+  .brand-divider-line{ position:absolute; left:0; right:0; top:50%; height:1px; transform:translateY(-50%); }
   .brand-badge{
-    position:relative;
-    z-index:1;
-    font-family:'Helvetica Neue', Arial, sans-serif;
-    font-size:clamp(7px,2vw,9px);
-    font-weight:600;
-    letter-spacing:0.4px;
-    padding:3px 11px;
-    border-radius:999px;
-    white-space:nowrap;
-    line-height:1.5;
+    position:relative; z-index:1;
+    font-family:'Helvetica Neue', Arial, sans-serif; font-size:clamp(7px,2vw,9px); font-weight:600; letter-spacing:0.4px;
+    padding:3px 11px; border-radius:999px; white-space:nowrap; line-height:1.5;
   }
 
-  /* boxed layout: content lives below the photo, in normal flex flow */
-  #boxedBottomArea{
-    display:none;
-    flex-direction:column;
-    flex:1 1 auto;
-    min-height:0;
-    padding:5%;
-    gap:12px;
+  /* boxed layout overlay: meta row + full-width title bar + layered content box, anchored at the bottom */
+  .boxed-overlay{ display:none; position:absolute; left:0; right:0; bottom:0; z-index:2; }
+  #card.ratio-boxed .boxed-overlay{ display:block; }
+  .boxed-meta-slot{ padding:0 6% 8px; }
+  .title-bar{
+    width:100%; padding:4% 6%; border-radius:0;
   }
-  #card.ratio-boxed #boxedBottomArea{ display:flex; }
-
   .title-box{
-    border-radius:16px;
-    padding:6% 7%;
-    flex:1 1 auto;
-    min-height:0;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    overflow:hidden;
+    margin:0 6%; padding:5% 6% 6%;
+    border-top-left-radius:0; border-top-right-radius:0;
+    border-bottom-left-radius:16px; border-bottom-right-radius:16px;
   }
 
   .card-footer{
-    position:absolute;
-    left:0; right:0; bottom:0;
-    height:16%;
-    z-index:2;
-    background:var(--paper);
-    color:var(--ink);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:0;
-    font-family:'Helvetica Neue', Arial, sans-serif;
-    border-top:3px solid var(--press);
-    overflow:hidden;
+    position:absolute; left:0; right:0; bottom:0; height:16%; z-index:2;
+    background:var(--paper); color:var(--ink); display:none; align-items:center; justify-content:center; padding:0;
+    font-family:'Helvetica Neue', Arial, sans-serif; border-top:3px solid var(--press); overflow:hidden;
   }
-  #card.ratio-portrait .card-footer{display:flex;}
-  #card.ratio-boxed .card-footer{
-    position:relative;
-    left:auto; right:auto; bottom:auto;
-    height:auto;
-    aspect-ratio: 1080 / 216;
-    width:100%;
-    flex:0 0 auto;
-    border-radius:12px;
-    border-top:none;
-  }
-  .footer-text-display{
-    font-size:clamp(9px,2.4vw,11px);
-    letter-spacing:0.5px;
-    text-transform:uppercase;
-    text-align:center;
-    padding:0 4%;
-    width:100%;
-  }
-  .footer-image-display{
-    position:relative;
-    width:100%;
-    height:100%;
-    display:none;
-  }
-  .footer-image-display img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:none;
-  }
+  #card.ratio-boxed .card-footer{ display:none !important; }
+  .footer-text-display{ font-size:clamp(9px,2.4vw,11px); letter-spacing:0.5px; text-transform:uppercase; text-align:center; padding:0 4%; width:100%; }
+  .footer-image-display{ position:relative; width:100%; height:100%; display:none; }
+  .footer-image-display img{ width:100%; height:100%; object-fit:cover; display:none; }
   .footer-ad-placeholder{
-    position:absolute;
-    top:0; left:0; right:0; bottom:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    font-size:clamp(8px,2.2vw,11px);
-    letter-spacing:0.3px;
-    color:#9a9284;
-    padding:0 6%;
-    background:
-      repeating-linear-gradient(45deg, #eae6db, #eae6db 8px, #f4f2ec 8px, #f4f2ec 16px);
-    border:1.5px dashed #c9c2b2;
-    box-sizing:border-box;
+    position:absolute; top:0; left:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center;
+    text-align:center; font-size:clamp(8px,2.2vw,11px); letter-spacing:0.3px; color:#9a9284; padding:0 6%;
+    background: repeating-linear-gradient(45deg, #eae6db, #eae6db 8px, #f4f2ec 8px, #f4f2ec 16px);
+    border:1.5px dashed #c9c2b2; box-sizing:border-box;
   }
 
   /* ---------- Tablet and up ---------- */
   @media (min-width:641px){
     .topbar{ flex-direction:row; align-items:center; justify-content:space-between; padding:20px 28px; }
-    .topbar-brand{flex-wrap:nowrap;}
-    .topbar h1{font-size:25px;}
-    .lang-switch{width:auto;}
-    .lang-hint{width:auto; max-width:220px;}
-    .controls{padding:26px;}
-    #card{width:min(480px, 78vw);}
+    .topbar-brand{ flex-wrap:nowrap; }
+    .topbar h1{ font-size:25px; }
+    .lang-switch{ width:auto; }
+    .lang-hint{ width:auto; max-width:220px; }
+    .controls{ padding:26px; }
+    #card{ width:min(480px, 78vw); }
   }
 
   /* ---------- Desktop: side-by-side layout ---------- */
   @media (min-width:901px){
-    .layout{
-      flex-direction:row;
-      min-height:calc(100vh - 77px);
-    }
+    .layout{ flex-direction:row; min-height:calc(100vh - 77px); }
     .controls{
-      order:1;
-      flex:0 0 380px;
-      max-width:380px;
-      overflow-y:auto;
-      height:calc(100vh - 77px);
-      border-bottom:none;
-      border-right:1px solid var(--panel-line);
-      padding:28px;
+      order:1; flex:0 0 380px; max-width:380px; overflow-y:auto; height:calc(100vh - 77px);
+      border-bottom:none; border-right:1px solid var(--panel-line); padding:28px;
     }
-    .stage-wrap{
-      order:2;
-      flex:1;
-      padding:40px;
-    }
-    #card{width:560px;}
+    .stage-wrap{ order:2; flex:1; padding:40px; }
+    #card{ width:560px; }
   }
 
   @media print{
-    body *{visibility:hidden;}
-    #card, #card *{visibility:visible;}
-    #card{
-      position:fixed;
-      top:50%; left:50%;
-      transform:translate(-50%,-50%);
-      box-shadow:none;
-      width:80vmin;
-    }
+    body *{ visibility:hidden; }
+    #card, #card *{ visibility:visible; }
+    #card{ position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); box-shadow:none; width:80vmin; }
   }
 </style>
 </head>
@@ -562,15 +259,15 @@
   <div class="topbar">
     <div class="topbar-brand">
       <h1>Dispatch<span>.</span></h1>
-      <small>News Card Generator / செய்தி அட்டை உருவாக்கி</small>
+      <small id="s_brandSub">News Card Generator</small>
     </div>
     <div class="lang-switch">
-      <label for="langSelect">Language / மொழி</label>
+      <label for="langSelect" id="s_langLabel">Language</label>
       <select id="langSelect">
         <option value="en">English</option>
         <option value="ta">தமிழ் (Tamil)</option>
       </select>
-      <div class="lang-hint">Sets card date format &amp; example text / அட்டையின் தேதி வடிவமைப்பு மற்றும் மாதிரி உரையை அமைக்கிறது</div>
+      <div class="lang-hint" id="s_langHint">Sets card date format &amp; example text</div>
     </div>
   </div>
 
@@ -579,22 +276,22 @@
     <div class="controls">
 
       <div class="group">
-        <h2>Overlay Frame / ஓவர்லே சட்டகம்</h2>
-        <label>Upload PNG Overlay (transparent center) / PNG ஓவர்லே பதிவேற்று (வெளிப்படையான மையப்பகுதி)</label>
+        <h2 id="s_overlayGroup">Overlay Frame</h2>
+        <label id="s_overlayLabel">Upload PNG Overlay (transparent center)</label>
         <div class="file-row">
-          <label class="file-btn" for="overlayInput">Choose PNG… / PNG தேர்ந்தெடு…</label>
+          <label class="file-btn" for="overlayInput" id="s_choosePng">Choose PNG…</label>
           <input type="file" id="overlayInput" accept="image/png">
           <img id="overlayThumb" class="thumb">
           <button class="clear-x" id="clearOverlay" title="Remove overlay">✕</button>
         </div>
-        <div class="hint">Upload a PNG with a transparent window where the news photo should show through. / செய்தி புகைப்படம் தெரியும்படி வெளிப்படையான பகுதியுடன் கூடிய PNG படத்தைப் பதிவேற்றவும்.</div>
+        <div class="hint" id="s_overlayHint">Upload a PNG with a transparent window where the news photo should show through.</div>
       </div>
 
       <div class="group">
-        <h2>News Image / செய்தி படம்</h2>
-        <label>Background Photo / பின்னணி புகைப்படம்</label>
+        <h2 id="s_imageGroup">News Image</h2>
+        <label id="s_imageLabel">Background Photo</label>
         <div class="file-row">
-          <label class="file-btn" for="imageInput">Choose Image… / படத்தைத் தேர்ந்தெடு…</label>
+          <label class="file-btn" for="imageInput" id="s_chooseImage">Choose Image…</label>
           <input type="file" id="imageInput" accept="image/*">
           <img id="imageThumb" class="thumb">
           <button class="clear-x" id="clearImage" title="Remove image">✕</button>
@@ -602,193 +299,191 @@
       </div>
 
       <div class="group">
-        <h2>Headline &amp; Details / தலைப்பு &amp; விவரங்கள்</h2>
-        <label>Title * / தலைப்பு *</label>
-        <textarea id="titleInput" placeholder="Enter the headline… / தலைப்பை உள்ளிடவும்…"></textarea>
+        <h2 id="s_headlineGroup">Headline &amp; Details</h2>
+        <label id="s_titleLabel">Title *</label>
+        <textarea id="titleInput"></textarea>
 
-        <label>Subtitle / Short Content (optional) / துணைத்தலைப்பு / சுருக்கம் (விருப்பத்தேர்வு)</label>
-        <textarea id="subtitleInput" placeholder="Add a short summary… / சுருக்கத்தைச் சேர்க்கவும்…"></textarea>
+        <label id="s_subtitleLabel">Subtitle / Short Content (optional)</label>
+        <textarea id="subtitleInput"></textarea>
 
-        <label>Location (City / Region) / இடம் (நகரம் / பகுதி)</label>
-        <input type="text" id="locationInput" placeholder="e.g. Chennai / எ.கா. சென்னை">
+        <label id="s_locationLabel">Location (City / Region)</label>
+        <input type="text" id="locationInput">
 
-        <label>Date / தேதி</label>
+        <label id="s_dateLabel">Date</label>
         <input type="date" id="dateInput">
       </div>
 
       <div class="group">
-        <h2>Website / Brand Divider Badge / வலைத்தளம் / பிராண்ட் பேட்ஜ்</h2>
-        <label>Website / Brand Text (optional) / வலைத்தளம் / பிராண்ட் உரை (விருப்பத்தேர்வு)</label>
-        <input type="text" id="brandInput" placeholder="e.g. www.ipdtamil.com / எ.கா. www.ipdtamil.com">
-        <div class="color-row" style="margin-top:14px;">
-          <div class="color-field">
-            <label>Badge Background Color / பேட்ஜ் பின்னணி நிறம்</label>
-            <input type="color" id="brandBadgeBgInput" value="#b3311c">
-          </div>
-          <div class="color-field">
-            <label>Badge Text Color / பேட்ஜ் உரை நிறம்</label>
-            <input type="color" id="brandBadgeTextInput" value="#ffffff">
-          </div>
-        </div>
-        <div class="color-row" style="margin-top:14px;">
-          <div class="color-field">
-            <label>Divider Line Color / பிரிப்பான் கோடு நிறம்</label>
-            <input type="color" id="dividerColorInput" value="#9aa0ab">
-          </div>
-        </div>
-        <div class="hint">Shows a thin divider line with a centered badge under the headline text; leave the field empty to hide it completely. / தலைப்பு உரைக்குக் கீழே ஒரு மெல்லிய பிரிப்பான் கோட்டையும் நடுவில் பேட்ஜையும் காட்டும்; காலியாக விட்டால் முழுவதுமாக மறைந்துவிடும்.</div>
+        <h2 id="s_brandGroup">Website / Brand Divider Badge</h2>
+        <label id="s_brandLabel">Website / Brand Text (optional)</label>
+        <input type="text" id="brandInput">
+        <div class="hint" id="s_brandHint">Shows a thin divider line with a centered badge; leave the field empty to hide it completely.</div>
       </div>
 
       <div class="group">
-        <h2>Text &amp; Badge Styling / உரை &amp; பேட்ஜ் அலங்காரம்</h2>
-        <div class="color-row">
-          <div class="color-field">
-            <label>Title Color / தலைப்பு நிறம்</label>
-            <input type="color" id="titleColorInput" value="#ffffff">
-          </div>
-          <div class="color-field">
-            <label>Subtitle Color / துணைத்தலைப்பு நிறம்</label>
-            <input type="color" id="subtitleColorInput" value="#e6e3da">
-          </div>
-        </div>
-        <div class="color-row" style="margin-top:14px;">
-          <div class="color-field">
-            <label>Date Color / தேதி நிறம்</label>
-            <input type="color" id="dateColorInput" value="#e2543f">
-          </div>
-        </div>
-        <div class="color-row" style="margin-top:14px;">
-          <div class="color-field">
-            <label>Location Background / இட பேட்ஜ் பின்னணி நிறம்</label>
-            <input type="color" id="locBgColorInput" value="#b3311c">
-          </div>
-          <div class="color-field">
-            <label>Location Text Color / இட பேட்ஜ் உரை நிறம்</label>
-            <input type="color" id="locTextColorInput" value="#ffffff">
-          </div>
-        </div>
-        <div class="hint">Colors apply live to the preview and are saved with your card. Used by the 1:1 and 4:5 Standard layouts. / நிறங்கள் நேரடியாக முன்னோட்டத்தில் பயன்படுத்தப்பட்டு சேமிக்கப்படும். இவை 1:1 மற்றும் 4:5 நிலையான வடிவமைப்புகளுக்குப் பொருந்தும்.</div>
-      </div>
-
-      <div class="group">
-        <h2>Logo / லோகோ</h2>
-        <label>Upload Logo / லோகோ அப்லோட்</label>
+        <h2 id="s_logoGroup">Logo</h2>
+        <label id="s_logoLabel">Upload Logo</label>
         <div class="file-row">
-          <label class="file-btn" for="logoInput">Choose Logo… / லோகோவைத் தேர்ந்தெடு…</label>
+          <label class="file-btn" for="logoInput" id="s_chooseLogo">Choose Logo…</label>
           <input type="file" id="logoInput" accept="image/*">
           <img id="logoThumb" class="thumb">
           <button class="clear-x" id="clearLogo" title="Remove logo">✕</button>
         </div>
-        <label>Logo Alignment / லோகோ சீரமைப்பு</label>
+        <label id="s_logoAlignLabel">Logo Alignment</label>
         <div class="toggle-row">
-          <button id="logoAlignLeftBtn" class="active" data-align="left">Left / இடது</button>
-          <button id="logoAlignMiddleBtn" data-align="middle">Middle / நடு</button>
-          <button id="logoAlignRightBtn" data-align="right">Right / வலது</button>
+          <button id="logoAlignLeftBtn" class="active" data-align="left"><span id="s_alignLeft">Left</span></button>
+          <button id="logoAlignMiddleBtn" data-align="middle"><span id="s_alignMiddle">Middle</span></button>
+          <button id="logoAlignRightBtn" data-align="right"><span id="s_alignRight">Right</span></button>
         </div>
       </div>
 
       <div class="group">
-        <h2>Canvas Background / கேன்வாஸ் பின்னணி</h2>
-        <label>Background Style / பின்னணி பாணி</label>
+        <h2 id="s_layoutGroup">Layout</h2>
+        <label id="s_ratioLabel">Aspect Ratio</label>
         <div class="toggle-row">
-          <button id="canvasBgSolidBtn" class="active" data-bgtype="solid">Solid / திடமான நிறம்</button>
-          <button id="canvasBgGradientBtn" data-bgtype="gradient">Gradient / சாய்வு நிறம்</button>
+          <button id="ratioSquareBtn" class="active" data-ratio="square"><span id="s_ratioSquare">1:1 Square</span></button>
+          <button id="ratioPortraitBtn" data-ratio="portrait"><span id="s_ratioPortrait">4:5 Standard</span></button>
+          <button id="ratioBoxedBtn" data-ratio="boxed"><span id="s_ratioBoxed">4:5 Boxed</span></button>
+        </div>
+        <div class="hint" id="s_ratioHint">Standard 4:5 shows a sponsor band that appears only when filled in. Boxed 4:5 uses a full-width title bar and content box with no sponsor area at all.</div>
+
+        <label id="s_headerTagLabel">Header Tag Text (Boxed layout only, optional)</label>
+        <input type="text" id="headerTagInput" value="BREAKING NEWS / முக்கிய செய்தி">
+      </div>
+
+      <div class="group">
+        <h2 id="s_stylingGroup">Styling</h2>
+
+        <div class="subhead" id="s_canvasSubhead">Canvas Background</div>
+        <div class="toggle-row">
+          <button id="canvasBgSolidBtn" class="active" data-bgtype="solid"><span id="s_bgSolid">Solid</span></button>
+          <button id="canvasBgGradientBtn" data-bgtype="gradient"><span id="s_bgGradient">Gradient</span></button>
         </div>
         <div class="color-row" style="margin-top:14px;">
           <div class="color-field">
-            <label id="canvasColor1Label">Background Color / பின்னணி நிறம்</label>
+            <label id="s_canvasColor1Label">Background Color</label>
             <input type="color" id="canvasColor1Input" value="#101216">
           </div>
           <div class="color-field" id="canvasColor2Wrap" style="display:none;">
-            <label>Gradient End Color / சாய்வு முடிவு நிறம்</label>
+            <label id="s_canvasColor2Label">Gradient End Color</label>
             <input type="color" id="canvasColor2Input" value="#2c313b">
           </div>
         </div>
-        <div class="hint">Shows behind the photo and, in the Boxed layout, behind the content box. / இது புகைப்படத்திற்குப் பின்னால் மற்றும் பெட்டி வடிவமைப்பில் உள்ளடக்கப் பெட்டிக்குப் பின்னால் தெரியும்.</div>
+
+        <div class="subhead" id="s_locDateSubhead">Location &amp; Date Colors</div>
+        <div class="color-row">
+          <div class="color-field">
+            <label id="s_locBgLabel">Location Background</label>
+            <input type="color" id="locBgColorInput" value="#b3311c">
+          </div>
+          <div class="color-field">
+            <label id="s_locTextLabel">Location Text Color</label>
+            <input type="color" id="locTextColorInput" value="#ffffff">
+          </div>
+        </div>
+        <label id="s_dateColorLabel">Date Color</label>
+        <input type="color" id="dateColorInput" value="#e2543f">
+
+        <div id="standardColorsWrap">
+          <div class="subhead" id="s_standardSubhead">Square / Standard Text Colors</div>
+          <div class="color-row">
+            <div class="color-field">
+              <label id="s_titleColorLabel">Title Color</label>
+              <input type="color" id="titleColorInput" value="#ffffff">
+            </div>
+            <div class="color-field">
+              <label id="s_subtitleColorLabel">Subtitle Color</label>
+              <input type="color" id="subtitleColorInput" value="#e6e3da">
+            </div>
+          </div>
+        </div>
+
+        <div id="boxedColorsWrap">
+          <div class="subhead" id="s_boxedSubhead">Boxed Layout Colors</div>
+          <div class="color-row">
+            <div class="color-field">
+              <label id="s_headerTagBgLabel">Header Tag Background</label>
+              <input type="color" id="headerTagBgInput" value="#b3311c">
+            </div>
+            <div class="color-field">
+              <label id="s_headerTagTextLabel">Header Tag Text Color</label>
+              <input type="color" id="headerTagTextColorInput" value="#ffffff">
+            </div>
+          </div>
+          <div class="color-row" style="margin-top:14px;">
+            <div class="color-field">
+              <label id="s_titleBarBgLabel">Title Bar Background</label>
+              <input type="color" id="titleBarBgInput" value="#14171c">
+            </div>
+            <div class="color-field">
+              <label id="s_titleBarTextLabel">Title Bar Text Color</label>
+              <input type="color" id="titleBarTextInput" value="#ffffff">
+            </div>
+          </div>
+          <div class="color-row" style="margin-top:14px;">
+            <div class="color-field">
+              <label id="s_contentBoxBgLabel">Content Box Background</label>
+              <input type="color" id="contentBoxBgInput" value="#ffffff">
+            </div>
+            <div class="color-field">
+              <label id="s_contentBoxTextLabel">Content Box Text Color</label>
+              <input type="color" id="contentBoxTextInput" value="#3a3f47">
+            </div>
+          </div>
+        </div>
+
+        <div class="subhead" id="s_dividerSubhead">Branding Divider Colors</div>
+        <div class="color-row">
+          <div class="color-field">
+            <label id="s_badgeBgLabel">Badge Background Color</label>
+            <input type="color" id="brandBadgeBgInput" value="#b3311c">
+          </div>
+          <div class="color-field">
+            <label id="s_badgeTextLabel">Badge Text Color</label>
+            <input type="color" id="brandBadgeTextInput" value="#ffffff">
+          </div>
+        </div>
+        <label id="s_dividerColorLabel">Divider Line Color</label>
+        <input type="color" id="dividerColorInput" value="#9aa0ab">
       </div>
 
       <div class="group">
-        <h2>Layout / தளவமைப்பு</h2>
-        <label>Aspect Ratio / விகிதம்</label>
+        <h2 id="s_sponsorGroup">Sponsor / Advertisement (4:5 Standard only)</h2>
+        <label id="s_adTypeLabel">Ad Type</label>
         <div class="toggle-row">
-          <button id="ratioSquareBtn" class="active" data-ratio="square">1:1 Square / சதுரம்</button>
-          <button id="ratioPortraitBtn" data-ratio="portrait">4:5 Standard / 4:5 நிலையான</button>
-          <button id="ratioBoxedBtn" data-ratio="boxed">4:5 Boxed / 4:5 பெட்டி</button>
-        </div>
-        <div class="hint">Standard 4:5 reserves a fixed footer band for ads. Boxed uses a modern card style with a header tag and a rounded content box, and its ad area hides automatically when empty. / நிலையான 4:5 விளம்பரத்திற்கு நிலையான அடிக்குறிப்புப் பகுதியை ஒதுக்கும். பெட்டி வடிவமைப்பு மேல் குறிச்சொல்லுடனும் வட்டமான உள்ளடக்கப் பெட்டியுடனும் நவீன பாணியில் இருக்கும்; அதன் விளம்பரப் பகுதி காலியாக இருக்கும்போது தானாக மறையும்.</div>
-      </div>
-
-      <div class="group">
-        <h2>Header Tag (Boxed Layout) / மேல் குறிச்சொல் (பெட்டி வடிவமைப்பு)</h2>
-        <label>Tag Text (optional) / குறிச்சொல் உரை (விருப்பத்தேர்வு)</label>
-        <input type="text" id="headerTagInput" value="BREAKING NEWS / முக்கிய செய்தி" placeholder="e.g. JUST IN / எ.கா. உடனடி செய்தி">
-        <div class="color-row" style="margin-top:14px;">
-          <div class="color-field">
-            <label>Tag Background Color / குறிச்சொல் பின்னணி நிறம்</label>
-            <input type="color" id="headerTagBgInput" value="#b3311c">
-          </div>
-          <div class="color-field">
-            <label>Tag Text Color / குறிச்சொல் உரை நிறம்</label>
-            <input type="color" id="headerTagTextColorInput" value="#ffffff">
-          </div>
-        </div>
-        <div class="hint">Only appears in the 4:5 Boxed layout, above the photo. Leave empty to hide it. / இது 4:5 பெட்டி வடிவமைப்பில் மட்டும், புகைப்படத்திற்கு மேலே தோன்றும். காலியாக விட்டால் மறைந்துவிடும்.</div>
-      </div>
-
-      <div class="group">
-        <h2>Boxed Title &amp; Content Styling / பெட்டி தலைப்பு &amp; உள்ளடக்க அலங்காரம்</h2>
-        <label>Container Background Color / கொள்கலன் பின்னணி நிறம்</label>
-        <input type="color" id="boxBgColorInput" value="#ffffff">
-        <div class="color-row" style="margin-top:14px;">
-          <div class="color-field">
-            <label>Title Text Color / தலைப்பு உரை நிறம்</label>
-            <input type="color" id="boxTitleColorInput" value="#14171c">
-          </div>
-          <div class="color-field">
-            <label>Content Text Color / உள்ளடக்க உரை நிறம்</label>
-            <input type="color" id="boxContentColorInput" value="#4a4f58">
-          </div>
-        </div>
-        <div class="hint">Applies only to the 4:5 Boxed layout's rounded content box. / இது 4:5 பெட்டி வடிவமைப்பின் வட்டமான உள்ளடக்கப் பெட்டிக்கு மட்டும் பொருந்தும்.</div>
-      </div>
-
-      <div class="group">
-        <h2>Sponsor / Advertisement (4:5 only) / ஸ்பான்சர் / விளம்பரம் (4:5 மட்டும்)</h2>
-        <label>Ad Type / விளம்பர வகை</label>
-        <div class="toggle-row">
-          <button id="adTypeTextBtn" class="active" data-adtype="text">Text Ad / உரை விளம்பரம்</button>
-          <button id="adTypeImageBtn" data-adtype="image">Image Ad / பட விளம்பரம்</button>
+          <button id="adTypeTextBtn" class="active" data-adtype="text"><span id="s_adText">Text Ad</span></button>
+          <button id="adTypeImageBtn" data-adtype="image"><span id="s_adImage">Image Ad</span></button>
         </div>
 
         <div id="footerTextWrap">
-          <label>Footer Text (ad / sponsor) / அடிக்குறிப்பு உரை (விளம்பரம் / ஸ்பான்சர்)</label>
-          <input type="text" id="footerInput" placeholder="Sponsored by… / வழங்குபவர்…">
+          <label id="s_footerTextLabel">Footer Text (ad / sponsor)</label>
+          <input type="text" id="footerInput">
         </div>
 
         <div id="footerImageWrap" style="display:none;">
-          <label>Ad Creative Image / விளம்பரப் படம்</label>
+          <label id="s_adImageLabel">Ad Creative Image</label>
           <div class="file-row">
-            <label class="file-btn" for="adImageInput">Choose Image… / படத்தைத் தேர்ந்தெடு…</label>
+            <label class="file-btn" for="adImageInput" id="s_chooseAdImage">Choose Image…</label>
             <input type="file" id="adImageInput" accept="image/*">
             <img id="adImageThumb" class="thumb">
             <button class="clear-x" id="clearAdImage" title="Remove ad image">✕</button>
           </div>
-          <div class="hint">Recommended Ad Size: 1080 × 216 px / பரிந்துரைக்கப்பட்ட அளவு: 1080 × 216 px</div>
+          <div class="hint" id="s_adSizeHint">Recommended Ad Size: 1080 × 216 px</div>
         </div>
-        <div class="hint">In the Boxed layout, this section is hidden automatically when empty, and the content box expands to fill the space. / பெட்டி வடிவமைப்பில், இந்தப் பகுதி காலியாக இருக்கும்போது தானாக மறைந்து, உள்ளடக்கப் பெட்டி விரிவடையும்.</div>
+        <div class="hint" id="s_sponsorNote">Shown only when filled in — hidden automatically when empty, letting the news content expand. Does not appear in the 4:5 Boxed layout.</div>
       </div>
 
       <div class="group">
-        <h2>Storage / சேமிப்பு</h2>
-        <button class="action-btn btn-save" id="saveBtn">Save to Browser Storage / உலாவி சேமிப்பில் சேமி</button>
-        <button class="action-btn btn-danger" id="clearStorageBtn">Clear Saved Data / சேமித்த தரவை அழி</button>
+        <h2 id="s_storageGroup">Storage</h2>
+        <button class="action-btn btn-save" id="saveBtn"><span id="s_saveBtn">Save to Browser Storage</span></button>
+        <button class="action-btn btn-danger" id="clearStorageBtn"><span id="s_clearBtn">Clear Saved Data</span></button>
         <div class="status-msg" id="statusMsg"></div>
       </div>
 
       <div class="group">
-        <h2>Export / ஏற்றுமதி</h2>
-        <button class="action-btn btn-print" id="printBtn">Print / Save as PDF / அச்சிடு / PDF ஆக சேமி</button>
-        <button class="action-btn btn-image" id="imageBtn">Save as Image (PNG) / படமாக சேமி</button>
+        <h2 id="s_exportGroup">Export</h2>
+        <button class="action-btn btn-print" id="printBtn"><span id="s_printBtn">Print / Save as PDF</span></button>
+        <button class="action-btn btn-image" id="imageBtn"><span id="s_imageBtn">Save as Image (PNG)</span></button>
       </div>
 
     </div>
@@ -799,35 +494,49 @@
         <div class="header-tag" id="headerTag"></div>
 
         <div class="photo-area" id="photoArea">
-          <div id="layer-image-placeholder" class="layer">No image uploaded / படம் பதிவேற்றப்படவில்லை</div>
+          <div id="layer-image-placeholder" class="layer">No image uploaded</div>
           <img id="layer-image" class="layer" style="display:none;">
           <img id="layer-overlay" class="layer" style="display:none;">
           <img id="cardLogo" class="card-logo">
         </div>
 
         <div class="content-zone" id="contentZone">
-          <div class="card-meta-row" id="cardMetaRow">
-            <span class="location-badge" id="locationBadge"></span>
-            <span class="card-date" id="cardDateText"></span>
+          <div class="card-meta-row" id="cardMetaRowStd">
+            <span class="location-badge" id="locationBadgeStd"></span>
+            <span class="card-date" id="cardDateTextStd"></span>
           </div>
-          <h2 class="card-title" id="cardTitle"></h2>
-          <p class="card-subtitle" id="cardSubtitle"></p>
-          <div class="brand-divider-wrap" id="brandDividerWrap">
-            <div class="brand-divider-line" id="brandDividerLine"></div>
-            <span class="brand-badge" id="brandBadge"></span>
+          <h2 class="card-title" id="cardTitleStd"></h2>
+          <p class="card-subtitle" id="cardSubtitleStd"></p>
+          <div class="brand-divider-wrap" id="brandDividerWrapStd">
+            <div class="brand-divider-line" id="brandDividerLineStd"></div>
+            <span class="brand-badge" id="brandBadgeStd"></span>
           </div>
         </div>
 
-        <div id="boxedBottomArea">
-          <div id="boxedMetaSlot"></div>
-          <div class="title-box" id="titleBox"></div>
+        <div class="boxed-overlay" id="boxedOverlay">
+          <div class="boxed-meta-slot" id="boxedMetaSlot">
+            <div class="card-meta-row" id="cardMetaRowBoxed">
+              <span class="location-badge" id="locationBadgeBoxed"></span>
+              <span class="card-date" id="cardDateTextBoxed"></span>
+            </div>
+          </div>
+          <div class="title-bar" id="titleBar">
+            <h2 class="card-title in-bar" id="cardTitleBoxed"></h2>
+          </div>
+          <div class="title-box" id="titleBox">
+            <p class="card-subtitle in-box" id="cardSubtitleBoxed"></p>
+            <div class="brand-divider-wrap" id="brandDividerWrapBoxed">
+              <div class="brand-divider-line" id="brandDividerLineBoxed"></div>
+              <span class="brand-badge" id="brandBadgeBoxed"></span>
+            </div>
+          </div>
         </div>
 
         <div class="card-footer" id="cardFooter">
           <div class="footer-text-display" id="footerTextDisplay">Sponsored content</div>
           <div class="footer-image-display" id="footerImageDisplay">
             <img id="footerAdImage">
-            <div class="footer-ad-placeholder" id="footerAdPlaceholder">Recommended Ad Size: 1080 × 216 px / பரிந்துரைக்கப்பட்ட அளவு: 1080 × 216 px</div>
+            <div class="footer-ad-placeholder" id="footerAdPlaceholder">Recommended Ad Size: 1080 × 216 px</div>
           </div>
         </div>
       </div>
@@ -839,29 +548,118 @@
 (function(){
   const $ = (id) => document.getElementById(id);
 
-  // Only content that genuinely differs by language: card defaults & date formatting.
-  // All interface chrome is permanently bilingual (English / Tamil) in the markup itself.
-  const CONTENT_LANG = {
-    en: {
-      titleDefault:"Local Council Approves New Waterfront Plan",
-      footerDefault:"Sponsored content",
-      dateLocale:"en-US"
-    },
-    ta: {
-      titleDefault:"புதிய கரையோரத் திட்டத்திற்கு உள்ளூர் கவுன்சில் ஒப்புதல்",
-      footerDefault:"ஸ்பான்சர் செய்யப்பட்ட உள்ளடக்கம்",
-      dateLocale:"ta-IN"
-    }
+  // ---------- UI chrome strings: strict English vs bilingual (English / Tamil) ----------
+  // mode 'en' -> only the English string is shown. mode 'bi' -> the bilingual string is shown.
+  const STR = {
+    s_brandSub:        { en:"News Card Generator", bi:"News Card Generator / செய்தி அட்டை உருவாக்கி" },
+    s_langLabel:       { en:"Language", bi:"Language / மொழி" },
+    s_langHint:        { en:"Sets card date format & example text", bi:"Sets card date format & example text / அட்டையின் தேதி வடிவமைப்பு மற்றும் மாதிரி உரையை அமைக்கிறது" },
+
+    s_overlayGroup:    { en:"Overlay Frame", bi:"Overlay Frame / ஓவர்லே சட்டகம்" },
+    s_overlayLabel:    { en:"Upload PNG Overlay (transparent center)", bi:"Upload PNG Overlay (transparent center) / PNG ஓவர்லே பதிவேற்று (வெளிப்படையான மையப்பகுதி)" },
+    s_choosePng:       { en:"Choose PNG…", bi:"Choose PNG… / PNG தேர்ந்தெடு…" },
+    s_overlayHint:     { en:"Upload a PNG with a transparent window where the news photo should show through.", bi:"Upload a PNG with a transparent window where the news photo should show through. / செய்தி புகைப்படம் தெரியும்படி வெளிப்படையான பகுதியுடன் கூடிய PNG படத்தைப் பதிவேற்றவும்." },
+
+    s_imageGroup:      { en:"News Image", bi:"News Image / செய்தி படம்" },
+    s_imageLabel:      { en:"Background Photo", bi:"Background Photo / பின்னணி புகைப்படம்" },
+    s_chooseImage:     { en:"Choose Image…", bi:"Choose Image… / படத்தைத் தேர்ந்தெடு…" },
+
+    s_headlineGroup:   { en:"Headline & Details", bi:"Headline & Details / தலைப்பு & விவரங்கள்" },
+    s_titleLabel:      { en:"Title *", bi:"Title * / தலைப்பு *" },
+    titlePlaceholder:  { en:"Enter the headline…", bi:"Enter the headline… / தலைப்பை உள்ளிடவும்…" },
+    s_subtitleLabel:   { en:"Subtitle / Short Content (optional)", bi:"Subtitle / Short Content (optional) / துணைத்தலைப்பு / சுருக்கம் (விருப்பத்தேர்வு)" },
+    subtitlePlaceholder:{ en:"Add a short summary…", bi:"Add a short summary… / சுருக்கத்தைச் சேர்க்கவும்…" },
+    s_locationLabel:   { en:"Location (City / Region)", bi:"Location (City / Region) / இடம் (நகரம் / பகுதி)" },
+    locationPlaceholder:{ en:"e.g. Chennai", bi:"e.g. Chennai / எ.கா. சென்னை" },
+    s_dateLabel:       { en:"Date", bi:"Date / தேதி" },
+
+    s_brandGroup:      { en:"Website / Brand Divider Badge", bi:"Website / Brand Divider Badge / வலைத்தளம் / பிராண்ட் பேட்ஜ்" },
+    s_brandLabel:      { en:"Website / Brand Text (optional)", bi:"Website / Brand Text (optional) / வலைத்தளம் / பிராண்ட் உரை (விருப்பத்தேர்வு)" },
+    brandPlaceholder:  { en:"e.g. www.ipdtamil.com", bi:"e.g. www.ipdtamil.com / எ.கா. www.ipdtamil.com" },
+    s_brandHint:       { en:"Shows a thin divider line with a centered badge; leave the field empty to hide it completely.", bi:"Shows a thin divider line with a centered badge; leave the field empty to hide it completely. / மெல்லிய பிரிப்பான் கோட்டையும் நடுவில் பேட்ஜையும் காட்டும்; காலியாக விட்டால் முழுவதுமாக மறைந்துவிடும்." },
+
+    s_logoGroup:       { en:"Logo", bi:"Logo / லோகோ" },
+    s_logoLabel:       { en:"Upload Logo", bi:"Upload Logo / லோகோ அப்லோட்" },
+    s_chooseLogo:      { en:"Choose Logo…", bi:"Choose Logo… / லோகோவைத் தேர்ந்தெடு…" },
+    s_logoAlignLabel:  { en:"Logo Alignment", bi:"Logo Alignment / லோகோ சீரமைப்பு" },
+    s_alignLeft:       { en:"Left", bi:"Left / இடது" },
+    s_alignMiddle:     { en:"Middle", bi:"Middle / நடு" },
+    s_alignRight:      { en:"Right", bi:"Right / வலது" },
+
+    s_layoutGroup:     { en:"Layout", bi:"Layout / தளவமைப்பு" },
+    s_ratioLabel:      { en:"Aspect Ratio", bi:"Aspect Ratio / விகிதம்" },
+    s_ratioSquare:     { en:"1:1 Square", bi:"1:1 Square / சதுரம்" },
+    s_ratioPortrait:   { en:"4:5 Standard", bi:"4:5 Standard / 4:5 நிலையான" },
+    s_ratioBoxed:      { en:"4:5 Boxed", bi:"4:5 Boxed / 4:5 பெட்டி" },
+    s_ratioHint:       { en:"Standard 4:5 shows a sponsor band that appears only when filled in. Boxed 4:5 uses a full-width title bar and content box with no sponsor area at all.", bi:"Standard 4:5 shows a sponsor band that appears only when filled in. Boxed 4:5 uses a full-width title bar and content box with no sponsor area at all. / நிலையான 4:5-இல் நிரப்பப்படும்போது மட்டும் தோன்றும் ஸ்பான்சர் பட்டை இருக்கும். பெட்டி 4:5-இல் முழு அகல தலைப்பு பட்டையும் உள்ளடக்கப் பெட்டியும் இருக்கும், ஸ்பான்சர் பகுதி இருக்காது." },
+    s_headerTagLabel:  { en:"Header Tag Text (Boxed layout only, optional)", bi:"Header Tag Text (Boxed layout only, optional) / மேல் குறிச்சொல் உரை (பெட்டி வடிவமைப்புக்கு மட்டும், விருப்பத்தேர்வு)" },
+    headerTagPlaceholder:{ en:"e.g. BREAKING NEWS", bi:"e.g. BREAKING NEWS / எ.கா. முக்கிய செய்தி" },
+
+    s_stylingGroup:    { en:"Styling", bi:"Styling / அலங்காரம்" },
+    s_canvasSubhead:   { en:"Canvas Background", bi:"Canvas Background / கேன்வாஸ் பின்னணி" },
+    s_bgSolid:         { en:"Solid", bi:"Solid / திடமான நிறம்" },
+    s_bgGradient:      { en:"Gradient", bi:"Gradient / சாய்வு நிறம்" },
+    s_canvasColor1Label:{ en:"Background Color", bi:"Background Color / பின்னணி நிறம்" },
+    s_canvasColor2Label:{ en:"Gradient End Color", bi:"Gradient End Color / சாய்வு முடிவு நிறம்" },
+    s_locDateSubhead:  { en:"Location & Date Colors", bi:"Location & Date Colors / இடம் & தேதி நிறங்கள்" },
+    s_locBgLabel:      { en:"Location Background", bi:"Location Background / இட பேட்ஜ் பின்னணி நிறம்" },
+    s_locTextLabel:    { en:"Location Text Color", bi:"Location Text Color / இட பேட்ஜ் உரை நிறம்" },
+    s_dateColorLabel:  { en:"Date Color", bi:"Date Color / தேதி நிறம்" },
+    s_standardSubhead: { en:"Square / Standard Text Colors", bi:"Square / Standard Text Colors / சதுரம் / நிலையான உரை நிறங்கள்" },
+    s_titleColorLabel: { en:"Title Color", bi:"Title Color / தலைப்பு நிறம்" },
+    s_subtitleColorLabel:{ en:"Subtitle Color", bi:"Subtitle Color / துணைத்தலைப்பு நிறம்" },
+    s_boxedSubhead:    { en:"Boxed Layout Colors", bi:"Boxed Layout Colors / பெட்டி வடிவமைப்பு நிறங்கள்" },
+    s_headerTagBgLabel:{ en:"Header Tag Background", bi:"Header Tag Background / மேல் குறிச்சொல் பின்னணி" },
+    s_headerTagTextLabel:{ en:"Header Tag Text Color", bi:"Header Tag Text Color / மேல் குறிச்சொல் உரை நிறம்" },
+    s_titleBarBgLabel: { en:"Title Bar Background", bi:"Title Bar Background / தலைப்பு பட்டை பின்னணி" },
+    s_titleBarTextLabel:{ en:"Title Bar Text Color", bi:"Title Bar Text Color / தலைப்பு பட்டை உரை நிறம்" },
+    s_contentBoxBgLabel:{ en:"Content Box Background", bi:"Content Box Background / உள்ளடக்கப் பெட்டி பின்னணி" },
+    s_contentBoxTextLabel:{ en:"Content Box Text Color", bi:"Content Box Text Color / உள்ளடக்கப் பெட்டி உரை நிறம்" },
+    s_dividerSubhead:  { en:"Branding Divider Colors", bi:"Branding Divider Colors / பிராண்டிங் பிரிப்பான் நிறங்கள்" },
+    s_badgeBgLabel:    { en:"Badge Background Color", bi:"Badge Background Color / பேட்ஜ் பின்னணி நிறம்" },
+    s_badgeTextLabel:  { en:"Badge Text Color", bi:"Badge Text Color / பேட்ஜ் உரை நிறம்" },
+    s_dividerColorLabel:{ en:"Divider Line Color", bi:"Divider Line Color / பிரிப்பான் கோடு நிறம்" },
+
+    s_sponsorGroup:    { en:"Sponsor / Advertisement (4:5 Standard only)", bi:"Sponsor / Advertisement (4:5 Standard only) / ஸ்பான்சர் / விளம்பரம் (4:5 நிலையான மட்டும்)" },
+    s_adTypeLabel:     { en:"Ad Type", bi:"Ad Type / விளம்பர வகை" },
+    s_adText:          { en:"Text Ad", bi:"Text Ad / உரை விளம்பரம்" },
+    s_adImage:         { en:"Image Ad", bi:"Image Ad / பட விளம்பரம்" },
+    s_footerTextLabel: { en:"Footer Text (ad / sponsor)", bi:"Footer Text (ad / sponsor) / அடிக்குறிப்பு உரை (விளம்பரம் / ஸ்பான்சர்)" },
+    footerPlaceholder: { en:"Sponsored by…", bi:"Sponsored by… / வழங்குபவர்…" },
+    s_adImageLabel:    { en:"Ad Creative Image", bi:"Ad Creative Image / விளம்பரப் படம்" },
+    s_chooseAdImage:   { en:"Choose Image…", bi:"Choose Image… / படத்தைத் தேர்ந்தெடு…" },
+    s_adSizeHint:      { en:"Recommended Ad Size: 1080 × 216 px", bi:"Recommended Ad Size: 1080 × 216 px / பரிந்துரைக்கப்பட்ட அளவு: 1080 × 216 px" },
+    s_sponsorNote:     { en:"Shown only when filled in — hidden automatically when empty, letting the news content expand. Does not appear in the 4:5 Boxed layout.", bi:"Shown only when filled in — hidden automatically when empty, letting the news content expand. Does not appear in the 4:5 Boxed layout. / நிரப்பப்படும்போது மட்டும் காட்டப்படும் — காலியாக இருக்கும்போது தானாக மறைந்து, செய்தி உள்ளடக்கம் விரிவடையும். இது 4:5 பெட்டி வடிவமைப்பில் தோன்றாது." },
+
+    s_storageGroup:    { en:"Storage", bi:"Storage / சேமிப்பு" },
+    s_saveBtn:         { en:"Save to Browser Storage", bi:"Save to Browser Storage / உலாவி சேமிப்பில் சேமி" },
+    s_clearBtn:        { en:"Clear Saved Data", bi:"Clear Saved Data / சேமித்த தரவை அழி" },
+
+    s_exportGroup:     { en:"Export", bi:"Export / ஏற்றுமதி" },
+    s_printBtn:        { en:"Print / Save as PDF", bi:"Print / Save as PDF / அச்சிடு / PDF ஆக சேமி" },
+    s_imageBtn:        { en:"Save as Image (PNG)", bi:"Save as Image (PNG) / படமாக சேமி" },
+
+    noImagePlaceholder:{ en:"No image uploaded", bi:"No image uploaded / படம் பதிவேற்றப்படவில்லை" },
+    adPlaceholderText: { en:"Recommended Ad Size: 1080 × 216 px", bi:"Recommended Ad Size: 1080 × 216 px / பரிந்துரைக்கப்பட்ட அளவு: 1080 × 216 px" },
+
+    msg_saved:         { en:"Saved to browser storage.", bi:"Saved to browser storage. / உலாவி சேமிப்பில் சேமிக்கப்பட்டது." },
+    msg_cleared:       { en:"Saved data cleared.", bi:"Saved data cleared. / சேமித்த தரவு அழிக்கப்பட்டது." },
+    msg_saveErr:       { en:"Could not save — storage may be full.", bi:"Could not save — storage may be full. / சேமிக்க முடியவில்லை — சேமிப்பகம் நிறைந்திருக்கலாம்." },
+    msg_rendering:     { en:"Rendering image…", bi:"Rendering image… / படம் உருவாக்கப்படுகிறது…" },
+    msg_downloaded:    { en:"Image downloaded.", bi:"Image downloaded. / படம் பதிவிறக்கப்பட்டது." },
+    msg_renderErr:     { en:"Could not render image.", bi:"Could not render image. / படத்தை உருவாக்க முடியவில்லை." },
+    msg_required:      { en:"Please add a title before exporting.", bi:"Please add a title before exporting. / ஏற்றுமதி செய்வதற்கு முன் தலைப்பைச் சேர்க்கவும்." }
   };
 
-  const MSG = {
-    saved:"Saved to browser storage. / உலாவி சேமிப்பில் சேமிக்கப்பட்டது.",
-    cleared:"Saved data cleared. / சேமித்த தரவு அழிக்கப்பட்டது.",
-    saveErr:"Could not save — storage may be full. / சேமிக்க முடியவில்லை — சேமிப்பகம் நிறைந்திருக்கலாம்.",
-    rendering:"Rendering image… / படம் உருவாக்கப்படுகிறது…",
-    downloaded:"Image downloaded. / படம் பதிவிறக்கப்பட்டது.",
-    renderErr:"Could not render image. / படத்தை உருவாக்க முடியவில்லை.",
-    requiredWarn:"Please add a title before exporting. / ஏற்றுமதி செய்வதற்கு முன் தலைப்பைச் சேர்க்கவும்."
+  function T(key){
+    const mode = state.lang === 'ta' ? 'bi' : 'en';
+    return (STR[key] && STR[key][mode]) || key;
+  }
+
+  // Card content that actually differs by language: example defaults & date formatting.
+  const CONTENT_LANG = {
+    en: { titleDefault:"Local Council Approves New Waterfront Plan", footerDefault:"Sponsored content", dateLocale:"en-US" },
+    ta: { titleDefault:"புதிய கரையோரத் திட்டத்திற்கு உள்ளூர் கவுன்சில் ஒப்புதல்", footerDefault:"ஸ்பான்சர் செய்யப்பட்ட உள்ளடக்கம்", dateLocale:"ta-IN" }
   };
 
   // ---------- Element refs ----------
@@ -875,49 +673,49 @@
   const footerInput = $('footerInput');
   const footerTextWrap = $('footerTextWrap'), footerImageWrap = $('footerImageWrap');
   const adImageInput = $('adImageInput'), adImageThumb = $('adImageThumb'), clearAdImage = $('clearAdImage');
-  const photoArea = $('photoArea');
   const layerImage = $('layer-image'), layerImagePlaceholder = $('layer-image-placeholder');
   const layerOverlay = $('layer-overlay'), cardLogo = $('cardLogo');
   const contentZone = $('contentZone');
-  const cardTitle = $('cardTitle'), cardSubtitle = $('cardSubtitle');
-  const cardMetaRow = $('cardMetaRow'), locationBadge = $('locationBadge'), cardDateText = $('cardDateText');
-  const brandDividerWrap = $('brandDividerWrap'), brandDividerLine = $('brandDividerLine'), brandBadge = $('brandBadge');
+  const cardTitleStd = $('cardTitleStd'), cardSubtitleStd = $('cardSubtitleStd');
+  const cardMetaRowStd = $('cardMetaRowStd'), locationBadgeStd = $('locationBadgeStd'), cardDateTextStd = $('cardDateTextStd');
+  const brandDividerWrapStd = $('brandDividerWrapStd'), brandDividerLineStd = $('brandDividerLineStd'), brandBadgeStd = $('brandBadgeStd');
+
+  const boxedOverlay = $('boxedOverlay'), boxedMetaSlot = $('boxedMetaSlot'), titleBar = $('titleBar'), titleBox = $('titleBox');
+  const cardTitleBoxed = $('cardTitleBoxed'), cardSubtitleBoxed = $('cardSubtitleBoxed');
+  const cardMetaRowBoxed = $('cardMetaRowBoxed'), locationBadgeBoxed = $('locationBadgeBoxed'), cardDateTextBoxed = $('cardDateTextBoxed');
+  const brandDividerWrapBoxed = $('brandDividerWrapBoxed'), brandDividerLineBoxed = $('brandDividerLineBoxed'), brandBadgeBoxed = $('brandBadgeBoxed');
+
   const footerTextDisplay = $('footerTextDisplay'), footerImageDisplay = $('footerImageDisplay');
   const footerAdImage = $('footerAdImage'), footerAdPlaceholder = $('footerAdPlaceholder');
+  const cardFooterEl = $('cardFooter');
   const headerTag = $('headerTag');
-  const boxedBottomArea = $('boxedBottomArea'), boxedMetaSlot = $('boxedMetaSlot'), titleBox = $('titleBox');
+
   const ratioSquareBtn = $('ratioSquareBtn'), ratioPortraitBtn = $('ratioPortraitBtn'), ratioBoxedBtn = $('ratioBoxedBtn');
   const adTypeTextBtn = $('adTypeTextBtn'), adTypeImageBtn = $('adTypeImageBtn');
   const logoAlignLeftBtn = $('logoAlignLeftBtn'), logoAlignMiddleBtn = $('logoAlignMiddleBtn'), logoAlignRightBtn = $('logoAlignRightBtn');
   const canvasBgSolidBtn = $('canvasBgSolidBtn'), canvasBgGradientBtn = $('canvasBgGradientBtn');
   const canvasColor1Input = $('canvasColor1Input'), canvasColor2Input = $('canvasColor2Input'), canvasColor2Wrap = $('canvasColor2Wrap');
   const headerTagInput = $('headerTagInput'), headerTagBgInput = $('headerTagBgInput'), headerTagTextColorInput = $('headerTagTextColorInput');
-  const boxBgColorInput = $('boxBgColorInput'), boxTitleColorInput = $('boxTitleColorInput'), boxContentColorInput = $('boxContentColorInput');
+  const titleBarBgInput = $('titleBarBgInput'), titleBarTextInput = $('titleBarTextInput');
+  const contentBoxBgInput = $('contentBoxBgInput'), contentBoxTextInput = $('contentBoxTextInput');
+  const standardColorsWrap = $('standardColorsWrap'), boxedColorsWrap = $('boxedColorsWrap');
   const saveBtn = $('saveBtn'), clearStorageBtn = $('clearStorageBtn'), statusMsg = $('statusMsg');
   const printBtn = $('printBtn'), imageBtn = $('imageBtn');
   const titleColorInput = $('titleColorInput'), subtitleColorInput = $('subtitleColorInput'), dateColorInput = $('dateColorInput');
   const locBgColorInput = $('locBgColorInput'), locTextColorInput = $('locTextColorInput');
   const brandBadgeBgInput = $('brandBadgeBgInput'), brandBadgeTextInput = $('brandBadgeTextInput'), dividerColorInput = $('dividerColorInput');
 
-  const STORAGE_KEY = 'dispatch-news-card-v6';
-  const EXPORT_WIDTH = 1080; // reference export resolution in px
+  const STORAGE_KEY = 'dispatch-news-card-v7';
+  const EXPORT_WIDTH = 1080;
 
   const DEFAULT_COLORS = {
-    titleColor:'#ffffff',
-    subtitleColor:'#e6e3da',
-    dateColor:'#e2543f',
-    locBgColor:'#b3311c',
-    locTextColor:'#ffffff',
-    brandBadgeBg:'#b3311c',
-    brandBadgeText:'#ffffff',
-    dividerColor:'#9aa0ab',
-    canvasColor1:'#101216',
-    canvasColor2:'#2c313b',
-    headerTagBg:'#b3311c',
-    headerTagTextColor:'#ffffff',
-    boxBgColor:'#ffffff',
-    boxTitleColor:'#14171c',
-    boxContentColor:'#4a4f58'
+    titleColor:'#ffffff', subtitleColor:'#e6e3da', dateColor:'#e2543f',
+    locBgColor:'#b3311c', locTextColor:'#ffffff',
+    brandBadgeBg:'#b3311c', brandBadgeText:'#ffffff', dividerColor:'#9aa0ab',
+    canvasColor1:'#101216', canvasColor2:'#2c313b',
+    headerTagBg:'#b3311c', headerTagTextColor:'#ffffff',
+    titleBarBg:'#14171c', titleBarText:'#ffffff',
+    contentBoxBg:'#ffffff', contentBoxText:'#3a3f47'
   };
 
   let state = {
@@ -939,12 +737,11 @@
     headerTagText:'BREAKING NEWS / முக்கிய செய்தி',
     headerTagBg:DEFAULT_COLORS.headerTagBg,
     headerTagTextColor:DEFAULT_COLORS.headerTagTextColor,
-    boxBgColor:DEFAULT_COLORS.boxBgColor,
-    boxTitleColor:DEFAULT_COLORS.boxTitleColor,
-    boxContentColor:DEFAULT_COLORS.boxContentColor
+    titleBarBg:DEFAULT_COLORS.titleBarBg,
+    titleBarText:DEFAULT_COLORS.titleBarText,
+    contentBoxBg:DEFAULT_COLORS.contentBoxBg,
+    contentBoxText:DEFAULT_COLORS.contentBoxText
   };
-
-  let domInBoxedMode = false;
 
   // ---------- helpers ----------
   function fileToDataUrl(file, cb){
@@ -959,8 +756,26 @@
     if(msg) setTimeout(() => { if(statusMsg.textContent === msg) statusMsg.textContent=''; }, 3200);
   }
 
-  // ---------- language (content-only) ----------
-  function applyLanguage(){
+  // ---------- UI chrome language (strict English vs bilingual) ----------
+  function applyUILanguage(){
+    Object.keys(STR).forEach((key) => {
+      const el = $(key);
+      if(el) el.textContent = T(key);
+    });
+    titleInput.placeholder = T('titlePlaceholder');
+    subtitleInput.placeholder = T('subtitlePlaceholder');
+    locationInput.placeholder = T('locationPlaceholder');
+    brandInput.placeholder = T('brandPlaceholder');
+    headerTagInput.placeholder = T('headerTagPlaceholder');
+    footerInput.placeholder = T('footerPlaceholder');
+    footerAdPlaceholder.textContent = T('adPlaceholderText');
+    if(!layerImage.style.display || layerImage.style.display === 'none'){
+      layerImagePlaceholder.textContent = T('noImagePlaceholder');
+    }
+  }
+
+  // ---------- card content language (defaults + date locale) ----------
+  function applyContentLanguage(){
     const dict = CONTENT_LANG[state.lang];
     const other = state.lang === 'en' ? 'ta' : 'en';
     card.classList.toggle('lang-ta', state.lang === 'ta');
@@ -1002,6 +817,7 @@
     } else {
       layerImage.style.display = 'none';
       layerImagePlaceholder.style.display = 'flex';
+      layerImagePlaceholder.textContent = T('noImagePlaceholder');
       imageThumb.style.display = 'none';
       clearImage.style.display = 'none';
     }
@@ -1025,19 +841,13 @@
     [logoAlignLeftBtn, logoAlignMiddleBtn, logoAlignRightBtn].forEach(b => b.classList.remove('active'));
     if(state.logoAlign === 'middle'){
       logoAlignMiddleBtn.classList.add('active');
-      cardLogo.style.left = '50%';
-      cardLogo.style.right = 'auto';
-      cardLogo.style.transform = 'translateX(-50%)';
+      cardLogo.style.left = '50%'; cardLogo.style.right = 'auto'; cardLogo.style.transform = 'translateX(-50%)';
     } else if(state.logoAlign === 'right'){
       logoAlignRightBtn.classList.add('active');
-      cardLogo.style.left = 'auto';
-      cardLogo.style.right = '4%';
-      cardLogo.style.transform = 'none';
+      cardLogo.style.left = 'auto'; cardLogo.style.right = '4%'; cardLogo.style.transform = 'none';
     } else {
       logoAlignLeftBtn.classList.add('active');
-      cardLogo.style.left = '4%';
-      cardLogo.style.right = 'auto';
-      cardLogo.style.transform = 'none';
+      cardLogo.style.left = '4%'; cardLogo.style.right = 'auto'; cardLogo.style.transform = 'none';
     }
   }
 
@@ -1055,59 +865,75 @@
   function renderContent(){
     const isBoxed = state.ratio === 'boxed';
 
-    cardTitle.textContent = state.title;
-    cardTitle.style.color = isBoxed ? state.boxTitleColor : state.titleColor;
-
-    if(state.subtitle && state.subtitle.trim()){
-      cardSubtitle.textContent = state.subtitle;
-      cardSubtitle.style.display = 'block';
-    } else {
-      cardSubtitle.textContent = '';
-      cardSubtitle.style.display = 'none';
-    }
-    cardSubtitle.style.color = isBoxed ? state.boxContentColor : state.subtitleColor;
-
-    const locationText = state.location && state.location.trim();
-    if(locationText){
-      locationBadge.textContent = locationText;
-      locationBadge.style.display = 'inline-block';
-    } else {
-      locationBadge.textContent = '';
-      locationBadge.style.display = 'none';
-    }
-    locationBadge.style.background = state.locBgColor;
-    locationBadge.style.color = state.locTextColor;
-
     const dateText = formatDate(state.date);
-    if(dateText){
-      cardDateText.textContent = dateText;
-      cardDateText.style.display = 'inline-block';
-    } else {
-      cardDateText.textContent = '';
-      cardDateText.style.display = 'none';
-    }
-    cardDateText.style.color = state.dateColor;
+    const locationText = state.location && state.location.trim();
 
-    cardMetaRow.style.display = (locationText || dateText) ? 'flex' : 'none';
+    // Standard/Square set
+    cardTitleStd.textContent = state.title;
+    cardTitleStd.style.color = state.titleColor;
+    if(state.subtitle && state.subtitle.trim()){
+      cardSubtitleStd.textContent = state.subtitle;
+      cardSubtitleStd.style.display = 'block';
+    } else {
+      cardSubtitleStd.textContent = '';
+      cardSubtitleStd.style.display = 'none';
+    }
+    cardSubtitleStd.style.color = state.subtitleColor;
+    locationBadgeStd.textContent = locationText || '';
+    locationBadgeStd.style.display = locationText ? 'inline-block' : 'none';
+    locationBadgeStd.style.background = state.locBgColor;
+    locationBadgeStd.style.color = state.locTextColor;
+    cardDateTextStd.textContent = dateText || '';
+    cardDateTextStd.style.display = dateText ? 'inline-block' : 'none';
+    cardDateTextStd.style.color = state.dateColor;
+    cardMetaRowStd.style.display = (locationText || dateText) ? 'flex' : 'none';
+
+    // Boxed set
+    cardTitleBoxed.textContent = state.title;
+    cardTitleBoxed.style.color = state.titleBarText;
+    if(state.subtitle && state.subtitle.trim()){
+      cardSubtitleBoxed.textContent = state.subtitle;
+      cardSubtitleBoxed.style.display = 'block';
+    } else {
+      cardSubtitleBoxed.textContent = '';
+      cardSubtitleBoxed.style.display = 'none';
+    }
+    cardSubtitleBoxed.style.color = state.contentBoxText;
+    locationBadgeBoxed.textContent = locationText || '';
+    locationBadgeBoxed.style.display = locationText ? 'inline-block' : 'none';
+    locationBadgeBoxed.style.background = state.locBgColor;
+    locationBadgeBoxed.style.color = state.locTextColor;
+    cardDateTextBoxed.textContent = dateText || '';
+    cardDateTextBoxed.style.display = dateText ? 'inline-block' : 'none';
+    cardDateTextBoxed.style.color = state.dateColor;
+    cardMetaRowBoxed.style.display = (locationText || dateText) ? 'flex' : 'none';
+
+    titleBar.style.background = state.titleBarBg;
+    titleBox.style.background = state.contentBoxBg;
 
     footerTextDisplay.textContent = state.footer || CONTENT_LANG[state.lang].footerDefault;
 
     renderBrandDivider();
-    updateBoxedFooterVisibility();
+    updateSponsorVisibility();
   }
 
   function renderBrandDivider(){
     const brandText = state.brandText && state.brandText.trim();
-    if(brandText){
-      brandDividerWrap.style.display = 'flex';
-      brandBadge.textContent = brandText;
-      brandBadge.style.background = state.brandBadgeBg;
-      brandBadge.style.color = state.brandBadgeText;
-      brandDividerLine.style.background = state.dividerColor;
-    } else {
-      brandDividerWrap.style.display = 'none';
-      brandBadge.textContent = '';
-    }
+    [
+      [brandDividerWrapStd, brandDividerLineStd, brandBadgeStd],
+      [brandDividerWrapBoxed, brandDividerLineBoxed, brandBadgeBoxed]
+    ].forEach(([wrap, line, badge]) => {
+      if(brandText){
+        wrap.style.display = 'flex';
+        badge.textContent = brandText;
+        badge.style.background = state.brandBadgeBg;
+        badge.style.color = state.brandBadgeText;
+        line.style.background = state.dividerColor;
+      } else {
+        wrap.style.display = 'none';
+        badge.textContent = '';
+      }
+    });
   }
 
   function renderCanvasBg(){
@@ -1132,42 +958,25 @@
     headerTag.style.color = state.headerTagTextColor;
   }
 
-  function renderBoxStyles(){
-    titleBox.style.background = state.boxBgColor;
+  function renderStylingPanelVisibility(){
+    standardColorsWrap.style.display = (state.ratio === 'boxed') ? 'none' : 'block';
+    boxedColorsWrap.style.display = (state.ratio === 'boxed') ? 'block' : 'none';
   }
 
-  const cardFooterEl = $('cardFooter');
-  function updateBoxedFooterVisibility(){
-    if(state.ratio !== 'boxed'){
-      cardFooterEl.style.removeProperty('display');
+  function updateSponsorVisibility(){
+    if(state.ratio === 'boxed'){
+      cardFooterEl.style.display = 'none';
       return;
     }
+    if(state.ratio === 'square'){
+      cardFooterEl.style.display = 'none';
+      contentZone.style.bottom = '0';
+      return;
+    }
+    // portrait (Standard 4:5): dynamic — show only when ad content exists
     const hasAd = state.adType === 'image' ? !!state.adImage : !!(state.footer && state.footer.trim());
     cardFooterEl.style.display = hasAd ? 'flex' : 'none';
-  }
-
-  function moveIntoBoxedDom(){
-    if(domInBoxedMode) return;
-    boxedMetaSlot.appendChild(cardMetaRow);
-    titleBox.appendChild(cardTitle);
-    titleBox.appendChild(cardSubtitle);
-    titleBox.appendChild(brandDividerWrap);
-    boxedBottomArea.appendChild(cardFooterEl);
-    cardTitle.classList.add('in-box');
-    cardSubtitle.classList.add('in-box');
-    domInBoxedMode = true;
-  }
-
-  function moveOutOfBoxedDom(){
-    if(!domInBoxedMode) return;
-    contentZone.appendChild(cardMetaRow);
-    contentZone.appendChild(cardTitle);
-    contentZone.appendChild(cardSubtitle);
-    contentZone.appendChild(brandDividerWrap);
-    card.appendChild(cardFooterEl);
-    cardTitle.classList.remove('in-box');
-    cardSubtitle.classList.remove('in-box');
-    domInBoxedMode = false;
+    contentZone.style.bottom = hasAd ? '16%' : '0';
   }
 
   function renderRatio(){
@@ -1177,21 +986,17 @@
     if(state.ratio === 'portrait'){
       card.classList.add('ratio-portrait');
       ratioPortraitBtn.classList.add('active');
-      moveOutOfBoxedDom();
     } else if(state.ratio === 'boxed'){
       card.classList.add('ratio-boxed');
       ratioBoxedBtn.classList.add('active');
-      moveIntoBoxedDom();
     } else {
       card.classList.add('ratio-square');
       ratioSquareBtn.classList.add('active');
-      moveOutOfBoxedDom();
     }
 
     renderContent();
     renderHeaderTag();
-    renderBoxStyles();
-    updateBoxedFooterVisibility();
+    renderStylingPanelVisibility();
   }
 
   function renderAdType(){
@@ -1223,7 +1028,7 @@
       footerTextDisplay.style.display = 'flex';
       footerImageDisplay.style.display = 'none';
     }
-    updateBoxedFooterVisibility();
+    updateSponsorVisibility();
   }
 
   function renderAll(){
@@ -1238,23 +1043,19 @@
 
   // ---------- events: files ----------
   overlayInput.addEventListener('change', (e) => {
-    const f = e.target.files[0];
-    if(!f) return;
+    const f = e.target.files[0]; if(!f) return;
     fileToDataUrl(f, (url) => { state.overlay = url; renderOverlay(); });
   });
   imageInput.addEventListener('change', (e) => {
-    const f = e.target.files[0];
-    if(!f) return;
+    const f = e.target.files[0]; if(!f) return;
     fileToDataUrl(f, (url) => { state.image = url; renderImage(); });
   });
   logoInput.addEventListener('change', (e) => {
-    const f = e.target.files[0];
-    if(!f) return;
+    const f = e.target.files[0]; if(!f) return;
     fileToDataUrl(f, (url) => { state.logo = url; renderLogo(); });
   });
   adImageInput.addEventListener('change', (e) => {
-    const f = e.target.files[0];
-    if(!f) return;
+    const f = e.target.files[0]; if(!f) return;
     fileToDataUrl(f, (url) => { state.adImage = url; renderAdType(); });
   });
 
@@ -1294,9 +1095,10 @@
   headerTagBgInput.addEventListener('input', () => { state.headerTagBg = headerTagBgInput.value; renderHeaderTag(); });
   headerTagTextColorInput.addEventListener('input', () => { state.headerTagTextColor = headerTagTextColorInput.value; renderHeaderTag(); });
 
-  boxBgColorInput.addEventListener('input', () => { state.boxBgColor = boxBgColorInput.value; renderBoxStyles(); });
-  boxTitleColorInput.addEventListener('input', () => { state.boxTitleColor = boxTitleColorInput.value; renderContent(); });
-  boxContentColorInput.addEventListener('input', () => { state.boxContentColor = boxContentColorInput.value; renderContent(); });
+  titleBarBgInput.addEventListener('input', () => { state.titleBarBg = titleBarBgInput.value; renderContent(); });
+  titleBarTextInput.addEventListener('input', () => { state.titleBarText = titleBarTextInput.value; renderContent(); });
+  contentBoxBgInput.addEventListener('input', () => { state.contentBoxBg = contentBoxBgInput.value; renderContent(); });
+  contentBoxTextInput.addEventListener('input', () => { state.contentBoxText = contentBoxTextInput.value; renderContent(); });
 
   // ---------- events: toggles ----------
   ratioSquareBtn.addEventListener('click', () => { state.ratio='square'; renderRatio(); });
@@ -1310,22 +1112,23 @@
 
   langSelect.addEventListener('change', () => {
     state.lang = langSelect.value;
-    applyLanguage();
+    applyUILanguage();
+    applyContentLanguage();
   });
 
   // ---------- storage ----------
   saveBtn.addEventListener('click', () => {
     try{
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      setStatus(MSG.saved);
+      setStatus(T('msg_saved'));
     }catch(err){
-      setStatus(MSG.saveErr, true);
+      setStatus(T('msg_saveErr'), true);
     }
   });
 
   clearStorageBtn.addEventListener('click', () => {
     localStorage.removeItem(STORAGE_KEY);
-    setStatus(MSG.cleared);
+    setStatus(T('msg_cleared'));
   });
 
   function loadFromStorage(){
@@ -1354,9 +1157,10 @@
       headerTagInput.value = (state.headerTagText !== undefined && state.headerTagText !== null) ? state.headerTagText : 'BREAKING NEWS / முக்கிய செய்தி';
       headerTagBgInput.value = state.headerTagBg || DEFAULT_COLORS.headerTagBg;
       headerTagTextColorInput.value = state.headerTagTextColor || DEFAULT_COLORS.headerTagTextColor;
-      boxBgColorInput.value = state.boxBgColor || DEFAULT_COLORS.boxBgColor;
-      boxTitleColorInput.value = state.boxTitleColor || DEFAULT_COLORS.boxTitleColor;
-      boxContentColorInput.value = state.boxContentColor || DEFAULT_COLORS.boxContentColor;
+      titleBarBgInput.value = state.titleBarBg || DEFAULT_COLORS.titleBarBg;
+      titleBarTextInput.value = state.titleBarText || DEFAULT_COLORS.titleBarText;
+      contentBoxBgInput.value = state.contentBoxBg || DEFAULT_COLORS.contentBoxBg;
+      contentBoxTextInput.value = state.contentBoxText || DEFAULT_COLORS.contentBoxText;
       return true;
     }catch(err){ return false; }
   }
@@ -1366,7 +1170,7 @@
     if(!state.title || !state.title.trim()){
       titleInput.classList.add('field-error');
       titleInput.focus();
-      setStatus(MSG.requiredWarn, true);
+      setStatus(T('msg_required'), true);
       return false;
     }
     return true;
@@ -1379,15 +1183,15 @@
 
   imageBtn.addEventListener('click', () => {
     if(!validateTitle()) return;
-    setStatus(MSG.rendering);
+    setStatus(T('msg_rendering'));
     const scale = EXPORT_WIDTH / card.offsetWidth;
     html2canvas(card, { useCORS:true, scale:scale, backgroundColor:null }).then((canvas) => {
       const link = document.createElement('a');
       link.download = 'news-card.png';
       link.href = canvas.toDataURL('image/png');
       link.click();
-      setStatus(MSG.downloaded);
-    }).catch(() => setStatus(MSG.renderErr, true));
+      setStatus(T('msg_downloaded'));
+    }).catch(() => setStatus(T('msg_renderErr'), true));
   });
 
   // ---------- init ----------
@@ -1403,7 +1207,8 @@
     footerInput.value = state.footer;
   }
   langSelect.value = state.lang;
-  applyLanguage();
+  applyUILanguage();
+  card.classList.toggle('lang-ta', state.lang === 'ta');
   renderAll();
 })();
 </script>
