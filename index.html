@@ -260,7 +260,7 @@
   #card{
     position:relative;
     width:min(440px, 92vw);
-    background:#000;
+    background:#101216;
     overflow:hidden;
     box-shadow:0 20px 44px rgba(0,0,0,0.5);
     font-family:Georgia, 'Times New Roman', serif;
@@ -268,6 +268,40 @@
   #card.lang-ta{ font-family:'Noto Serif Tamil', Georgia, serif; }
   #card.ratio-square{ aspect-ratio: 1 / 1; }
   #card.ratio-portrait{ aspect-ratio: 4 / 5; }
+  #card.ratio-boxed{
+    aspect-ratio: 4 / 5;
+    display:flex;
+    flex-direction:column;
+    border-radius:20px;
+  }
+
+  /* header tag — boxed layout only */
+  .header-tag{
+    display:none;
+    width:100%;
+    padding:9px 14px;
+    text-align:center;
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:clamp(9px,2.6vw,12px);
+    font-weight:700;
+    letter-spacing:1.2px;
+    text-transform:uppercase;
+    flex:0 0 auto;
+  }
+  #card.lang-ta .header-tag{ font-family:'Noto Sans Tamil','Helvetica Neue',Arial,sans-serif; letter-spacing:0.5px; }
+
+  /* photo area (shared container for image + overlay + logo) */
+  .photo-area{
+    position:absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+  }
+  #card.ratio-boxed .photo-area{
+    position:relative;
+    top:auto; left:auto;
+    flex:0 0 auto;
+    height:42%;
+  }
 
   .layer{
     position:absolute;
@@ -302,6 +336,8 @@
   #card.ratio-portrait .content-zone{
     bottom:16%; /* leave room for footer band */
   }
+  #card.ratio-boxed .content-zone{ display:none; }
+
   .card-meta-row{
     display:flex;
     align-items:center;
@@ -335,6 +371,7 @@
     margin:0;
     text-shadow:0 2px 10px rgba(0,0,0,0.4);
   }
+  .card-title.in-box{ text-shadow:none; }
   .card-subtitle{
     font-family:'Helvetica Neue', Arial, sans-serif;
     font-size:clamp(11px,3vw,14px);
@@ -387,6 +424,28 @@
     line-height:1.5;
   }
 
+  /* boxed layout: content lives below the photo, in normal flex flow */
+  #boxedBottomArea{
+    display:none;
+    flex-direction:column;
+    flex:1 1 auto;
+    min-height:0;
+    padding:5%;
+    gap:12px;
+  }
+  #card.ratio-boxed #boxedBottomArea{ display:flex; }
+
+  .title-box{
+    border-radius:16px;
+    padding:6% 7%;
+    flex:1 1 auto;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    overflow:hidden;
+  }
+
   .card-footer{
     position:absolute;
     left:0; right:0; bottom:0;
@@ -403,6 +462,16 @@
     overflow:hidden;
   }
   #card.ratio-portrait .card-footer{display:flex;}
+  #card.ratio-boxed .card-footer{
+    position:relative;
+    left:auto; right:auto; bottom:auto;
+    height:auto;
+    aspect-ratio: 1080 / 216;
+    width:100%;
+    flex:0 0 auto;
+    border-radius:12px;
+    border-top:none;
+  }
   .footer-text-display{
     font-size:clamp(9px,2.4vw,11px);
     letter-spacing:0.5px;
@@ -598,7 +667,7 @@
             <input type="color" id="locTextColorInput" value="#ffffff">
           </div>
         </div>
-        <div class="hint">Colors apply live to the preview and are saved with your card. / நிறங்கள் நேரடியாக முன்னோட்டத்தில் பயன்படுத்தப்பட்டு, உங்கள் அட்டையுடன் சேமிக்கப்படும்.</div>
+        <div class="hint">Colors apply live to the preview and are saved with your card. Used by the 1:1 and 4:5 Standard layouts. / நிறங்கள் நேரடியாக முன்னோட்டத்தில் பயன்படுத்தப்பட்டு சேமிக்கப்படும். இவை 1:1 மற்றும் 4:5 நிலையான வடிவமைப்புகளுக்குப் பொருந்தும்.</div>
       </div>
 
       <div class="group">
@@ -619,13 +688,68 @@
       </div>
 
       <div class="group">
+        <h2>Canvas Background / கேன்வாஸ் பின்னணி</h2>
+        <label>Background Style / பின்னணி பாணி</label>
+        <div class="toggle-row">
+          <button id="canvasBgSolidBtn" class="active" data-bgtype="solid">Solid / திடமான நிறம்</button>
+          <button id="canvasBgGradientBtn" data-bgtype="gradient">Gradient / சாய்வு நிறம்</button>
+        </div>
+        <div class="color-row" style="margin-top:14px;">
+          <div class="color-field">
+            <label id="canvasColor1Label">Background Color / பின்னணி நிறம்</label>
+            <input type="color" id="canvasColor1Input" value="#101216">
+          </div>
+          <div class="color-field" id="canvasColor2Wrap" style="display:none;">
+            <label>Gradient End Color / சாய்வு முடிவு நிறம்</label>
+            <input type="color" id="canvasColor2Input" value="#2c313b">
+          </div>
+        </div>
+        <div class="hint">Shows behind the photo and, in the Boxed layout, behind the content box. / இது புகைப்படத்திற்குப் பின்னால் மற்றும் பெட்டி வடிவமைப்பில் உள்ளடக்கப் பெட்டிக்குப் பின்னால் தெரியும்.</div>
+      </div>
+
+      <div class="group">
         <h2>Layout / தளவமைப்பு</h2>
         <label>Aspect Ratio / விகிதம்</label>
         <div class="toggle-row">
           <button id="ratioSquareBtn" class="active" data-ratio="square">1:1 Square / சதுரம்</button>
-          <button id="ratioPortraitBtn" data-ratio="portrait">4:5 Portrait / நிலைக்காட்சி</button>
+          <button id="ratioPortraitBtn" data-ratio="portrait">4:5 Standard / 4:5 நிலையான</button>
+          <button id="ratioBoxedBtn" data-ratio="boxed">4:5 Boxed / 4:5 பெட்டி</button>
         </div>
-        <div class="hint">4:5 reserves a footer band at the bottom for ads or sponsor content. / 4:5 விகிதத்தில் விளம்பரம் அல்லது ஸ்பான்சர் தகவலுக்கான அடிக்குறிப்புப் பகுதி இடம்பெறும்.</div>
+        <div class="hint">Standard 4:5 reserves a fixed footer band for ads. Boxed uses a modern card style with a header tag and a rounded content box, and its ad area hides automatically when empty. / நிலையான 4:5 விளம்பரத்திற்கு நிலையான அடிக்குறிப்புப் பகுதியை ஒதுக்கும். பெட்டி வடிவமைப்பு மேல் குறிச்சொல்லுடனும் வட்டமான உள்ளடக்கப் பெட்டியுடனும் நவீன பாணியில் இருக்கும்; அதன் விளம்பரப் பகுதி காலியாக இருக்கும்போது தானாக மறையும்.</div>
+      </div>
+
+      <div class="group">
+        <h2>Header Tag (Boxed Layout) / மேல் குறிச்சொல் (பெட்டி வடிவமைப்பு)</h2>
+        <label>Tag Text (optional) / குறிச்சொல் உரை (விருப்பத்தேர்வு)</label>
+        <input type="text" id="headerTagInput" value="BREAKING NEWS / முக்கிய செய்தி" placeholder="e.g. JUST IN / எ.கா. உடனடி செய்தி">
+        <div class="color-row" style="margin-top:14px;">
+          <div class="color-field">
+            <label>Tag Background Color / குறிச்சொல் பின்னணி நிறம்</label>
+            <input type="color" id="headerTagBgInput" value="#b3311c">
+          </div>
+          <div class="color-field">
+            <label>Tag Text Color / குறிச்சொல் உரை நிறம்</label>
+            <input type="color" id="headerTagTextColorInput" value="#ffffff">
+          </div>
+        </div>
+        <div class="hint">Only appears in the 4:5 Boxed layout, above the photo. Leave empty to hide it. / இது 4:5 பெட்டி வடிவமைப்பில் மட்டும், புகைப்படத்திற்கு மேலே தோன்றும். காலியாக விட்டால் மறைந்துவிடும்.</div>
+      </div>
+
+      <div class="group">
+        <h2>Boxed Title &amp; Content Styling / பெட்டி தலைப்பு &amp; உள்ளடக்க அலங்காரம்</h2>
+        <label>Container Background Color / கொள்கலன் பின்னணி நிறம்</label>
+        <input type="color" id="boxBgColorInput" value="#ffffff">
+        <div class="color-row" style="margin-top:14px;">
+          <div class="color-field">
+            <label>Title Text Color / தலைப்பு உரை நிறம்</label>
+            <input type="color" id="boxTitleColorInput" value="#14171c">
+          </div>
+          <div class="color-field">
+            <label>Content Text Color / உள்ளடக்க உரை நிறம்</label>
+            <input type="color" id="boxContentColorInput" value="#4a4f58">
+          </div>
+        </div>
+        <div class="hint">Applies only to the 4:5 Boxed layout's rounded content box. / இது 4:5 பெட்டி வடிவமைப்பின் வட்டமான உள்ளடக்கப் பெட்டிக்கு மட்டும் பொருந்தும்.</div>
       </div>
 
       <div class="group">
@@ -651,6 +775,7 @@
           </div>
           <div class="hint">Recommended Ad Size: 1080 × 216 px / பரிந்துரைக்கப்பட்ட அளவு: 1080 × 216 px</div>
         </div>
+        <div class="hint">In the Boxed layout, this section is hidden automatically when empty, and the content box expands to fill the space. / பெட்டி வடிவமைப்பில், இந்தப் பகுதி காலியாக இருக்கும்போது தானாக மறைந்து, உள்ளடக்கப் பெட்டி விரிவடையும்.</div>
       </div>
 
       <div class="group">
@@ -671,11 +796,16 @@
     <!-- PREVIEW -->
     <div class="stage-wrap">
       <div id="card" class="ratio-square">
-        <div id="layer-image-placeholder" class="layer">No image uploaded / படம் பதிவேற்றப்படவில்லை</div>
-        <img id="layer-image" class="layer" style="display:none;">
-        <img id="layer-overlay" class="layer" style="display:none;">
-        <img id="cardLogo" class="card-logo">
-        <div class="content-zone">
+        <div class="header-tag" id="headerTag"></div>
+
+        <div class="photo-area" id="photoArea">
+          <div id="layer-image-placeholder" class="layer">No image uploaded / படம் பதிவேற்றப்படவில்லை</div>
+          <img id="layer-image" class="layer" style="display:none;">
+          <img id="layer-overlay" class="layer" style="display:none;">
+          <img id="cardLogo" class="card-logo">
+        </div>
+
+        <div class="content-zone" id="contentZone">
           <div class="card-meta-row" id="cardMetaRow">
             <span class="location-badge" id="locationBadge"></span>
             <span class="card-date" id="cardDateText"></span>
@@ -687,6 +817,12 @@
             <span class="brand-badge" id="brandBadge"></span>
           </div>
         </div>
+
+        <div id="boxedBottomArea">
+          <div id="boxedMetaSlot"></div>
+          <div class="title-box" id="titleBox"></div>
+        </div>
+
         <div class="card-footer" id="cardFooter">
           <div class="footer-text-display" id="footerTextDisplay">Sponsored content</div>
           <div class="footer-image-display" id="footerImageDisplay">
@@ -739,23 +875,31 @@
   const footerInput = $('footerInput');
   const footerTextWrap = $('footerTextWrap'), footerImageWrap = $('footerImageWrap');
   const adImageInput = $('adImageInput'), adImageThumb = $('adImageThumb'), clearAdImage = $('clearAdImage');
+  const photoArea = $('photoArea');
   const layerImage = $('layer-image'), layerImagePlaceholder = $('layer-image-placeholder');
   const layerOverlay = $('layer-overlay'), cardLogo = $('cardLogo');
+  const contentZone = $('contentZone');
   const cardTitle = $('cardTitle'), cardSubtitle = $('cardSubtitle');
   const cardMetaRow = $('cardMetaRow'), locationBadge = $('locationBadge'), cardDateText = $('cardDateText');
   const brandDividerWrap = $('brandDividerWrap'), brandDividerLine = $('brandDividerLine'), brandBadge = $('brandBadge');
   const footerTextDisplay = $('footerTextDisplay'), footerImageDisplay = $('footerImageDisplay');
   const footerAdImage = $('footerAdImage'), footerAdPlaceholder = $('footerAdPlaceholder');
-  const ratioSquareBtn = $('ratioSquareBtn'), ratioPortraitBtn = $('ratioPortraitBtn');
+  const headerTag = $('headerTag');
+  const boxedBottomArea = $('boxedBottomArea'), boxedMetaSlot = $('boxedMetaSlot'), titleBox = $('titleBox');
+  const ratioSquareBtn = $('ratioSquareBtn'), ratioPortraitBtn = $('ratioPortraitBtn'), ratioBoxedBtn = $('ratioBoxedBtn');
   const adTypeTextBtn = $('adTypeTextBtn'), adTypeImageBtn = $('adTypeImageBtn');
   const logoAlignLeftBtn = $('logoAlignLeftBtn'), logoAlignMiddleBtn = $('logoAlignMiddleBtn'), logoAlignRightBtn = $('logoAlignRightBtn');
+  const canvasBgSolidBtn = $('canvasBgSolidBtn'), canvasBgGradientBtn = $('canvasBgGradientBtn');
+  const canvasColor1Input = $('canvasColor1Input'), canvasColor2Input = $('canvasColor2Input'), canvasColor2Wrap = $('canvasColor2Wrap');
+  const headerTagInput = $('headerTagInput'), headerTagBgInput = $('headerTagBgInput'), headerTagTextColorInput = $('headerTagTextColorInput');
+  const boxBgColorInput = $('boxBgColorInput'), boxTitleColorInput = $('boxTitleColorInput'), boxContentColorInput = $('boxContentColorInput');
   const saveBtn = $('saveBtn'), clearStorageBtn = $('clearStorageBtn'), statusMsg = $('statusMsg');
   const printBtn = $('printBtn'), imageBtn = $('imageBtn');
   const titleColorInput = $('titleColorInput'), subtitleColorInput = $('subtitleColorInput'), dateColorInput = $('dateColorInput');
   const locBgColorInput = $('locBgColorInput'), locTextColorInput = $('locTextColorInput');
   const brandBadgeBgInput = $('brandBadgeBgInput'), brandBadgeTextInput = $('brandBadgeTextInput'), dividerColorInput = $('dividerColorInput');
 
-  const STORAGE_KEY = 'dispatch-news-card-v5';
+  const STORAGE_KEY = 'dispatch-news-card-v6';
   const EXPORT_WIDTH = 1080; // reference export resolution in px
 
   const DEFAULT_COLORS = {
@@ -766,7 +910,14 @@
     locTextColor:'#ffffff',
     brandBadgeBg:'#b3311c',
     brandBadgeText:'#ffffff',
-    dividerColor:'#9aa0ab'
+    dividerColor:'#9aa0ab',
+    canvasColor1:'#101216',
+    canvasColor2:'#2c313b',
+    headerTagBg:'#b3311c',
+    headerTagTextColor:'#ffffff',
+    boxBgColor:'#ffffff',
+    boxTitleColor:'#14171c',
+    boxContentColor:'#4a4f58'
   };
 
   let state = {
@@ -781,8 +932,19 @@
     locTextColor:DEFAULT_COLORS.locTextColor,
     brandBadgeBg:DEFAULT_COLORS.brandBadgeBg,
     brandBadgeText:DEFAULT_COLORS.brandBadgeText,
-    dividerColor:DEFAULT_COLORS.dividerColor
+    dividerColor:DEFAULT_COLORS.dividerColor,
+    canvasBgType:'solid',
+    canvasColor1:DEFAULT_COLORS.canvasColor1,
+    canvasColor2:DEFAULT_COLORS.canvasColor2,
+    headerTagText:'BREAKING NEWS / முக்கிய செய்தி',
+    headerTagBg:DEFAULT_COLORS.headerTagBg,
+    headerTagTextColor:DEFAULT_COLORS.headerTagTextColor,
+    boxBgColor:DEFAULT_COLORS.boxBgColor,
+    boxTitleColor:DEFAULT_COLORS.boxTitleColor,
+    boxContentColor:DEFAULT_COLORS.boxContentColor
   };
+
+  let domInBoxedMode = false;
 
   // ---------- helpers ----------
   function fileToDataUrl(file, cb){
@@ -891,8 +1053,10 @@
   }
 
   function renderContent(){
+    const isBoxed = state.ratio === 'boxed';
+
     cardTitle.textContent = state.title;
-    cardTitle.style.color = state.titleColor;
+    cardTitle.style.color = isBoxed ? state.boxTitleColor : state.titleColor;
 
     if(state.subtitle && state.subtitle.trim()){
       cardSubtitle.textContent = state.subtitle;
@@ -901,7 +1065,7 @@
       cardSubtitle.textContent = '';
       cardSubtitle.style.display = 'none';
     }
-    cardSubtitle.style.color = state.subtitleColor;
+    cardSubtitle.style.color = isBoxed ? state.boxContentColor : state.subtitleColor;
 
     const locationText = state.location && state.location.trim();
     if(locationText){
@@ -929,6 +1093,7 @@
     footerTextDisplay.textContent = state.footer || CONTENT_LANG[state.lang].footerDefault;
 
     renderBrandDivider();
+    updateBoxedFooterVisibility();
   }
 
   function renderBrandDivider(){
@@ -945,18 +1110,88 @@
     }
   }
 
+  function renderCanvasBg(){
+    if(state.canvasBgType === 'gradient'){
+      card.style.background = 'linear-gradient(135deg, ' + state.canvasColor1 + ', ' + state.canvasColor2 + ')';
+      canvasBgGradientBtn.classList.add('active');
+      canvasBgSolidBtn.classList.remove('active');
+      canvasColor2Wrap.style.display = 'block';
+    } else {
+      card.style.background = state.canvasColor1;
+      canvasBgSolidBtn.classList.add('active');
+      canvasBgGradientBtn.classList.remove('active');
+      canvasColor2Wrap.style.display = 'none';
+    }
+  }
+
+  function renderHeaderTag(){
+    const txt = state.headerTagText && state.headerTagText.trim();
+    headerTag.textContent = txt || '';
+    headerTag.style.display = (state.ratio === 'boxed' && txt) ? 'block' : 'none';
+    headerTag.style.background = state.headerTagBg;
+    headerTag.style.color = state.headerTagTextColor;
+  }
+
+  function renderBoxStyles(){
+    titleBox.style.background = state.boxBgColor;
+  }
+
+  const cardFooterEl = $('cardFooter');
+  function updateBoxedFooterVisibility(){
+    if(state.ratio !== 'boxed'){
+      cardFooterEl.style.removeProperty('display');
+      return;
+    }
+    const hasAd = state.adType === 'image' ? !!state.adImage : !!(state.footer && state.footer.trim());
+    cardFooterEl.style.display = hasAd ? 'flex' : 'none';
+  }
+
+  function moveIntoBoxedDom(){
+    if(domInBoxedMode) return;
+    boxedMetaSlot.appendChild(cardMetaRow);
+    titleBox.appendChild(cardTitle);
+    titleBox.appendChild(cardSubtitle);
+    titleBox.appendChild(brandDividerWrap);
+    boxedBottomArea.appendChild(cardFooterEl);
+    cardTitle.classList.add('in-box');
+    cardSubtitle.classList.add('in-box');
+    domInBoxedMode = true;
+  }
+
+  function moveOutOfBoxedDom(){
+    if(!domInBoxedMode) return;
+    contentZone.appendChild(cardMetaRow);
+    contentZone.appendChild(cardTitle);
+    contentZone.appendChild(cardSubtitle);
+    contentZone.appendChild(brandDividerWrap);
+    card.appendChild(cardFooterEl);
+    cardTitle.classList.remove('in-box');
+    cardSubtitle.classList.remove('in-box');
+    domInBoxedMode = false;
+  }
+
   function renderRatio(){
+    card.classList.remove('ratio-square','ratio-portrait','ratio-boxed');
+    [ratioSquareBtn, ratioPortraitBtn, ratioBoxedBtn].forEach(b => b.classList.remove('active'));
+
     if(state.ratio === 'portrait'){
-      card.classList.remove('ratio-square');
       card.classList.add('ratio-portrait');
       ratioPortraitBtn.classList.add('active');
-      ratioSquareBtn.classList.remove('active');
+      moveOutOfBoxedDom();
+    } else if(state.ratio === 'boxed'){
+      card.classList.add('ratio-boxed');
+      ratioBoxedBtn.classList.add('active');
+      moveIntoBoxedDom();
     } else {
-      card.classList.remove('ratio-portrait');
       card.classList.add('ratio-square');
       ratioSquareBtn.classList.add('active');
-      ratioPortraitBtn.classList.remove('active');
+      moveOutOfBoxedDom();
     }
+
+    renderContent();
+    renderHeaderTag();
+    renderBoxStyles();
+    updateBoxedFooterVisibility();
   }
 
   function renderAdType(){
@@ -988,10 +1223,17 @@
       footerTextDisplay.style.display = 'flex';
       footerImageDisplay.style.display = 'none';
     }
+    updateBoxedFooterVisibility();
   }
 
   function renderAll(){
-    renderOverlay(); renderImage(); renderLogo(); renderLogoAlign(); renderContent(); renderRatio(); renderAdType();
+    renderOverlay();
+    renderImage();
+    renderLogo();
+    renderLogoAlign();
+    renderCanvasBg();
+    renderAdType();
+    renderRatio();
   }
 
   // ---------- events: files ----------
@@ -1043,9 +1285,23 @@
   brandBadgeTextInput.addEventListener('input', () => { state.brandBadgeText = brandBadgeTextInput.value; renderBrandDivider(); });
   dividerColorInput.addEventListener('input', () => { state.dividerColor = dividerColorInput.value; renderBrandDivider(); });
 
+  canvasBgSolidBtn.addEventListener('click', () => { state.canvasBgType = 'solid'; renderCanvasBg(); });
+  canvasBgGradientBtn.addEventListener('click', () => { state.canvasBgType = 'gradient'; renderCanvasBg(); });
+  canvasColor1Input.addEventListener('input', () => { state.canvasColor1 = canvasColor1Input.value; renderCanvasBg(); });
+  canvasColor2Input.addEventListener('input', () => { state.canvasColor2 = canvasColor2Input.value; renderCanvasBg(); });
+
+  headerTagInput.addEventListener('input', () => { state.headerTagText = headerTagInput.value; renderHeaderTag(); });
+  headerTagBgInput.addEventListener('input', () => { state.headerTagBg = headerTagBgInput.value; renderHeaderTag(); });
+  headerTagTextColorInput.addEventListener('input', () => { state.headerTagTextColor = headerTagTextColorInput.value; renderHeaderTag(); });
+
+  boxBgColorInput.addEventListener('input', () => { state.boxBgColor = boxBgColorInput.value; renderBoxStyles(); });
+  boxTitleColorInput.addEventListener('input', () => { state.boxTitleColor = boxTitleColorInput.value; renderContent(); });
+  boxContentColorInput.addEventListener('input', () => { state.boxContentColor = boxContentColorInput.value; renderContent(); });
+
   // ---------- events: toggles ----------
   ratioSquareBtn.addEventListener('click', () => { state.ratio='square'; renderRatio(); });
   ratioPortraitBtn.addEventListener('click', () => { state.ratio='portrait'; renderRatio(); });
+  ratioBoxedBtn.addEventListener('click', () => { state.ratio='boxed'; renderRatio(); });
   adTypeTextBtn.addEventListener('click', () => { state.adType='text'; renderAdType(); });
   adTypeImageBtn.addEventListener('click', () => { state.adType='image'; renderAdType(); });
   logoAlignLeftBtn.addEventListener('click', () => { state.logoAlign='left'; renderLogoAlign(); });
@@ -1093,6 +1349,14 @@
       brandBadgeBgInput.value = state.brandBadgeBg || DEFAULT_COLORS.brandBadgeBg;
       brandBadgeTextInput.value = state.brandBadgeText || DEFAULT_COLORS.brandBadgeText;
       dividerColorInput.value = state.dividerColor || DEFAULT_COLORS.dividerColor;
+      canvasColor1Input.value = state.canvasColor1 || DEFAULT_COLORS.canvasColor1;
+      canvasColor2Input.value = state.canvasColor2 || DEFAULT_COLORS.canvasColor2;
+      headerTagInput.value = (state.headerTagText !== undefined && state.headerTagText !== null) ? state.headerTagText : 'BREAKING NEWS / முக்கிய செய்தி';
+      headerTagBgInput.value = state.headerTagBg || DEFAULT_COLORS.headerTagBg;
+      headerTagTextColorInput.value = state.headerTagTextColor || DEFAULT_COLORS.headerTagTextColor;
+      boxBgColorInput.value = state.boxBgColor || DEFAULT_COLORS.boxBgColor;
+      boxTitleColorInput.value = state.boxTitleColor || DEFAULT_COLORS.boxTitleColor;
+      boxContentColorInput.value = state.boxContentColor || DEFAULT_COLORS.boxContentColor;
       return true;
     }catch(err){ return false; }
   }
