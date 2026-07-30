@@ -36,10 +36,20 @@
     align-items:flex-start;
     gap:10px;
   }
+  .topbar-brand-block{ display:flex; flex-direction:column; gap:2px; }
   .topbar-brand{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;}
   .topbar h1{ font-family:Georgia, 'Times New Roman', serif; font-size:22px; letter-spacing:0.5px; margin:0; }
   .topbar h1 span{ color:var(--press); font-family:Georgia, serif; font-style:italic; }
   .topbar small{ color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:1px; }
+  .topbar-slogan{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:9px;
+    font-weight:600;
+    letter-spacing:1.2px;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin:0;
+  }
   .lang-switch{ display:flex; align-items:center; gap:8px; width:100%; flex-wrap:wrap; }
   .lang-switch label{ font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:0; }
   .lang-switch select{
@@ -138,16 +148,25 @@
   }
   #card.lang-ta .header-tag{ font-family:'Noto Sans Tamil','Helvetica Neue',Arial,sans-serif; letter-spacing:0.5px; }
 
-  /* photo area (shared: image + overlay + logo), fills the whole card in every layout */
+  /* photo/video area (shared: image or video + overlay + logo), fills the whole card in every layout */
   .photo-area{ position:absolute; top:0; left:0; width:100%; height:100%; }
 
   .layer{ position:absolute; top:0; left:0; width:100%; height:100%; }
   #layer-image{ object-fit:cover; z-index:1; background:#333; }
+  #layer-video{ object-fit:cover; z-index:1; background:#333; }
   #layer-overlay{ z-index:3; pointer-events:none; object-fit:fill; }
   #layer-image-placeholder{
     z-index:1; display:flex; align-items:center; justify-content:center; color:#555;
     font-family:'Helvetica Neue', Arial, sans-serif; font-size:clamp(10px,3vw,13px);
     letter-spacing:0.5px; text-transform:uppercase; text-align:center; padding:16px;
+  }
+  .video-controls{
+    position:absolute; bottom:4%; right:4%; z-index:6; display:none;
+  }
+  .video-controls button{
+    background:rgba(20,23,28,0.72); color:#fff; border:1px solid rgba(255,255,255,0.35);
+    border-radius:999px; padding:8px 14px; font-size:clamp(9px,2.4vw,11px); font-weight:700;
+    cursor:pointer; letter-spacing:0.5px;
   }
 
   /* content zone — used by Square & Standard 4:5 */
@@ -200,9 +219,7 @@
   .boxed-overlay{ display:none; position:absolute; left:0; right:0; bottom:0; z-index:2; }
   #card.ratio-boxed .boxed-overlay{ display:block; }
   .boxed-meta-slot{ padding:0 6% 8px; }
-  .title-bar{
-    width:100%; padding:4% 6%; border-radius:0;
-  }
+  .title-bar{ width:100%; padding:4% 6%; border-radius:0; }
   .title-box{
     margin:0 6%; padding:5% 6% 6%;
     border-top-left-radius:0; border-top-right-radius:0;
@@ -257,9 +274,12 @@
 <body>
 
   <div class="topbar">
-    <div class="topbar-brand">
-      <h1>Dispatch<span>.</span></h1>
-      <small id="s_brandSub">News Card Generator</small>
+    <div class="topbar-brand-block">
+      <div class="topbar-brand">
+        <h1>Dispatch<span>.</span></h1>
+        <small id="s_brandSub">News Card Generator</small>
+      </div>
+      <div class="topbar-slogan" id="s_slogan">A PRODUCT OF IPD MEDIA NETWORKS</div>
     </div>
     <div class="lang-switch">
       <label for="langSelect" id="s_langLabel">Language</label>
@@ -288,13 +308,31 @@
       </div>
 
       <div class="group">
-        <h2 id="s_imageGroup">News Image</h2>
-        <label id="s_imageLabel">Background Photo</label>
-        <div class="file-row">
-          <label class="file-btn" for="imageInput" id="s_chooseImage">Choose Image…</label>
-          <input type="file" id="imageInput" accept="image/*">
-          <img id="imageThumb" class="thumb">
-          <button class="clear-x" id="clearImage" title="Remove image">✕</button>
+        <h2 id="s_mediaGroup">Media</h2>
+        <label id="s_mediaModeLabel">Media Mode</label>
+        <div class="toggle-row">
+          <button id="mediaModeImageBtn" class="active" data-mode="image"><span id="s_modeImage">Image Mode</span></button>
+          <button id="mediaModeVideoBtn" data-mode="video"><span id="s_modeVideo">Video Mode</span></button>
+        </div>
+
+        <div id="imageUploadWrap">
+          <label id="s_imageLabel">Background Photo</label>
+          <div class="file-row">
+            <label class="file-btn" for="imageInput" id="s_chooseImage">Choose Image…</label>
+            <input type="file" id="imageInput" accept="image/*">
+            <img id="imageThumb" class="thumb">
+            <button class="clear-x" id="clearImage" title="Remove image">✕</button>
+          </div>
+        </div>
+
+        <div id="videoUploadWrap" style="display:none;">
+          <label id="s_videoLabel">Background Video</label>
+          <div class="file-row">
+            <label class="file-btn" for="videoInput" id="s_chooseVideo">Choose Video…</label>
+            <input type="file" id="videoInput" accept="video/mp4,video/webm">
+            <button class="clear-x" id="clearVideo" title="Remove video">✕</button>
+          </div>
+          <div class="hint" id="s_videoHint">Accepts .mp4 or .webm files. Video is not saved to browser storage (file size) — re-upload it after reloading the page.</div>
         </div>
       </div>
 
@@ -496,8 +534,12 @@
         <div class="photo-area" id="photoArea">
           <div id="layer-image-placeholder" class="layer">No image uploaded</div>
           <img id="layer-image" class="layer" style="display:none;">
+          <video id="layer-video" class="layer" style="display:none;" muted loop playsinline></video>
           <img id="layer-overlay" class="layer" style="display:none;">
           <img id="cardLogo" class="card-logo">
+          <div class="video-controls" id="videoControls">
+            <button id="videoPlayPauseBtn" type="button"><span id="s_pauseBtn">Pause</span></button>
+          </div>
         </div>
 
         <div class="content-zone" id="contentZone">
@@ -549,9 +591,9 @@
   const $ = (id) => document.getElementById(id);
 
   // ---------- UI chrome strings: strict English vs bilingual (English / Tamil) ----------
-  // mode 'en' -> only the English string is shown. mode 'bi' -> the bilingual string is shown.
   const STR = {
     s_brandSub:        { en:"News Card Generator", bi:"News Card Generator / செய்தி அட்டை உருவாக்கி" },
+    s_slogan:          { en:"A PRODUCT OF IPD MEDIA NETWORKS", bi:"A PRODUCT OF IPD MEDIA NETWORKS / ஐபிடி மீடியா நெட்வொர்க்ஸ் தயாரிப்பு" },
     s_langLabel:       { en:"Language", bi:"Language / மொழி" },
     s_langHint:        { en:"Sets card date format & example text", bi:"Sets card date format & example text / அட்டையின் தேதி வடிவமைப்பு மற்றும் மாதிரி உரையை அமைக்கிறது" },
 
@@ -560,9 +602,17 @@
     s_choosePng:       { en:"Choose PNG…", bi:"Choose PNG… / PNG தேர்ந்தெடு…" },
     s_overlayHint:     { en:"Upload a PNG with a transparent window where the news photo should show through.", bi:"Upload a PNG with a transparent window where the news photo should show through. / செய்தி புகைப்படம் தெரியும்படி வெளிப்படையான பகுதியுடன் கூடிய PNG படத்தைப் பதிவேற்றவும்." },
 
-    s_imageGroup:      { en:"News Image", bi:"News Image / செய்தி படம்" },
+    s_mediaGroup:      { en:"Media", bi:"Media / மீடியா" },
+    s_mediaModeLabel:  { en:"Media Mode", bi:"Media Mode / மீடியா முறை" },
+    s_modeImage:       { en:"Image Mode", bi:"Image Mode / பட முறை" },
+    s_modeVideo:       { en:"Video Mode", bi:"Video Mode / வீடியோ முறை" },
     s_imageLabel:      { en:"Background Photo", bi:"Background Photo / பின்னணி புகைப்படம்" },
     s_chooseImage:     { en:"Choose Image…", bi:"Choose Image… / படத்தைத் தேர்ந்தெடு…" },
+    s_videoLabel:      { en:"Background Video", bi:"Background Video / பின்னணி வீடியோ" },
+    s_chooseVideo:     { en:"Choose Video…", bi:"Choose Video… / வீடியோவைத் தேர்ந்தெடு…" },
+    s_videoHint:       { en:"Accepts .mp4 or .webm files. Video is not saved to browser storage (file size) — re-upload it after reloading the page.", bi:"Accepts .mp4 or .webm files. Video is not saved to browser storage (file size) — re-upload it after reloading the page. / .mp4 அல்லது .webm கோப்புகளை மட்டும் ஏற்கும். கோப்பு அளவு காரணமாக வீடியோ உலாவி சேமிப்பில் சேமிக்கப்படாது — பக்கத்தை மீண்டும் ஏற்றிய பிறகு மீண்டும் பதிவேற்றவும்." },
+    s_playBtn:         { en:"Play", bi:"Play / இயக்கு" },
+    s_pauseBtn:         { en:"Pause", bi:"Pause / நிறுத்து" },
 
     s_headlineGroup:   { en:"Headline & Details", bi:"Headline & Details / தலைப்பு & விவரங்கள்" },
     s_titleLabel:      { en:"Title *", bi:"Title * / தலைப்பு *" },
@@ -637,17 +687,23 @@
 
     s_exportGroup:     { en:"Export", bi:"Export / ஏற்றுமதி" },
     s_printBtn:        { en:"Print / Save as PDF", bi:"Print / Save as PDF / அச்சிடு / PDF ஆக சேமி" },
-    s_imageBtn:        { en:"Save as Image (PNG)", bi:"Save as Image (PNG) / படமாக சேமி" },
+    s_imageBtn:        { en:"Save / Print as Image/PDF", bi:"Save / Print as Image/PDF / படமாக / PDF ஆக சேமி" },
+    s_exportVideoBtn:  { en:"Export / Download Video (MP4/WebM)", bi:"Export / Download Video (MP4/WebM) / வீடியோவை ஏற்றுமதி செய் (MP4/WebM)" },
 
     noImagePlaceholder:{ en:"No image uploaded", bi:"No image uploaded / படம் பதிவேற்றப்படவில்லை" },
+    noVideoPlaceholder:{ en:"No video uploaded", bi:"No video uploaded / வீடியோ பதிவேற்றப்படவில்லை" },
     adPlaceholderText: { en:"Recommended Ad Size: 1080 × 216 px", bi:"Recommended Ad Size: 1080 × 216 px / பரிந்துரைக்கப்பட்ட அளவு: 1080 × 216 px" },
 
     msg_saved:         { en:"Saved to browser storage.", bi:"Saved to browser storage. / உலாவி சேமிப்பில் சேமிக்கப்பட்டது." },
     msg_cleared:       { en:"Saved data cleared.", bi:"Saved data cleared. / சேமித்த தரவு அழிக்கப்பட்டது." },
     msg_saveErr:       { en:"Could not save — storage may be full.", bi:"Could not save — storage may be full. / சேமிக்க முடியவில்லை — சேமிப்பகம் நிறைந்திருக்கலாம்." },
     msg_rendering:     { en:"Rendering image…", bi:"Rendering image… / படம் உருவாக்கப்படுகிறது…" },
+    msg_recording:     { en:"Recording video…", bi:"Recording video… / வீடியோ பதிவு செய்யப்படுகிறது…" },
     msg_downloaded:    { en:"Image downloaded.", bi:"Image downloaded. / படம் பதிவிறக்கப்பட்டது." },
+    msg_videoDownloaded:{ en:"Video downloaded.", bi:"Video downloaded. / வீடியோ பதிவிறக்கப்பட்டது." },
     msg_renderErr:     { en:"Could not render image.", bi:"Could not render image. / படத்தை உருவாக்க முடியவில்லை." },
+    msg_videoErr:      { en:"Could not record video in this browser.", bi:"Could not record video in this browser. / இந்த உலாவியில் வீடியோவைப் பதிவு செய்ய முடியவில்லை." },
+    msg_noVideo:       { en:"Please upload a video first.", bi:"Please upload a video first. / முதலில் ஒரு வீடியோவைப் பதிவேற்றவும்." },
     msg_required:      { en:"Please add a title before exporting.", bi:"Please add a title before exporting. / ஏற்றுமதி செய்வதற்கு முன் தலைப்பைச் சேர்க்கவும்." }
   };
 
@@ -656,7 +712,6 @@
     return (STR[key] && STR[key][mode]) || key;
   }
 
-  // Card content that actually differs by language: example defaults & date formatting.
   const CONTENT_LANG = {
     en: { titleDefault:"Local Council Approves New Waterfront Plan", footerDefault:"Sponsored content", dateLocale:"en-US" },
     ta: { titleDefault:"புதிய கரையோரத் திட்டத்திற்கு உள்ளூர் கவுன்சில் ஒப்புதல்", footerDefault:"ஸ்பான்சர் செய்யப்பட்ட உள்ளடக்கம்", dateLocale:"ta-IN" }
@@ -666,14 +721,18 @@
   const card = $('card');
   const langSelect = $('langSelect');
   const overlayInput = $('overlayInput'), overlayThumb = $('overlayThumb'), clearOverlay = $('clearOverlay');
+  const mediaModeImageBtn = $('mediaModeImageBtn'), mediaModeVideoBtn = $('mediaModeVideoBtn');
+  const imageUploadWrap = $('imageUploadWrap'), videoUploadWrap = $('videoUploadWrap');
   const imageInput = $('imageInput'), imageThumb = $('imageThumb'), clearImage = $('clearImage');
+  const videoInput = $('videoInput'), clearVideo = $('clearVideo');
+  const videoControls = $('videoControls'), videoPlayPauseBtn = $('videoPlayPauseBtn');
   const logoInput = $('logoInput'), logoThumb = $('logoThumb'), clearLogo = $('clearLogo');
   const titleInput = $('titleInput'), subtitleInput = $('subtitleInput'), locationInput = $('locationInput'), dateInput = $('dateInput');
   const brandInput = $('brandInput');
   const footerInput = $('footerInput');
   const footerTextWrap = $('footerTextWrap'), footerImageWrap = $('footerImageWrap');
   const adImageInput = $('adImageInput'), adImageThumb = $('adImageThumb'), clearAdImage = $('clearAdImage');
-  const layerImage = $('layer-image'), layerImagePlaceholder = $('layer-image-placeholder');
+  const layerImage = $('layer-image'), layerVideo = $('layer-video'), layerImagePlaceholder = $('layer-image-placeholder');
   const layerOverlay = $('layer-overlay'), cardLogo = $('cardLogo');
   const contentZone = $('contentZone');
   const cardTitleStd = $('cardTitleStd'), cardSubtitleStd = $('cardSubtitleStd');
@@ -705,7 +764,7 @@
   const locBgColorInput = $('locBgColorInput'), locTextColorInput = $('locTextColorInput');
   const brandBadgeBgInput = $('brandBadgeBgInput'), brandBadgeTextInput = $('brandBadgeTextInput'), dividerColorInput = $('dividerColorInput');
 
-  const STORAGE_KEY = 'dispatch-news-card-v7';
+  const STORAGE_KEY = 'dispatch-news-card-v8';
   const EXPORT_WIDTH = 1080;
 
   const DEFAULT_COLORS = {
@@ -720,7 +779,8 @@
 
   let state = {
     lang:'en',
-    overlay:null, image:null, logo:null, adImage:null,
+    mediaMode:'image',
+    overlay:null, image:null, videoSrc:null, logo:null, adImage:null,
     title:'', subtitle:'', location:'', date:'', footer:'', brandText:'',
     ratio:'square', adType:'text', logoAlign:'left',
     titleColor:DEFAULT_COLORS.titleColor,
@@ -742,6 +802,8 @@
     contentBoxBg:DEFAULT_COLORS.contentBoxBg,
     contentBoxText:DEFAULT_COLORS.contentBoxText
   };
+
+  let recorder = null;
 
   // ---------- helpers ----------
   function fileToDataUrl(file, cb){
@@ -769,9 +831,8 @@
     headerTagInput.placeholder = T('headerTagPlaceholder');
     footerInput.placeholder = T('footerPlaceholder');
     footerAdPlaceholder.textContent = T('adPlaceholderText');
-    if(!layerImage.style.display || layerImage.style.display === 'none'){
-      layerImagePlaceholder.textContent = T('noImagePlaceholder');
-    }
+    renderExportButtons();
+    renderMedia();
   }
 
   // ---------- card content language (defaults + date locale) ----------
@@ -791,6 +852,47 @@
     renderContent();
   }
 
+  // ---------- media mode (image vs video) ----------
+  function renderMediaModeUI(){
+    mediaModeImageBtn.classList.toggle('active', state.mediaMode === 'image');
+    mediaModeVideoBtn.classList.toggle('active', state.mediaMode === 'video');
+    imageUploadWrap.style.display = (state.mediaMode === 'image') ? 'block' : 'none';
+    videoUploadWrap.style.display = (state.mediaMode === 'video') ? 'block' : 'none';
+  }
+
+  function renderMedia(){
+    if(state.mediaMode === 'video'){
+      layerImage.style.display = 'none';
+      if(state.videoSrc){
+        if(layerVideo.getAttribute('src') !== state.videoSrc){
+          layerVideo.src = state.videoSrc;
+        }
+        layerVideo.style.display = 'block';
+        layerImagePlaceholder.style.display = 'none';
+        videoControls.style.display = 'block';
+        layerVideo.play().catch(() => {});
+      } else {
+        layerVideo.style.display = 'none';
+        videoControls.style.display = 'none';
+        layerImagePlaceholder.style.display = 'flex';
+        layerImagePlaceholder.textContent = T('noVideoPlaceholder');
+      }
+    } else {
+      if(!layerVideo.paused) layerVideo.pause();
+      layerVideo.style.display = 'none';
+      videoControls.style.display = 'none';
+      if(state.image){
+        layerImage.src = state.image;
+        layerImage.style.display = 'block';
+        layerImagePlaceholder.style.display = 'none';
+      } else {
+        layerImage.style.display = 'none';
+        layerImagePlaceholder.style.display = 'flex';
+        layerImagePlaceholder.textContent = T('noImagePlaceholder');
+      }
+    }
+  }
+
   // ---------- render functions ----------
   function renderOverlay(){
     if(state.overlay){
@@ -803,23 +905,6 @@
       layerOverlay.style.display = 'none';
       overlayThumb.style.display = 'none';
       clearOverlay.style.display = 'none';
-    }
-  }
-
-  function renderImage(){
-    if(state.image){
-      layerImage.src = state.image;
-      layerImage.style.display = 'block';
-      layerImagePlaceholder.style.display = 'none';
-      imageThumb.src = state.image;
-      imageThumb.style.display = 'inline-block';
-      clearImage.style.display = 'inline-block';
-    } else {
-      layerImage.style.display = 'none';
-      layerImagePlaceholder.style.display = 'flex';
-      layerImagePlaceholder.textContent = T('noImagePlaceholder');
-      imageThumb.style.display = 'none';
-      clearImage.style.display = 'none';
     }
   }
 
@@ -863,12 +948,9 @@
   }
 
   function renderContent(){
-    const isBoxed = state.ratio === 'boxed';
-
     const dateText = formatDate(state.date);
     const locationText = state.location && state.location.trim();
 
-    // Standard/Square set
     cardTitleStd.textContent = state.title;
     cardTitleStd.style.color = state.titleColor;
     if(state.subtitle && state.subtitle.trim()){
@@ -888,7 +970,6 @@
     cardDateTextStd.style.color = state.dateColor;
     cardMetaRowStd.style.display = (locationText || dateText) ? 'flex' : 'none';
 
-    // Boxed set
     cardTitleBoxed.textContent = state.title;
     cardTitleBoxed.style.color = state.titleBarText;
     if(state.subtitle && state.subtitle.trim()){
@@ -973,7 +1054,6 @@
       contentZone.style.bottom = '0';
       return;
     }
-    // portrait (Standard 4:5): dynamic — show only when ad content exists
     const hasAd = state.adType === 'image' ? !!state.adImage : !!(state.footer && state.footer.trim());
     cardFooterEl.style.display = hasAd ? 'flex' : 'none';
     contentZone.style.bottom = hasAd ? '16%' : '0';
@@ -1031,14 +1111,26 @@
     updateSponsorVisibility();
   }
 
+  function renderExportButtons(){
+    if(state.mediaMode === 'video'){
+      printBtn.style.display = 'none';
+      $('s_imageBtn').textContent = T('s_exportVideoBtn');
+    } else {
+      printBtn.style.display = '';
+      $('s_imageBtn').textContent = T('s_imageBtn');
+    }
+  }
+
   function renderAll(){
     renderOverlay();
-    renderImage();
     renderLogo();
     renderLogoAlign();
     renderCanvasBg();
     renderAdType();
     renderRatio();
+    renderMediaModeUI();
+    renderMedia();
+    renderExportButtons();
   }
 
   // ---------- events: files ----------
@@ -1048,7 +1140,11 @@
   });
   imageInput.addEventListener('change', (e) => {
     const f = e.target.files[0]; if(!f) return;
-    fileToDataUrl(f, (url) => { state.image = url; renderImage(); });
+    fileToDataUrl(f, (url) => { state.image = url; renderMedia(); });
+  });
+  videoInput.addEventListener('change', (e) => {
+    const f = e.target.files[0]; if(!f) return;
+    fileToDataUrl(f, (url) => { state.videoSrc = url; renderMedia(); });
   });
   logoInput.addEventListener('change', (e) => {
     const f = e.target.files[0]; if(!f) return;
@@ -1060,9 +1156,23 @@
   });
 
   clearOverlay.addEventListener('click', () => { state.overlay=null; overlayInput.value=''; renderOverlay(); });
-  clearImage.addEventListener('click', () => { state.image=null; imageInput.value=''; renderImage(); });
+  clearImage.addEventListener('click', () => { state.image=null; imageInput.value=''; renderMedia(); });
+  clearVideo.addEventListener('click', () => { state.videoSrc=null; videoInput.value=''; layerVideo.removeAttribute('src'); layerVideo.load(); renderMedia(); });
   clearLogo.addEventListener('click', () => { state.logo=null; logoInput.value=''; renderLogo(); });
   clearAdImage.addEventListener('click', () => { state.adImage=null; adImageInput.value=''; renderAdType(); });
+
+  mediaModeImageBtn.addEventListener('click', () => { state.mediaMode='image'; renderMediaModeUI(); renderMedia(); renderExportButtons(); });
+  mediaModeVideoBtn.addEventListener('click', () => { state.mediaMode='video'; renderMediaModeUI(); renderMedia(); renderExportButtons(); });
+
+  videoPlayPauseBtn.addEventListener('click', () => {
+    if(layerVideo.paused){
+      layerVideo.play().catch(() => {});
+    } else {
+      layerVideo.pause();
+    }
+  });
+  layerVideo.addEventListener('play', () => { $('s_pauseBtn').textContent = T('s_pauseBtn'); });
+  layerVideo.addEventListener('pause', () => { $('s_pauseBtn').textContent = T('s_playBtn'); });
 
   // ---------- events: text fields ----------
   titleInput.addEventListener('input', () => {
@@ -1119,7 +1229,8 @@
   // ---------- storage ----------
   saveBtn.addEventListener('click', () => {
     try{
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      const toSave = Object.assign({}, state, { videoSrc: null }); // video is excluded (too large for localStorage)
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
       setStatus(T('msg_saved'));
     }catch(err){
       setStatus(T('msg_saveErr'), true);
@@ -1136,7 +1247,7 @@
     if(!raw) return false;
     try{
       const saved = JSON.parse(raw);
-      state = Object.assign(state, saved);
+      state = Object.assign(state, saved, { videoSrc: null });
       langSelect.value = state.lang || 'en';
       titleInput.value = state.title || '';
       subtitleInput.value = state.subtitle || '';
@@ -1165,6 +1276,246 @@
     }catch(err){ return false; }
   }
 
+  // ---------- shared drawing helpers (used for video export compositing) ----------
+  function roundRectCustom(ctx,x,y,w,h,tl,tr,br,bl){
+    ctx.beginPath();
+    ctx.moveTo(x+tl, y);
+    ctx.lineTo(x+w-tr, y);
+    ctx.arcTo(x+w, y, x+w, y+tr, tr);
+    ctx.lineTo(x+w, y+h-br);
+    ctx.arcTo(x+w, y+h, x+w-br, y+h, br);
+    ctx.lineTo(x+bl, y+h);
+    ctx.arcTo(x, y+h, x, y+h-bl, bl);
+    ctx.lineTo(x, y+tl);
+    ctx.arcTo(x, y, x+tl, y, tl);
+    ctx.closePath();
+  }
+
+  function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines){
+    const words = (text || '').split(/\s+/).filter(Boolean);
+    let line = '', lines = [];
+    for(let n=0;n<words.length;n++){
+      const testLine = line + words[n] + ' ';
+      if(ctx.measureText(testLine).width > maxWidth && n>0){
+        lines.push(line.trim());
+        line = words[n] + ' ';
+      } else {
+        line = testLine;
+      }
+    }
+    if(line.trim()) lines.push(line.trim());
+    if(maxLines && lines.length > maxLines){
+      lines = lines.slice(0, maxLines);
+      lines[maxLines-1] = lines[maxLines-1].replace(/\s*$/,'') + '…';
+    }
+    lines.forEach((l,i) => ctx.fillText(l, x, y + i*lineHeight));
+    return y + lines.length*lineHeight;
+  }
+
+  function fitFontToWidth(ctx, text, maxWidth, baseFont){
+    let t = text;
+    ctx.font = baseFont;
+    while(ctx.measureText(t).width > maxWidth && t.length > 3){
+      t = t.slice(0, -2);
+    }
+    if(t !== text) t = t.trim() + '…';
+    return t;
+  }
+
+  function drawCover(ctx, media, mw, mh, dx,dy,dw,dh){
+    if(!mw || !mh) return;
+    const scale = Math.max(dw/mw, dh/mh);
+    const sw = dw/scale, sh = dh/scale;
+    const sx = (mw-sw)/2, sy = (mh-sh)/2;
+    ctx.drawImage(media, sx, sy, sw, sh, dx, dy, dw, dh);
+  }
+
+  function drawBrandDivider(ctx, x, y, w, refH){
+    const brandText = state.brandText && state.brandText.trim();
+    if(!brandText) return;
+    ctx.strokeStyle = state.dividerColor;
+    ctx.lineWidth = Math.max(1, refH*0.0015);
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x+w, y);
+    ctx.stroke();
+    ctx.font = '600 ' + Math.round(refH*0.013) + 'px "Helvetica Neue", Arial, sans-serif';
+    const padX = refH*0.012;
+    const tw = ctx.measureText(brandText).width;
+    const pillW = tw+padX*2, pillH = refH*0.028;
+    ctx.fillStyle = state.brandBadgeBg;
+    roundRectCustom(ctx, x + w/2 - pillW/2, y-pillH/2, pillW, pillH, pillH/2,pillH/2,pillH/2,pillH/2);
+    ctx.fill();
+    ctx.fillStyle = state.brandBadgeText;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(brandText, x+w/2, y);
+    ctx.textAlign = 'left';
+  }
+
+  function drawMetaRow(ctx, x, y, h){
+    const locationText = state.location && state.location.trim();
+    const dateText = formatDate(state.date);
+    if(!locationText && !dateText) return x;
+    ctx.textBaseline = 'middle';
+    let mx = x;
+    if(locationText){
+      ctx.font = '700 ' + Math.round(h*0.018) + 'px "Helvetica Neue", Arial, sans-serif';
+      const padX = h*0.012;
+      const tw = ctx.measureText(locationText.toUpperCase()).width;
+      const pillW = tw+padX*2, pillH = h*0.032;
+      ctx.fillStyle = state.locBgColor;
+      roundRectCustom(ctx, mx, y-pillH/2, pillW, pillH, pillH/2,pillH/2,pillH/2,pillH/2);
+      ctx.fill();
+      ctx.fillStyle = state.locTextColor;
+      ctx.textAlign = 'left';
+      ctx.fillText(locationText.toUpperCase(), mx+padX, y);
+      mx += pillW + h*0.02;
+    }
+    if(dateText){
+      ctx.fillStyle = state.dateColor;
+      ctx.font = '700 ' + Math.round(h*0.016) + 'px "Helvetica Neue", Arial, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(dateText.toUpperCase(), mx, y);
+    }
+    return x;
+  }
+
+  function drawFrame(ctx, w, h){
+    ctx.clearRect(0,0,w,h);
+
+    if(state.canvasBgType === 'gradient'){
+      const g = ctx.createLinearGradient(0,0,w,h);
+      g.addColorStop(0, state.canvasColor1);
+      g.addColorStop(1, state.canvasColor2);
+      ctx.fillStyle = g;
+    } else {
+      ctx.fillStyle = state.canvasColor1;
+    }
+    ctx.fillRect(0,0,w,h);
+
+    if(state.mediaMode === 'video' && layerVideo.readyState >= 2 && layerVideo.videoWidth){
+      drawCover(ctx, layerVideo, layerVideo.videoWidth, layerVideo.videoHeight, 0,0,w,h);
+    } else if(state.mediaMode === 'image' && state.image && layerImage.complete && layerImage.naturalWidth){
+      drawCover(ctx, layerImage, layerImage.naturalWidth, layerImage.naturalHeight, 0,0,w,h);
+    }
+
+    if(state.overlay && layerOverlay.complete){
+      ctx.drawImage(layerOverlay, 0,0,w,h);
+    }
+
+    if(state.logo && cardLogo.complete && cardLogo.naturalWidth){
+      const lw = w*0.22;
+      const lh = Math.min(h*0.09, lw * (cardLogo.naturalHeight/cardLogo.naturalWidth));
+      let lx;
+      if(state.logoAlign === 'middle') lx = (w-lw)/2;
+      else if(state.logoAlign === 'right') lx = w - w*0.04 - lw;
+      else lx = w*0.04;
+      ctx.drawImage(cardLogo, lx, h*0.04, lw, lh);
+    }
+
+    const isBoxed = state.ratio === 'boxed';
+
+    if(isBoxed){
+      const tagText = state.headerTagText && state.headerTagText.trim();
+      if(tagText){
+        ctx.fillStyle = state.headerTagBg;
+        ctx.fillRect(0,0,w, h*0.045);
+        ctx.fillStyle = state.headerTagTextColor;
+        ctx.font = '700 ' + Math.round(h*0.02) + 'px "Helvetica Neue", Arial, sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(tagText.toUpperCase(), w/2, h*0.0225);
+        ctx.textAlign = 'left';
+      }
+
+      const boxMarginX = w*0.06;
+      const barH = h*0.09;
+      const boxH = h*0.18;
+      const hasMeta = (state.location && state.location.trim()) || formatDate(state.date);
+      const metaH = hasMeta ? h*0.05 : 0;
+      const by = h - boxH;
+      const barY = by - barH;
+      const metaY = barY - metaH;
+
+      if(hasMeta) drawMetaRow(ctx, boxMarginX, metaY + metaH/2, h);
+
+      ctx.fillStyle = state.titleBarBg;
+      ctx.fillRect(0, barY, w, barH);
+      ctx.fillStyle = state.titleBarText;
+      const barFont = '700 ' + Math.round(h*0.03) + 'px Georgia, serif';
+      const fitted = fitFontToWidth(ctx, state.title || '', w - boxMarginX*2, barFont);
+      ctx.font = barFont;
+      ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+      ctx.fillText(fitted, boxMarginX, barY + barH/2);
+
+      ctx.fillStyle = state.contentBoxBg;
+      roundRectCustom(ctx, boxMarginX, by, w-boxMarginX*2, boxH, 0,0, h*0.02, h*0.02);
+      ctx.fill();
+      ctx.fillStyle = state.contentBoxText;
+      ctx.font = '400 ' + Math.round(h*0.017) + 'px "Helvetica Neue", Arial, sans-serif';
+      ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+      let subBottom = by + h*0.03;
+      if(state.subtitle && state.subtitle.trim()){
+        subBottom = wrapText(ctx, state.subtitle, boxMarginX+w*0.02, by+h*0.025, w-boxMarginX*2-w*0.04, h*0.025, 3);
+      }
+      drawBrandDivider(ctx, boxMarginX+w*0.03, by+boxH-h*0.02, w-boxMarginX*2-w*0.06, h);
+    } else {
+      const hasAd = state.ratio === 'portrait' && (state.adType === 'image' ? !!state.adImage : !!(state.footer && state.footer.trim()));
+      const footerH = hasAd ? h*0.16 : 0;
+      const zoneTop = h*0.5;
+      const g = ctx.createLinearGradient(0, zoneTop, 0, h-footerH);
+      g.addColorStop(0,'rgba(0,0,0,0)');
+      g.addColorStop(1,'rgba(0,0,0,0.82)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, zoneTop, w, (h-footerH)-zoneTop);
+
+      const padX = w*0.06;
+      let cy = zoneTop + h*0.07;
+      const hasMeta = (state.location && state.location.trim()) || formatDate(state.date);
+      if(hasMeta){
+        drawMetaRow(ctx, padX, cy, h);
+        cy += h*0.05;
+      }
+      ctx.fillStyle = state.titleColor;
+      ctx.font = '700 ' + Math.round(h*0.032) + 'px Georgia, serif';
+      ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+      cy = wrapText(ctx, state.title || '', padX, cy, w-padX*2, h*0.04, 3);
+      if(state.subtitle && state.subtitle.trim()){
+        ctx.fillStyle = state.subtitleColor;
+        ctx.font = '400 ' + Math.round(h*0.017) + 'px "Helvetica Neue", Arial, sans-serif';
+        cy = wrapText(ctx, state.subtitle, padX, cy+h*0.01, w-padX*2, h*0.024, 3);
+      }
+      drawBrandDivider(ctx, padX, cy+h*0.015, w-padX*2, h);
+
+      if(hasAd){
+        ctx.fillStyle = '#f4f2ec';
+        ctx.fillRect(0, h-footerH, w, footerH);
+        if(state.adType === 'image' && state.adImage && footerAdImage.complete){
+          ctx.drawImage(footerAdImage, 0, h-footerH, w, footerH);
+        } else {
+          ctx.fillStyle = '#14171c';
+          ctx.font = '700 ' + Math.round(h*0.015) + 'px "Helvetica Neue", Arial, sans-serif';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText((state.footer || CONTENT_LANG[state.lang].footerDefault).toUpperCase(), w/2, h-footerH/2);
+          ctx.textAlign = 'left';
+        }
+      }
+    }
+  }
+
+  function pickSupportedMime(){
+    const candidates = [
+      'video/mp4;codecs=avc1',
+      'video/mp4',
+      'video/webm;codecs=vp9',
+      'video/webm;codecs=vp8',
+      'video/webm'
+    ];
+    for(const c of candidates){
+      if(window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(c)) return c;
+    }
+    return '';
+  }
+
   // ---------- export ----------
   function validateTitle(){
     if(!state.title || !state.title.trim()){
@@ -1181,8 +1532,7 @@
     window.print();
   });
 
-  imageBtn.addEventListener('click', () => {
-    if(!validateTitle()) return;
+  function exportImage(){
     setStatus(T('msg_rendering'));
     const scale = EXPORT_WIDTH / card.offsetWidth;
     html2canvas(card, { useCORS:true, scale:scale, backgroundColor:null }).then((canvas) => {
@@ -1192,6 +1542,83 @@
       link.click();
       setStatus(T('msg_downloaded'));
     }).catch(() => setStatus(T('msg_renderErr'), true));
+  }
+
+  function exportVideo(){
+    if(!state.videoSrc){
+      setStatus(T('msg_noVideo'), true);
+      return;
+    }
+    if(!window.MediaRecorder){
+      setStatus(T('msg_videoErr'), true);
+      return;
+    }
+    const mime = pickSupportedMime();
+    if(!mime){
+      setStatus(T('msg_videoErr'), true);
+      return;
+    }
+
+    const w = EXPORT_WIDTH;
+    const h = (state.ratio === 'square') ? w : Math.round(w * 5/4);
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+
+    let stream;
+    try{
+      stream = canvas.captureStream(30);
+    }catch(err){
+      setStatus(T('msg_videoErr'), true);
+      return;
+    }
+
+    const chunks = [];
+    try{
+      recorder = new MediaRecorder(stream, { mimeType: mime });
+    }catch(err){
+      setStatus(T('msg_videoErr'), true);
+      return;
+    }
+    recorder.ondataavailable = (e) => { if(e.data && e.data.size > 0) chunks.push(e.data); };
+    recorder.onstop = () => {
+      const blob = new Blob(chunks, { type: mime });
+      const url = URL.createObjectURL(blob);
+      const ext = mime.indexOf('mp4') !== -1 ? 'mp4' : 'webm';
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'news-card.' + ext;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      setStatus(T('msg_videoDownloaded'));
+    };
+
+    const durationSeconds = (isFinite(layerVideo.duration) && layerVideo.duration > 0)
+      ? Math.min(layerVideo.duration, 15)
+      : 6;
+
+    setStatus(T('msg_recording'));
+    const startTime = performance.now();
+    recorder.start();
+
+    function tick(){
+      drawFrame(ctx, w, h);
+      if(performance.now() - startTime < durationSeconds * 1000){
+        requestAnimationFrame(tick);
+      } else if(recorder && recorder.state !== 'inactive'){
+        recorder.stop();
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  imageBtn.addEventListener('click', () => {
+    if(!validateTitle()) return;
+    if(state.mediaMode === 'video'){
+      exportVideo();
+    } else {
+      exportImage();
+    }
   });
 
   // ---------- init ----------
