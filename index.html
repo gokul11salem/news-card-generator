@@ -62,7 +62,7 @@
   .layout{ display:flex; flex-direction:column; }
   .controls{ order:2; background:var(--panel); padding:20px 18px 32px; border-bottom:1px solid var(--panel-line); }
   .stage-wrap{
-    order:1; display:flex; align-items:center; justify-content:center; padding:22px 14px;
+    order:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:22px 14px;
     background: repeating-conic-gradient(#20242c 0% 25%, #1a1e25 0% 50%) 50% / 24px 24px;
   }
 
@@ -124,10 +124,22 @@
   input[type="color"]::-webkit-color-swatch-wrapper{ padding:0; }
   input[type="color"]::-webkit-color-swatch{ border-radius:3px; border:none; }
 
-  /* ---------- Preview card (mobile-first, fluid width) ---------- */
+  /* ---------- Trim / segment panel ---------- */
+  .mark-display{ font-size:12px; color:var(--muted); margin-top:8px; }
+  .segment-list{ margin-top:10px; display:flex; flex-direction:column; gap:8px; }
+  .segment-item{
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--field); border:1px solid var(--field-line); border-radius:4px; padding:8px 10px; font-size:12px;
+  }
+  .segment-item button{ background:none; border:none; color:var(--muted); cursor:pointer; font-size:15px; padding:2px 6px; flex-shrink:0; }
+  .segment-item button:hover{ color:var(--press); }
+
+  /* ---------- Preview card + video player bar (mobile-first, fluid width) ---------- */
+  #card, .video-player-bar{
+    width:min(440px, 92vw);
+  }
   #card{
     position:relative;
-    width:min(440px, 92vw);
     background:#101216;
     overflow:hidden;
     box-shadow:0 20px 44px rgba(0,0,0,0.5);
@@ -137,6 +149,24 @@
   #card.ratio-square{ aspect-ratio: 1 / 1; }
   #card.ratio-portrait{ aspect-ratio: 4 / 5; }
   #card.ratio-boxed{ aspect-ratio: 4 / 5; border-radius:18px; }
+
+  .video-player-bar{
+    display:none;
+    align-items:center;
+    gap:10px;
+    background:var(--panel);
+    border:1px solid var(--panel-line);
+    border-radius:8px;
+    padding:10px 14px;
+  }
+  .video-player-bar.visible{ display:flex; }
+  .video-player-bar button{
+    background:var(--field); border:1px solid var(--field-line); color:var(--paper);
+    border-radius:999px; padding:8px 12px; font-size:12px; font-weight:600; cursor:pointer; flex-shrink:0;
+    display:flex; align-items:center; gap:6px;
+  }
+  .video-player-bar input[type="range"]{ flex:1; accent-color:var(--press); }
+  .video-time{ font-size:11px; color:var(--muted); white-space:nowrap; flex-shrink:0; }
 
   /* header tag — visible in boxed layout only, pinned to the very top */
   .header-tag{
@@ -159,14 +189,6 @@
     z-index:1; display:flex; align-items:center; justify-content:center; color:#555;
     font-family:'Helvetica Neue', Arial, sans-serif; font-size:clamp(10px,3vw,13px);
     letter-spacing:0.5px; text-transform:uppercase; text-align:center; padding:16px;
-  }
-  .video-controls{
-    position:absolute; bottom:4%; right:4%; z-index:6; display:none;
-  }
-  .video-controls button{
-    background:rgba(20,23,28,0.72); color:#fff; border:1px solid rgba(255,255,255,0.35);
-    border-radius:999px; padding:8px 14px; font-size:clamp(9px,2.4vw,11px); font-weight:700;
-    cursor:pointer; letter-spacing:0.5px;
   }
 
   /* content zone — used by Square & Standard 4:5 */
@@ -250,7 +272,7 @@
     .lang-switch{ width:auto; }
     .lang-hint{ width:auto; max-width:220px; }
     .controls{ padding:26px; }
-    #card{ width:min(480px, 78vw); }
+    #card, .video-player-bar{ width:min(480px, 78vw); }
   }
 
   /* ---------- Desktop: side-by-side layout ---------- */
@@ -261,7 +283,7 @@
       border-bottom:none; border-right:1px solid var(--panel-line); padding:28px;
     }
     .stage-wrap{ order:2; flex:1; padding:40px; }
-    #card{ width:560px; }
+    #card, .video-player-bar{ width:560px; }
   }
 
   @media print{
@@ -333,6 +355,16 @@
             <button class="clear-x" id="clearVideo" title="Remove video">✕</button>
           </div>
           <div class="hint" id="s_videoHint">Accepts .mp4 or .webm files. Video is not saved to browser storage (file size) — re-upload it after reloading the page.</div>
+
+          <div class="subhead" id="s_trimSubhead">Multi-Segment Trimming</div>
+          <div class="toggle-row">
+            <button id="markInBtn" type="button"><span id="s_markIn">Set Mark In</span></button>
+            <button id="markOutBtn" type="button"><span id="s_markOut">Set Mark Out</span></button>
+          </div>
+          <div class="mark-display" id="markDisplay">In: -- / Out: --</div>
+          <button class="action-btn btn-save" id="addSegmentBtn" type="button"><span id="s_addSegment">Add Segment</span></button>
+          <div class="segment-list" id="segmentList"></div>
+          <div class="hint" id="s_segmentHint">When segments are added, export renders only those trimmed ranges, back-to-back. Leave empty to export the full video.</div>
         </div>
       </div>
 
@@ -537,9 +569,6 @@
           <video id="layer-video" class="layer" style="display:none;" muted loop playsinline></video>
           <img id="layer-overlay" class="layer" style="display:none;">
           <img id="cardLogo" class="card-logo">
-          <div class="video-controls" id="videoControls">
-            <button id="videoPlayPauseBtn" type="button"><span id="s_pauseBtn">Pause</span></button>
-          </div>
         </div>
 
         <div class="content-zone" id="contentZone">
@@ -582,6 +611,12 @@
           </div>
         </div>
       </div>
+
+      <div class="video-player-bar" id="videoPlayerBar">
+        <button id="muteBtn" type="button"><span id="muteIcon">🔇</span><span id="s_muteLabel">Unmute</span></button>
+        <input type="range" id="timelineSlider" min="0" max="100" step="0.1" value="0">
+        <span class="video-time" id="videoTimeDisplay">0:00 / 0:00</span>
+      </div>
     </div>
   </div>
 
@@ -611,8 +646,14 @@
     s_videoLabel:      { en:"Background Video", bi:"Background Video / பின்னணி வீடியோ" },
     s_chooseVideo:     { en:"Choose Video…", bi:"Choose Video… / வீடியோவைத் தேர்ந்தெடு…" },
     s_videoHint:       { en:"Accepts .mp4 or .webm files. Video is not saved to browser storage (file size) — re-upload it after reloading the page.", bi:"Accepts .mp4 or .webm files. Video is not saved to browser storage (file size) — re-upload it after reloading the page. / .mp4 அல்லது .webm கோப்புகளை மட்டும் ஏற்கும். கோப்பு அளவு காரணமாக வீடியோ உலாவி சேமிப்பில் சேமிக்கப்படாது — பக்கத்தை மீண்டும் ஏற்றிய பிறகு மீண்டும் பதிவேற்றவும்." },
-    s_playBtn:         { en:"Play", bi:"Play / இயக்கு" },
-    s_pauseBtn:         { en:"Pause", bi:"Pause / நிறுத்து" },
+
+    s_trimSubhead:     { en:"Multi-Segment Trimming", bi:"Multi-Segment Trimming / பல பிரிவு வெட்டுதல்" },
+    s_markIn:          { en:"Set Mark In", bi:"Set Mark In / தொடக்கக் குறி" },
+    s_markOut:         { en:"Set Mark Out", bi:"Set Mark Out / முடிவுக் குறி" },
+    s_addSegment:      { en:"Add Segment", bi:"Add Segment / பகுதியைச் சேர்" },
+    s_segmentHint:     { en:"When segments are added, export renders only those trimmed ranges, back-to-back. Leave empty to export the full video.", bi:"When segments are added, export renders only those trimmed ranges, back-to-back. Leave empty to export the full video. / பகுதிகள் சேர்க்கப்பட்டால், ஏற்றுமதி அந்த வெட்டப்பட்ட பகுதிகளை மட்டும், தொடர்ச்சியாக உருவாக்கும். முழு வீடியோவையும் ஏற்றுமதி செய்ய காலியாக விடவும்." },
+    s_segmentLabel:    { en:"Segment", bi:"Segment / பகுதி" },
+    s_muteLabel:       { en:"Unmute", bi:"Unmute / ஒலியை இயக்கு" },
 
     s_headlineGroup:   { en:"Headline & Details", bi:"Headline & Details / தலைப்பு & விவரங்கள்" },
     s_titleLabel:      { en:"Title *", bi:"Title * / தலைப்பு *" },
@@ -704,7 +745,9 @@
     msg_renderErr:     { en:"Could not render image.", bi:"Could not render image. / படத்தை உருவாக்க முடியவில்லை." },
     msg_videoErr:      { en:"Could not record video in this browser.", bi:"Could not record video in this browser. / இந்த உலாவியில் வீடியோவைப் பதிவு செய்ய முடியவில்லை." },
     msg_noVideo:       { en:"Please upload a video first.", bi:"Please upload a video first. / முதலில் ஒரு வீடியோவைப் பதிவேற்றவும்." },
-    msg_required:      { en:"Please add a title before exporting.", bi:"Please add a title before exporting. / ஏற்றுமதி செய்வதற்கு முன் தலைப்பைச் சேர்க்கவும்." }
+    msg_required:      { en:"Please add a title before exporting.", bi:"Please add a title before exporting. / ஏற்றுமதி செய்வதற்கு முன் தலைப்பைச் சேர்க்கவும்." },
+    msg_needBothMarks: { en:"Set both Mark In and Mark Out first.", bi:"Set both Mark In and Mark Out first. / முதலில் தொடக்கக் குறியையும் முடிவுக் குறியையும் அமைக்கவும்." },
+    msg_segmentInvalid:{ en:"Mark Out must be after Mark In.", bi:"Mark Out must be after Mark In. / முடிவுக் குறி தொடக்கக் குறிக்குப் பின் இருக்க வேண்டும்." }
   };
 
   function T(key){
@@ -725,7 +768,6 @@
   const imageUploadWrap = $('imageUploadWrap'), videoUploadWrap = $('videoUploadWrap');
   const imageInput = $('imageInput'), imageThumb = $('imageThumb'), clearImage = $('clearImage');
   const videoInput = $('videoInput'), clearVideo = $('clearVideo');
-  const videoControls = $('videoControls'), videoPlayPauseBtn = $('videoPlayPauseBtn');
   const logoInput = $('logoInput'), logoThumb = $('logoThumb'), clearLogo = $('clearLogo');
   const titleInput = $('titleInput'), subtitleInput = $('subtitleInput'), locationInput = $('locationInput'), dateInput = $('dateInput');
   const brandInput = $('brandInput');
@@ -764,7 +806,12 @@
   const locBgColorInput = $('locBgColorInput'), locTextColorInput = $('locTextColorInput');
   const brandBadgeBgInput = $('brandBadgeBgInput'), brandBadgeTextInput = $('brandBadgeTextInput'), dividerColorInput = $('dividerColorInput');
 
-  const STORAGE_KEY = 'dispatch-news-card-v8';
+  const markInBtn = $('markInBtn'), markOutBtn = $('markOutBtn'), markDisplay = $('markDisplay');
+  const addSegmentBtn = $('addSegmentBtn'), segmentList = $('segmentList');
+  const videoPlayerBar = $('videoPlayerBar'), muteBtn = $('muteBtn'), muteIcon = $('muteIcon');
+  const timelineSlider = $('timelineSlider'), videoTimeDisplay = $('videoTimeDisplay');
+
+  const STORAGE_KEY = 'dispatch-news-card-v9';
   const EXPORT_WIDTH = 1080;
 
   const DEFAULT_COLORS = {
@@ -783,6 +830,8 @@
     overlay:null, image:null, videoSrc:null, logo:null, adImage:null,
     title:'', subtitle:'', location:'', date:'', footer:'', brandText:'',
     ratio:'square', adType:'text', logoAlign:'left',
+    videoMuted:true,
+    segments:[],
     titleColor:DEFAULT_COLORS.titleColor,
     subtitleColor:DEFAULT_COLORS.subtitleColor,
     dateColor:DEFAULT_COLORS.dateColor,
@@ -804,6 +853,8 @@
   };
 
   let recorder = null;
+  let markInTime = null;
+  let markOutTime = null;
 
   // ---------- helpers ----------
   function fileToDataUrl(file, cb){
@@ -816,6 +867,13 @@
     statusMsg.textContent = msg;
     statusMsg.classList.toggle('warn', !!isWarn);
     if(msg) setTimeout(() => { if(statusMsg.textContent === msg) statusMsg.textContent=''; }, 3200);
+  }
+
+  function formatTime(seconds){
+    if(!isFinite(seconds) || seconds < 0) seconds = 0;
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return m + ':' + (s < 10 ? '0' : '') + s;
   }
 
   // ---------- UI chrome language (strict English vs bilingual) ----------
@@ -833,6 +891,9 @@
     footerAdPlaceholder.textContent = T('adPlaceholderText');
     renderExportButtons();
     renderMedia();
+    renderMuteBtn();
+    renderMarkDisplay();
+    renderSegmentList();
   }
 
   // ---------- card content language (defaults + date locale) ----------
@@ -869,18 +930,19 @@
         }
         layerVideo.style.display = 'block';
         layerImagePlaceholder.style.display = 'none';
-        videoControls.style.display = 'block';
+        layerVideo.muted = state.videoMuted;
         layerVideo.play().catch(() => {});
+        videoPlayerBar.classList.add('visible');
       } else {
         layerVideo.style.display = 'none';
-        videoControls.style.display = 'none';
         layerImagePlaceholder.style.display = 'flex';
         layerImagePlaceholder.textContent = T('noVideoPlaceholder');
+        videoPlayerBar.classList.remove('visible');
       }
     } else {
       if(!layerVideo.paused) layerVideo.pause();
       layerVideo.style.display = 'none';
-      videoControls.style.display = 'none';
+      videoPlayerBar.classList.remove('visible');
       if(state.image){
         layerImage.src = state.image;
         layerImage.style.display = 'block';
@@ -891,6 +953,38 @@
         layerImagePlaceholder.textContent = T('noImagePlaceholder');
       }
     }
+  }
+
+  function renderMuteBtn(){
+    layerVideo.muted = state.videoMuted;
+    muteIcon.textContent = state.videoMuted ? '🔇' : '🔊';
+    $('s_muteLabel').textContent = state.videoMuted ? T('s_muteLabel') : (state.lang === 'ta' ? 'Mute / ஒலியை நிறுத்து' : 'Mute');
+  }
+
+  function renderMarkDisplay(){
+    const inTxt = (markInTime !== null) ? formatTime(markInTime) : '--';
+    const outTxt = (markOutTime !== null) ? formatTime(markOutTime) : '--';
+    markDisplay.textContent = 'In: ' + inTxt + '  /  Out: ' + outTxt;
+  }
+
+  function renderSegmentList(){
+    segmentList.innerHTML = '';
+    state.segments.forEach((seg, i) => {
+      const row = document.createElement('div');
+      row.className = 'segment-item';
+      const label = document.createElement('span');
+      label.textContent = T('s_segmentLabel') + ' ' + (i+1) + ': ' + formatTime(seg.start) + '–' + formatTime(seg.end);
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.textContent = '✕';
+      removeBtn.addEventListener('click', () => {
+        state.segments.splice(i, 1);
+        renderSegmentList();
+      });
+      row.appendChild(label);
+      row.appendChild(removeBtn);
+      segmentList.appendChild(row);
+    });
   }
 
   // ---------- render functions ----------
@@ -1131,6 +1225,9 @@
     renderMediaModeUI();
     renderMedia();
     renderExportButtons();
+    renderMuteBtn();
+    renderMarkDisplay();
+    renderSegmentList();
   }
 
   // ---------- events: files ----------
@@ -1144,7 +1241,14 @@
   });
   videoInput.addEventListener('change', (e) => {
     const f = e.target.files[0]; if(!f) return;
-    fileToDataUrl(f, (url) => { state.videoSrc = url; renderMedia(); });
+    fileToDataUrl(f, (url) => {
+      state.videoSrc = url;
+      state.segments = [];
+      markInTime = null; markOutTime = null;
+      renderMedia();
+      renderMarkDisplay();
+      renderSegmentList();
+    });
   });
   logoInput.addEventListener('change', (e) => {
     const f = e.target.files[0]; if(!f) return;
@@ -1157,22 +1261,67 @@
 
   clearOverlay.addEventListener('click', () => { state.overlay=null; overlayInput.value=''; renderOverlay(); });
   clearImage.addEventListener('click', () => { state.image=null; imageInput.value=''; renderMedia(); });
-  clearVideo.addEventListener('click', () => { state.videoSrc=null; videoInput.value=''; layerVideo.removeAttribute('src'); layerVideo.load(); renderMedia(); });
+  clearVideo.addEventListener('click', () => {
+    state.videoSrc = null;
+    state.segments = [];
+    markInTime = null; markOutTime = null;
+    videoInput.value = '';
+    layerVideo.removeAttribute('src');
+    layerVideo.load();
+    renderMedia();
+    renderMarkDisplay();
+    renderSegmentList();
+  });
   clearLogo.addEventListener('click', () => { state.logo=null; logoInput.value=''; renderLogo(); });
   clearAdImage.addEventListener('click', () => { state.adImage=null; adImageInput.value=''; renderAdType(); });
 
   mediaModeImageBtn.addEventListener('click', () => { state.mediaMode='image'; renderMediaModeUI(); renderMedia(); renderExportButtons(); });
   mediaModeVideoBtn.addEventListener('click', () => { state.mediaMode='video'; renderMediaModeUI(); renderMedia(); renderExportButtons(); });
 
-  videoPlayPauseBtn.addEventListener('click', () => {
-    if(layerVideo.paused){
-      layerVideo.play().catch(() => {});
-    } else {
-      layerVideo.pause();
+  muteBtn.addEventListener('click', () => {
+    state.videoMuted = !state.videoMuted;
+    renderMuteBtn();
+  });
+
+  timelineSlider.addEventListener('input', () => {
+    if(layerVideo.duration){
+      layerVideo.currentTime = (timelineSlider.value / 100) * layerVideo.duration;
     }
   });
-  layerVideo.addEventListener('play', () => { $('s_pauseBtn').textContent = T('s_pauseBtn'); });
-  layerVideo.addEventListener('pause', () => { $('s_pauseBtn').textContent = T('s_playBtn'); });
+  layerVideo.addEventListener('timeupdate', () => {
+    if(layerVideo.duration){
+      timelineSlider.value = (layerVideo.currentTime / layerVideo.duration) * 100;
+    }
+    videoTimeDisplay.textContent = formatTime(layerVideo.currentTime) + ' / ' + formatTime(layerVideo.duration || 0);
+  });
+  layerVideo.addEventListener('loadedmetadata', () => {
+    videoTimeDisplay.textContent = formatTime(0) + ' / ' + formatTime(layerVideo.duration || 0);
+  });
+
+  markInBtn.addEventListener('click', () => {
+    if(!state.videoSrc) return;
+    markInTime = layerVideo.currentTime;
+    renderMarkDisplay();
+  });
+  markOutBtn.addEventListener('click', () => {
+    if(!state.videoSrc) return;
+    markOutTime = layerVideo.currentTime;
+    renderMarkDisplay();
+  });
+  addSegmentBtn.addEventListener('click', () => {
+    if(markInTime === null || markOutTime === null){
+      setStatus(T('msg_needBothMarks'), true);
+      return;
+    }
+    if(markOutTime <= markInTime){
+      setStatus(T('msg_segmentInvalid'), true);
+      return;
+    }
+    state.segments.push({ start: markInTime, end: markOutTime });
+    markInTime = null; markOutTime = null;
+    renderMarkDisplay();
+    renderSegmentList();
+  });
 
   // ---------- events: text fields ----------
   titleInput.addEventListener('input', () => {
@@ -1248,6 +1397,7 @@
     try{
       const saved = JSON.parse(raw);
       state = Object.assign(state, saved, { videoSrc: null });
+      if(!Array.isArray(state.segments)) state.segments = [];
       langSelect.value = state.lang || 'en';
       titleInput.value = state.title || '';
       subtitleInput.value = state.subtitle || '';
@@ -1453,9 +1603,8 @@
       ctx.fillStyle = state.contentBoxText;
       ctx.font = '400 ' + Math.round(h*0.017) + 'px "Helvetica Neue", Arial, sans-serif';
       ctx.textAlign = 'left'; ctx.textBaseline = 'top';
-      let subBottom = by + h*0.03;
       if(state.subtitle && state.subtitle.trim()){
-        subBottom = wrapText(ctx, state.subtitle, boxMarginX+w*0.02, by+h*0.025, w-boxMarginX*2-w*0.04, h*0.025, 3);
+        wrapText(ctx, state.subtitle, boxMarginX+w*0.02, by+h*0.025, w-boxMarginX*2-w*0.04, h*0.025, 3);
       }
       drawBrandDivider(ctx, boxMarginX+w*0.03, by+boxH-h*0.02, w-boxMarginX*2-w*0.06, h);
     } else {
@@ -1544,7 +1693,29 @@
     }).catch(() => setStatus(T('msg_renderErr'), true));
   }
 
-  function exportVideo(){
+  function playSegment(ctx, w, h, seg){
+    return new Promise((resolve) => {
+      const targetStart = Math.max(0, seg.start);
+      const targetEnd = Math.max(targetStart + 0.05, seg.end);
+      const onSeeked = () => {
+        layerVideo.removeEventListener('seeked', onSeeked);
+        layerVideo.play().catch(() => {});
+        function frameLoop(){
+          drawFrame(ctx, w, h);
+          if(layerVideo.currentTime < targetEnd && !layerVideo.ended){
+            requestAnimationFrame(frameLoop);
+          } else {
+            resolve();
+          }
+        }
+        requestAnimationFrame(frameLoop);
+      };
+      layerVideo.addEventListener('seeked', onSeeked);
+      layerVideo.currentTime = targetStart;
+    });
+  }
+
+  async function exportVideo(){
     if(!state.videoSrc){
       setStatus(T('msg_noVideo'), true);
       return;
@@ -1565,51 +1736,78 @@
     canvas.width = w; canvas.height = h;
     const ctx = canvas.getContext('2d');
 
-    let stream;
+    let canvasStream;
     try{
-      stream = canvas.captureStream(30);
+      canvasStream = canvas.captureStream(30);
+    }catch(err){
+      setStatus(T('msg_videoErr'), true);
+      return;
+    }
+
+    // Extract the original video's audio track and merge it with the canvas video track
+    let audioTrack = null;
+    try{
+      const vidStream = layerVideo.captureStream ? layerVideo.captureStream() : (layerVideo.mozCaptureStream ? layerVideo.mozCaptureStream() : null);
+      if(vidStream){
+        const audioTracks = vidStream.getAudioTracks();
+        if(audioTracks && audioTracks.length) audioTrack = audioTracks[0];
+      }
+    }catch(err){ /* proceed without audio if unavailable */ }
+
+    const combinedTracks = canvasStream.getVideoTracks().slice();
+    if(audioTrack) combinedTracks.push(audioTrack);
+    const combinedStream = new MediaStream(combinedTracks);
+
+    try{
+      recorder = new MediaRecorder(combinedStream, { mimeType: mime });
     }catch(err){
       setStatus(T('msg_videoErr'), true);
       return;
     }
 
     const chunks = [];
-    try{
-      recorder = new MediaRecorder(stream, { mimeType: mime });
-    }catch(err){
-      setStatus(T('msg_videoErr'), true);
-      return;
-    }
     recorder.ondataavailable = (e) => { if(e.data && e.data.size > 0) chunks.push(e.data); };
-    recorder.onstop = () => {
-      const blob = new Blob(chunks, { type: mime });
-      const url = URL.createObjectURL(blob);
-      const ext = mime.indexOf('mp4') !== -1 ? 'mp4' : 'webm';
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'news-card.' + ext;
-      link.click();
-      setTimeout(() => URL.revokeObjectURL(url), 2000);
-      setStatus(T('msg_videoDownloaded'));
-    };
 
-    const durationSeconds = (isFinite(layerVideo.duration) && layerVideo.duration > 0)
-      ? Math.min(layerVideo.duration, 15)
-      : 6;
+    const wasMuted = layerVideo.muted;
+    const wasPaused = layerVideo.paused;
+    const wasTime = layerVideo.currentTime;
+    layerVideo.muted = false; // ensure the captured audio track carries sound
+
+    const stopAndSave = () => new Promise((resolve) => {
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: mime });
+        const url = URL.createObjectURL(blob);
+        const ext = mime.indexOf('mp4') !== -1 ? 'mp4' : 'webm';
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'news-card.' + ext;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+        resolve();
+      };
+      recorder.stop();
+    });
 
     setStatus(T('msg_recording'));
-    const startTime = performance.now();
     recorder.start();
 
-    function tick(){
-      drawFrame(ctx, w, h);
-      if(performance.now() - startTime < durationSeconds * 1000){
-        requestAnimationFrame(tick);
-      } else if(recorder && recorder.state !== 'inactive'){
-        recorder.stop();
-      }
+    const fallbackDuration = Math.min((isFinite(layerVideo.duration) && layerVideo.duration > 0) ? layerVideo.duration : 6, 15);
+    const segments = (state.segments && state.segments.length)
+      ? [...state.segments].sort((a,b) => a.start - b.start)
+      : [{ start: 0, end: fallbackDuration }];
+
+    for(const seg of segments){
+      await playSegment(ctx, w, h, seg);
     }
-    requestAnimationFrame(tick);
+
+    layerVideo.pause();
+    await stopAndSave();
+
+    layerVideo.muted = wasMuted;
+    layerVideo.currentTime = wasTime;
+    if(!wasPaused) layerVideo.play().catch(() => {});
+    renderMuteBtn();
+    setStatus(T('msg_videoDownloaded'));
   }
 
   imageBtn.addEventListener('click', () => {
